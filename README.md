@@ -3,7 +3,7 @@ CLI Tool generating Gradle projects with different project graph shpaes
 
 ## Simple Usage
 ```
- curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v.0.1.0/projectGenerator --output projectGenerator
+ curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v.0.1.1/projectGenerator --output projectGenerator
  chmod 0757 projectGenerator
 ./projectGenerator --shape triangle --language kts --modules 100
 ```
