@@ -30,5 +30,5 @@ application {
 
 fatBinary {
     mainClass = "io.github.cdsap.generator.Main"
-    name = "generateProject"
+    name = "projectGenerator"
 }
