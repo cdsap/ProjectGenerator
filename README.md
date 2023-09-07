@@ -1,5 +1,5 @@
 ## Project Generator
-CLI Tool generating Gradle projects with different project graph shpaes
+CLI Tool generating Gradle projects with different project graph shapes
 
 ## Simple Usage
 ```
