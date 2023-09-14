@@ -1,9 +1,15 @@
 package io.github.cdsap.generator
 
 import io.github.cdsap.generator.model.ProjectGraph
+import io.github.cdsap.generator.model.TypeProject
+import io.github.cdsap.generator.model.TypeProjectRequested
 import kotlin.random.Random
 
-class ProjectGraphGenerator(private val numberOfLayers: Int, private val distribution: List<Int>) {
+class ProjectGraphGenerator(
+    private val numberOfLayers: Int,
+    private val distribution: List<Int>,
+    private val typeOfProjectRequested: TypeProjectRequested
+) {
     fun generate(): MutableList<ProjectGraph> {
         var generalCounter = 0
         var oldLayer = 0
@@ -16,7 +22,8 @@ class ProjectGraphGenerator(private val numberOfLayers: Int, private val distrib
                         ProjectGraph(
                             id = "module_${i}_$generalCounter",
                             layer = i,
-                            nodes = emptyList()
+                            nodes = emptyList(),
+                            type = lib(typeOfProjectRequested)
                         )
                     )
                 }
@@ -46,7 +53,8 @@ class ProjectGraphGenerator(private val numberOfLayers: Int, private val distrib
                         ProjectGraph(
                             id = "module_${i}_$generalCounter",
                             layer = i,
-                            nodes = nodesConnected
+                            nodes = nodesConnected,
+                            type = lib(typeOfProjectRequested)
                         )
                     )
                 }
@@ -57,11 +65,14 @@ class ProjectGraphGenerator(private val numberOfLayers: Int, private val distrib
         generalCounter++
         oldLayer++
         // we need to create the main entry point module
-        nodes.add(ProjectGraph(
-            id = "module_${oldLayer}_$generalCounter",
-            layer = oldLayer,
-            nodes = nodes.filter { it.layer == oldLayer - 1 }.map { it.id }
-        ))
+        nodes.add(
+            ProjectGraph(
+                id = "module_${oldLayer}_$generalCounter",
+                layer = oldLayer,
+                nodes = nodes.filter { it.layer == oldLayer - 1 }.map { it.id },
+                type = mainEntryPoint(typeOfProjectRequested)
+            )
+        )
         return nodes
     }
 
@@ -83,6 +94,22 @@ class ProjectGraphGenerator(private val numberOfLayers: Int, private val distrib
                 }
             }
             return listOfModules
+        }
+    }
+
+    private fun lib(typeOfProject: TypeProjectRequested): TypeProject {
+        return if (typeOfProject == TypeProjectRequested.ANDROID) {
+            TypeProject.ANDROID_LIB
+        } else {
+            TypeProject.LIB
+        }
+    }
+
+    private fun mainEntryPoint(typeOfProject: TypeProjectRequested): TypeProject {
+        return if (typeOfProject == TypeProjectRequested.ANDROID) {
+            TypeProject.ANDROID_APP
+        } else {
+            TypeProject.LIB
         }
     }
 }

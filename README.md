@@ -37,6 +37,20 @@ Two projects will be generated using Kotlin DSL and Groovy
 ### `--modules`
 Number of modules to be generated in the project
 
+### `--type`
+Type of project generated:
+* `android` Android project
+* `jvm` Kotlin-JVM project
+
+### `--classes-per-module`
+Classes generated per module
+
+### `--agp-version`
+Android Gradle Plugin version
+
+### `--kgp-version`
+Kotlin Gradle Plugin version
+
 ## Project
 The default project generated is composed by the modules and one convention plugin defined as composite build.
 This convention plugin is used in all the modules of the project.
