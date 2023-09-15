@@ -15,7 +15,7 @@ class ProjectWriter(
 ) {
     fun write() {
         println("Creating Convention Plugin files")
-        ConventionPluginWriter(languages, versions).write()
+        ConventionPluginWriter(languages, versions, typeOfProjectRequested).write()
         println("Creating Modules files")
         ModulesWriter(nodes, languages, numberOfClassPerModule).write()
 

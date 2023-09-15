@@ -1,17 +1,26 @@
 package io.github.cdsap.generator.files
 
+import io.github.cdsap.generator.model.TypeProjectRequested
 import io.github.cdsap.generator.model.Versions
 
 class CompositeBuildBuildGradle {
 
-    fun get(versions: Versions) = """
+    fun get(versions: Versions, requested: TypeProjectRequested): String {
+        val classpath = if (requested == TypeProjectRequested.ANDROID) {
+            """
+                implementation("com.android.tools.build:gradle:${versions.agp}")
+            """.trimIndent()
+        } else {
+            ""
+        }
+        return """
             plugins {
                 `kotlin-dsl`
             }
 
             dependencies {
                 implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kgp}")
-                implementation("com.android.tools.build:gradle:${versions.agp}")
+                $classpath
             }
 
             gradlePlugin {
@@ -40,4 +49,5 @@ class CompositeBuildBuildGradle {
             }
 
         """.trimIndent()
+    }
 }
