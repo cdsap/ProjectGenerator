@@ -12,4 +12,11 @@ class BuildGradle {
             id("com.android.library") version "${versions.agp}" apply false
         }
         """.trimIndent()
+
+    fun getJvm(versions: Versions) = """
+        plugins {
+            id("com.autonomousapps.dependency-analysis") version "1.21.0"
+            id("org.jetbrains.kotlin.jvm") version("${versions.kgp}") apply false
+        }
+        """.trimIndent()
 }

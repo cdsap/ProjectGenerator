@@ -63,7 +63,7 @@ class ProjectGenerator(
 
         val projectLanguageAttributes =
             getProjectLanguageAttributes(language, "projects_generated/${shape.name.lowercase()}_$numberOfModules")
-        ProjectWriter(nodes, projectLanguageAttributes, classesPerModule,versions).write()
+        ProjectWriter(nodes, projectLanguageAttributes, classesPerModule, versions, typeOfProjectRequested).write()
         GraphWriter(nodes, "projects_generated/${shape.name.lowercase()}_$numberOfModules").write()
         println("Project created in projects_generated/${shape.name.lowercase()}_$numberOfModules")
     }

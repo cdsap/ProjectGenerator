@@ -2,11 +2,15 @@ package io.github.cdsap.generator.writer
 
 import io.github.cdsap.generator.files.*
 import io.github.cdsap.generator.model.LanguageAttributes
+import io.github.cdsap.generator.model.TypeProjectRequested
 import io.github.cdsap.generator.model.Versions
 import java.io.File
 
-class ConventionPluginWriter(private val languages: List<LanguageAttributes>,
-    private val versions: Versions) {
+class ConventionPluginWriter(
+    private val languages: List<LanguageAttributes>,
+    private val versions: Versions,
+    private val requested: TypeProjectRequested
+) {
 
     fun write() {
         createConventionFolders(languages)
@@ -25,9 +29,7 @@ class ConventionPluginWriter(private val languages: List<LanguageAttributes>,
         languages.forEach {
             File("${it.projectName}/build-logic/convention/build.gradle.kts").createNewFile()
             File("${it.projectName}/build-logic/convention/build.gradle.kts").writeText(
-                CompositeBuildBuildGradle().get(
-                    versions
-                )
+                CompositeBuildBuildGradle().get(versions, requested)
             )
         }
     }

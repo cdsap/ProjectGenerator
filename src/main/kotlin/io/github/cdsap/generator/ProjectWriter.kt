@@ -1,9 +1,7 @@
 package io.github.cdsap.generator
 
 import io.github.cdsap.generator.files.*
-import io.github.cdsap.generator.model.LanguageAttributes
-import io.github.cdsap.generator.model.ProjectGraph
-import io.github.cdsap.generator.model.Versions
+import io.github.cdsap.generator.model.*
 import io.github.cdsap.generator.writer.ConventionPluginWriter
 import io.github.cdsap.generator.writer.ModulesWriter
 import java.io.File
@@ -12,11 +10,12 @@ class ProjectWriter(
     private val nodes: List<ProjectGraph>,
     private val languages: List<LanguageAttributes>,
     private val numberOfClassPerModule: Int,
-    private val versions: Versions
+    private val versions: Versions,
+    private val typeOfProjectRequested: TypeProjectRequested
 ) {
     fun write() {
         println("Creating Convention Plugin files")
-        ConventionPluginWriter(languages, versions).write()
+        ConventionPluginWriter(languages, versions, typeOfProjectRequested).write()
         println("Creating Modules files")
         ModulesWriter(nodes, languages, numberOfClassPerModule).write()
 
@@ -36,8 +35,11 @@ class ProjectWriter(
         }
     }
 
-    private fun createProjectBuildGradle(languages: List<LanguageAttributes>) {
-        val plugins = BuildGradle().get(versions)
+    private fun createProjectBuildGradle(
+        languages: List<LanguageAttributes>
+    ) {
+        val plugins = if (typeOfProjectRequested == TypeProjectRequested.JVM) BuildGradle().getJvm(versions)
+        else BuildGradle().get(versions)
         languages.forEach {
             File("${it.projectName}/build.${it.extension}").createNewFile()
             File("${it.projectName}/build.${it.extension}").writeText(plugins)
