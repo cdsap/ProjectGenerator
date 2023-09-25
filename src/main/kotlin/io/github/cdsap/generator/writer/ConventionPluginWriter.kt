@@ -43,12 +43,16 @@ class ConventionPluginWriter(
     }
 
     private fun createPlugin(languages: List<LanguageAttributes>) {
-        val plugin = CompositeBuildPlugin1().get()
+        createPluginJvm(languages)
+        if (requested == TypeProjectRequested.ANDROID) {
+            createPluginAndroid(languages)
+        }
+    }
+
+    private fun createPluginAndroid(languages: List<LanguageAttributes>) {
         val pluginAndroidLib = CompositeBuildPluginAndroidLib().get()
         val pluginAndroidApp = CompositeBuildPluginAndroidApp().get()
         languages.forEach {
-            File("${it.projectName}/build-logic/convention/src/main/kotlin/com/logic/Plugin1.kt").createNewFile()
-            File("${it.projectName}/build-logic/convention/src/main/kotlin/com/logic/Plugin1.kt").writeText(plugin)
             File("${it.projectName}/build-logic/convention/src/main/kotlin/com/logic/CompositeBuildPluginAndroidApp.kt").createNewFile()
             File("${it.projectName}/build-logic/convention/src/main/kotlin/com/logic/CompositeBuildPluginAndroidApp.kt").writeText(
                 pluginAndroidApp
@@ -59,4 +63,14 @@ class ConventionPluginWriter(
             )
         }
     }
+
+    private fun createPluginJvm(languages: List<LanguageAttributes>) {
+        val plugin = CompositeBuildPlugin1().get()
+        languages.forEach {
+            File("${it.projectName}/build-logic/convention/src/main/kotlin/com/logic/Plugin1.kt").createNewFile()
+            File("${it.projectName}/build-logic/convention/src/main/kotlin/com/logic/Plugin1.kt").writeText(plugin)
+        }
+
+    }
 }
+
