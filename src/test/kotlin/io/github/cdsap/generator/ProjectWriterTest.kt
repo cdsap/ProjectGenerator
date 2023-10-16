@@ -13,10 +13,12 @@ class ProjectWriterTest {
 
     @Test
     fun testWriteProject() {
-         val nodes = listOf(
-            ProjectGraph("module_1_1", 1, emptyList(), TypeProject.ANDROID_APP),
-            ProjectGraph("module_1_2", 1, emptyList(), TypeProject.ANDROID_LIB),
-            ProjectGraph("module_2_1", 2, emptyList(), TypeProject.LIB)
+        val nodes = listOf(
+            ProjectGraph("module_1_1", 1, emptyList(), TypeProject.ANDROID_APP, 10),
+            ProjectGraph("module_1_2", 1, emptyList(), TypeProject.ANDROID_LIB, 10),
+            ProjectGraph(
+                "module_2_1", 2, emptyList(), TypeProject.LIB, 10
+            )
         )
         val languages = listOf(
             LanguageAttributes("gradle", "${tempDir}/project_groovy"),
@@ -30,7 +32,7 @@ class ProjectWriterTest {
         val projectWriter = ProjectWriter(
             nodes,
             languages,
-            numberOfClassPerModule,
+            ClassesPerModule(ClassesPerModuleType.FIXED, numberOfClassPerModule),
             versions,
             typeOfProjectRequested
         )
