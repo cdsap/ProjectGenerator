@@ -9,7 +9,7 @@ import java.io.File
 class ProjectWriter(
     private val nodes: List<ProjectGraph>,
     private val languages: List<LanguageAttributes>,
-    private val numberOfClassPerModule: Int,
+    private val numberOfClassPerModule: ClassesPerModule,
     private val versions: Versions,
     private val typeOfProjectRequested: TypeProjectRequested
 ) {

@@ -4,21 +4,20 @@ import io.github.cdsap.generator.files.BuildGradleAndroidApp
 import io.github.cdsap.generator.files.BuildGradleAndroidLib
 import io.github.cdsap.generator.files.BuildGradleLib
 import io.github.cdsap.generator.files.android.*
-import io.github.cdsap.generator.model.LanguageAttributes
-import io.github.cdsap.generator.model.ProjectGraph
-import io.github.cdsap.generator.model.TypeProject
+import io.github.cdsap.generator.model.*
 import java.io.File
 import java.util.*
+import kotlin.random.Random
 
 class ModulesWriter(
-    val nodes: List<ProjectGraph>,
-    val languages: List<LanguageAttributes>,
-    val numberOfClassPerModule: Int
+    private val nodes: List<ProjectGraph>,
+    private val languages: List<LanguageAttributes>,
+    private val classPerModule: ClassesPerModule
 ) {
 
     fun write() {
         nodes.forEach {
-            createModuleFoldersAndSource(it, languages, numberOfClassPerModule)
+            createModuleFoldersAndSource(it, languages, classPerModule)
             createBuildGradleFile(it, languages)
         }
     }
@@ -26,40 +25,37 @@ class ModulesWriter(
     fun createModuleFoldersAndSource(
         projectGraph: ProjectGraph,
         languages: List<LanguageAttributes>,
-        numberOfClassPerModule: Int
+        classPerModule: ClassesPerModule
     ) {
 
         val nodes = projectGraph.nodes
 
 
-        for (i in 1..numberOfClassPerModule) {
-            var referencesToAnotherModule = ""
+        for (i in 1..projectGraph.classes) {
+            var referencesToAnotherModule = "\n"
 
             if (nodes.size > 1) {
                 val numberOfImports = nodes.size / 2
                 for (x in 0 until numberOfImports) {
                     val node = nodes.random()
-                    referencesToAnotherModule += " val dependencyClass$x = com.performance.${node.titleCase()}_1()\n"
-                    referencesToAnotherModule += " println(dependencyClass$x)\n"
+                    val classToPick = Random.nextInt(1,node.classes)
+                    referencesToAnotherModule += "        val dependencyClass$x = com.performance.${node.id.titleCase()}_$classToPick().${node.id.lowercase()}_$classToPick()\n"
+                    referencesToAnotherModule += "        println(dependencyClass$x)\n"
                 }
             }
 
-            val classContent = """
-        package com.performance
 
-        class ${projectGraph.id.titleCase()}_$i {
-           fun alo() {
-             println("${projectGraph.id}")
-             $referencesToAnotherModule
-             }
-        }
-        class ${projectGraph.id.titleCase()}_${i}_aux {
-           fun alor() {
-             println("${projectGraph.id}")
+            val classContent = """package com.performance
 
-             }
-        }
-    """.trimIndent()
+class ${projectGraph.id.titleCase()}_$i {
+    fun ${projectGraph.id.lowercase()}_$i() : String {
+        val value = "${projectGraph.id.titleCase()}_$i"
+        println("${projectGraph.id}")
+        $referencesToAnotherModule
+        return value
+    }
+}
+"""
 
             languages.forEach {
                 val directory =
@@ -149,10 +145,14 @@ class ModulesWriter(
             File("${directoryValues.path}/colors.xml").writeText(valuesColors)
 
             File("${directoryDrawable.path}/${projectGraph.id}_ic_launcher_background.xml").createNewFile()
-            File("${directoryDrawable.path}/${projectGraph.id}_ic_launcher_background.xml").writeText(drawableIcLauncherBackground)
+            File("${directoryDrawable.path}/${projectGraph.id}_ic_launcher_background.xml").writeText(
+                drawableIcLauncherBackground
+            )
 
             File("${directoryDrawable.path}/${projectGraph.id}_ic_launcher_foreground.xml").createNewFile()
-            File("${directoryDrawable.path}/${projectGraph.id}_ic_launcher_foreground.xml").writeText(drawableIcLauncherForeground)
+            File("${directoryDrawable.path}/${projectGraph.id}_ic_launcher_foreground.xml").writeText(
+                drawableIcLauncherForeground
+            )
 
             File("${directory.path}/AndroidManifest.xml").createNewFile()
             File("${directory.path}/AndroidManifest.xml").writeText(manifest)
@@ -162,20 +162,22 @@ class ModulesWriter(
     }
 
     private fun createBuildGradleFile(node: ProjectGraph, languages: List<LanguageAttributes>) {
-        var dependencies = ""
+        var dependencies = "    "
         node.nodes.forEach {
-            val layer = it.split("_")
-            dependencies += "\nimplementation(project(\":layer_${layer[1]}:$it\"))"
+            val layer = it.id.split("_")
+            dependencies += "\n    implementation(project(\":layer_${layer[1]}:${it.id}\"))"
         }
-        val plugins = getPluginToApply(node.type)
+        val dependenciesBlock = """
+dependencies {
+${dependencies}
+}
+        """
+        val plugins = getPluginToApply(node.type).trimIndent()
         val buildGradleContent = """
-               $plugins
+            |$plugins
+            |$dependenciesBlock
+        """.trimMargin()
 
-               dependencies {
-                  $dependencies
-               }
-
-        """.trimIndent()
         languages.forEach {
             File("${it.projectName}/layer_${node.layer}/${node.id}/build.${it.extension}").createNewFile()
             File("${it.projectName}/layer_${node.layer}/${node.id}/build.${it.extension}").writeText(buildGradleContent)

@@ -1,5 +1,7 @@
 package io.github.cdsap.generator
 
+import io.github.cdsap.generator.model.ClassesPerModule
+import io.github.cdsap.generator.model.ClassesPerModuleType
 import io.github.cdsap.generator.model.ProjectGraph
 import io.github.cdsap.generator.model.TypeProject
 import io.github.cdsap.generator.model.TypeProjectRequested
@@ -8,7 +10,8 @@ import kotlin.random.Random
 class ProjectGraphGenerator(
     private val numberOfLayers: Int,
     private val distribution: List<Int>,
-    private val typeOfProjectRequested: TypeProjectRequested
+    private val typeOfProjectRequested: TypeProjectRequested,
+    private val classesPerModule: ClassesPerModule
 ) {
     fun generate(): MutableList<ProjectGraph> {
         var generalCounter = 0
@@ -23,7 +26,8 @@ class ProjectGraphGenerator(
                             id = "module_${i}_$generalCounter",
                             layer = i,
                             nodes = emptyList(),
-                            type = lib(typeOfProjectRequested)
+                            type = lib(typeOfProjectRequested),
+                            classes  = getClasses()
                         )
                     )
                 }
@@ -53,8 +57,9 @@ class ProjectGraphGenerator(
                         ProjectGraph(
                             id = "module_${i}_$generalCounter",
                             layer = i,
-                            nodes = nodesConnected,
-                            type = lib(typeOfProjectRequested)
+                            nodes = nodesConnected.flatMap { node -> listOf(nodes.first { it.id == node  })},
+                            type = lib(typeOfProjectRequested),
+                            classes = getClasses()
                         )
                     )
                 }
@@ -69,11 +74,18 @@ class ProjectGraphGenerator(
             ProjectGraph(
                 id = "module_${oldLayer}_$generalCounter",
                 layer = oldLayer,
-                nodes = nodes.filter { it.layer == oldLayer - 1 }.map { it.id },
-                type = mainEntryPoint(typeOfProjectRequested)
+                nodes = nodes.filter { it.layer == oldLayer - 1 }.map { it.id }.flatMap { node -> listOf(nodes.first { it.id == node  })},
+                type = mainEntryPoint(typeOfProjectRequested),
+                classes = getClasses()
             )
         )
         return nodes
+    }
+
+    private fun getClasses() = if (classesPerModule.type == ClassesPerModuleType.FIXED) {
+        classesPerModule.classes
+    } else {
+        Random.nextInt(2, classesPerModule.classes)
     }
 
     private fun generateRandomRelations(numberModules: Int, numberModulesUpperLayer: Int): List<Int> {

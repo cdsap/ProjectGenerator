@@ -19,9 +19,9 @@ class LayerDistribution(private val numberOfModules: Int, private val numberOfLa
             Shape.MIDDLE_BOTTLENECK -> {
                 listOf(
                     (numberOfModules * 0.35).toInt(),
-                    (numberOfModules * 0.20).toInt(),
-                    (numberOfModules * 0.02).toInt(),
                     (numberOfModules * 0.15).toInt(),
+                    (numberOfModules * 0.02).toInt(),
+                    (numberOfModules * 0.20).toInt(),
                     (numberOfModules * 0.30).toInt()
                 )
             }
@@ -37,16 +37,14 @@ class LayerDistribution(private val numberOfModules: Int, private val numberOfLa
                 )
             }
 
-
             Shape.TRIANGLE -> {
-
                 listOf(
-                    (numberOfModules * 0.40).toInt(),
-                    (numberOfModules * 0.30).toInt(),
-                    (numberOfModules * 0.15).toInt(),
+                    (numberOfModules * 0.05).toInt(),
                     (numberOfModules * 0.10).toInt(),
-                    (numberOfModules * 0.05).toInt()
-                )
+                    (numberOfModules * 0.15).toInt(),
+                    (numberOfModules * 0.30).toInt(),
+                    (numberOfModules * 0.40).toInt(),
+                    )
             }
 
             Shape.FLAT -> {

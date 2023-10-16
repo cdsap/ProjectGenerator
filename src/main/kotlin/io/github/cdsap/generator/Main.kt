@@ -23,9 +23,10 @@ class ProjectReportCli : CliktCommand() {
     private val language: String by option().choice("kts", "groovy", "both").required()
     private val modules by option().int().required().check("max number of projects 4000") { it <= 4000 }
     private val type by option().choice("android", "jvm").required()
-    private val classesPerModule by option().int().default(5)
+    private val classes by option().int().default(5)
     private val agpVersion by option().default("8.1.1")
     private val kgpVersion by option().default("1.9.10")
+    private val classesPerModule: String by option().choice("fixed", "random").default("fixed")
 
     override fun run() {
         ProjectGenerator(
@@ -33,7 +34,7 @@ class ProjectReportCli : CliktCommand() {
             Shape.valueOf(shape.uppercase()),
             Language.valueOf(language.uppercase()),
             TypeProjectRequested.valueOf(type.uppercase()),
-            classesPerModule,
+            ClassesPerModule(ClassesPerModuleType.valueOf(classesPerModule.uppercase()),classes),
             Versions(agp = agpVersion, kgp = kgpVersion)
         ).write()
     }
@@ -44,7 +45,7 @@ class ProjectGenerator(
     private val shape: Shape,
     private val language: Language,
     private val typeOfProjectRequested: TypeProjectRequested,
-    private val classesPerModule: Int,
+    private val classesPerModule: ClassesPerModule,
     private val versions: Versions
 ) {
 
@@ -55,9 +56,9 @@ class ProjectGenerator(
         val distributions = LayerDistribution(numberOfModules, numberOfLayer).get(shape)
         println("Generating Project Dependency Graph")
         val nodes = if (shape == Shape.FLAT) {
-            ProjectGraphGenerator(1, distributions, typeOfProjectRequested).generate()
+            ProjectGraphGenerator(1, distributions, typeOfProjectRequested,classesPerModule).generate()
         } else {
-            ProjectGraphGenerator(numberOfLayer, distributions, typeOfProjectRequested).generate()
+            ProjectGraphGenerator(numberOfLayer, distributions, typeOfProjectRequested,classesPerModule).generate()
         }
 
 
