@@ -27,6 +27,7 @@ class ProjectReportCli : CliktCommand() {
     private val agpVersion by option().default("8.1.1")
     private val kgpVersion by option().default("1.9.10")
     private val classesPerModule: String by option().choice("fixed", "random").default("fixed")
+    private val typeOfStringResources: String by option().choice("large", "small").default("large")
 
     override fun run() {
         ProjectGenerator(
@@ -35,7 +36,8 @@ class ProjectReportCli : CliktCommand() {
             Language.valueOf(language.uppercase()),
             TypeProjectRequested.valueOf(type.uppercase()),
             ClassesPerModule(ClassesPerModuleType.valueOf(classesPerModule.uppercase()), classes),
-            Versions(agp = agpVersion, kgp = kgpVersion)
+            Versions(agp = agpVersion, kgp = kgpVersion),
+            typeOfStringResources
         ).write()
     }
 }
@@ -46,7 +48,8 @@ class ProjectGenerator(
     private val language: Language,
     private val typeOfProjectRequested: TypeProjectRequested,
     private val classesPerModule: ClassesPerModule,
-    private val versions: Versions
+    private val versions: Versions,
+    private val typeOfStringResources: String
 ) {
 
     fun write() {
@@ -65,7 +68,7 @@ class ProjectGenerator(
 
         val projectLanguageAttributes =
             getProjectLanguageAttributes(language, "projects_generated/${shape.name.lowercase()}_$numberOfModules")
-        ProjectWriter(nodes, projectLanguageAttributes, classesPerModule, versions, typeOfProjectRequested).write()
+        ProjectWriter(nodes, projectLanguageAttributes, classesPerModule, versions, typeOfProjectRequested, typeOfStringResources).write()
         GraphWriter(nodes, "projects_generated/${shape.name.lowercase()}_$numberOfModules").write()
         println("Project created in projects_generated/${shape.name.lowercase()}_$numberOfModules")
     }

@@ -11,13 +11,14 @@ class ProjectWriter(
     private val languages: List<LanguageAttributes>,
     private val numberOfClassPerModule: ClassesPerModule,
     private val versions: Versions,
-    private val typeOfProjectRequested: TypeProjectRequested
+    private val typeOfProjectRequested: TypeProjectRequested,
+    private val typeOfStringResources: String
 ) {
     fun write() {
         println("Creating Convention Plugin files")
         ConventionPluginWriter(languages, versions, typeOfProjectRequested).write()
         println("Creating Modules files")
-        ModulesWriter(nodes, languages, numberOfClassPerModule).write()
+        ModulesWriter(nodes, languages, numberOfClassPerModule, typeOfStringResources).write()
 
         println("Creating Project files")
         createGradleProperties(languages)

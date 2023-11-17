@@ -15,6 +15,10 @@ class CompositeBuildPlugin1 {
                         with(pluginManager) {
                             apply("org.jetbrains.kotlin.jvm")
                         }
+                        dependencies {
+                            add("testImplementation","junit:junit:4.13.2")
+                            add("testImplementation","org.junit.vintage:junit-vintage-engine:5.10.1")
+                        }
                     }
 
                     target.tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
@@ -22,6 +26,7 @@ class CompositeBuildPlugin1 {
                             jvmTarget = JavaVersion.VERSION_17.toString()
                         }
                     }
+
                 }
             }
 

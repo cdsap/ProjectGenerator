@@ -34,7 +34,8 @@ class ProjectWriterTest {
             languages,
             ClassesPerModule(ClassesPerModuleType.FIXED, numberOfClassPerModule),
             versions,
-            typeOfProjectRequested
+            typeOfProjectRequested,
+            typeOfStringResources
         )
 
         projectWriter.write()
