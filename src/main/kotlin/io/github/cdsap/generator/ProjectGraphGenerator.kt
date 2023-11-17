@@ -27,7 +27,7 @@ class ProjectGraphGenerator(
                             layer = i,
                             nodes = emptyList(),
                             type = lib(typeOfProjectRequested),
-                            classes  = getClasses()
+                            classes = getClasses()
                         )
                     )
                 }
@@ -39,17 +39,7 @@ class ProjectGraphGenerator(
                     val nodesConnected = mutableListOf<String>()
                     val nodesAlreadyUsed = mutableListOf<String>()
                     for (y in 0 until elements) {
-                        var node = nodesLayer.random().id
-                        if (nodesAlreadyUsed.isEmpty()) {
-                            nodesAlreadyUsed.add(node)
-                        } else {
-                            while (nodesAlreadyUsed.contains(node) && distribution[oldLayer] != 1) {
-                                node = nodesLayer.random().id
-                            }
-                            if (!nodesAlreadyUsed.contains(node)) {
-                                nodesAlreadyUsed.add(node)
-                            }
-                        }
+                        var node = assignNode(nodesLayer, nodesAlreadyUsed, oldLayer)
                         nodesConnected.add(node)
                     }
                     generalCounter++
@@ -57,7 +47,7 @@ class ProjectGraphGenerator(
                         ProjectGraph(
                             id = "module_${i}_$generalCounter",
                             layer = i,
-                            nodes = nodesConnected.flatMap { node -> listOf(nodes.first { it.id == node  })},
+                            nodes = nodesConnected.flatMap { node -> listOf(nodes.first { it.id == node }) },
                             type = lib(typeOfProjectRequested),
                             classes = getClasses()
                         )
@@ -74,12 +64,32 @@ class ProjectGraphGenerator(
             ProjectGraph(
                 id = "module_${oldLayer}_$generalCounter",
                 layer = oldLayer,
-                nodes = nodes.filter { it.layer == oldLayer - 1 }.map { it.id }.flatMap { node -> listOf(nodes.first { it.id == node  })},
+                nodes = nodes.filter { it.layer == oldLayer - 1 }.map { it.id }
+                    .flatMap { node -> listOf(nodes.first { it.id == node }) },
                 type = mainEntryPoint(typeOfProjectRequested),
                 classes = getClasses()
             )
         )
         return nodes
+    }
+
+    private fun assignNode(
+        nodesLayer: List<ProjectGraph>,
+        nodesAlreadyUsed: MutableList<String>,
+        oldLayer: Int
+    ): String {
+        var node = nodesLayer.random().id
+        if (nodesAlreadyUsed.isEmpty()) {
+            nodesAlreadyUsed.add(node)
+        } else {
+            while (nodesAlreadyUsed.contains(node) && distribution[oldLayer] != 1) {
+                node = nodesLayer.random().id
+            }
+            if (!nodesAlreadyUsed.contains(node)) {
+                nodesAlreadyUsed.add(node)
+            }
+        }
+        return node
     }
 
     private fun getClasses() = if (classesPerModule.type == ClassesPerModuleType.FIXED) {
