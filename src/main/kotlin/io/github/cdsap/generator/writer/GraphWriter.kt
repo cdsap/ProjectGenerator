@@ -12,7 +12,7 @@ class GraphWriter(private val nodes: List<ProjectGraph>, val path: String) {
         nodes.forEach {
             val node = it.id
             it.nodes.forEach {
-                content += "$node -> $it;\n"
+                content += "$node -> ${it.id};\n"
 
             }
         }

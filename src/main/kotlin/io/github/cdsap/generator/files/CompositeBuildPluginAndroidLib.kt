@@ -61,6 +61,7 @@ class CompositeBuildPluginAndroidLib {
                         add("implementation","androidx.appcompat:appcompat:1.6.1")
                         add("implementation","com.google.android.material:material:1.8.0")
                         add("testImplementation","junit:junit:4.13.2")
+                        add("testImplementation","org.junit.vintage:junit-vintage-engine:5.10.1")
                         add("androidTestImplementation","androidx.test.ext:junit:1.1.5")
                         add("androidTestImplementation","androidx.test.espresso:espresso-core:3.5.1")
                     }

@@ -12,12 +12,14 @@ import kotlin.random.Random
 class ModulesWriter(
     private val nodes: List<ProjectGraph>,
     private val languages: List<LanguageAttributes>,
-    private val classPerModule: ClassesPerModule
+    private val classPerModule: ClassesPerModule,
+    private val typeOfStringResources: String
 ) {
 
     fun write() {
         nodes.forEach {
             createModuleFoldersAndSource(it, languages, classPerModule)
+            createTestSource(it, languages, classPerModule)
             createBuildGradleFile(it, languages)
         }
     }
@@ -38,7 +40,7 @@ class ModulesWriter(
                 val numberOfImports = nodes.size / 2
                 for (x in 0 until numberOfImports) {
                     val node = nodes.random()
-                    val classToPick = Random.nextInt(1,node.classes)
+                    val classToPick = Random.nextInt(1, node.classes)
                     referencesToAnotherModule += "        val dependencyClass$x = com.performance.${node.id.titleCase()}_$classToPick().${node.id.lowercase()}_$classToPick()\n"
                     referencesToAnotherModule += "        println(dependencyClass$x)\n"
                 }
@@ -71,6 +73,53 @@ class ${projectGraph.id.titleCase()}_$i {
         }
         if (projectGraph.type == TypeProject.ANDROID_APP) {
             createAndroidAppResources(projectGraph, languages)
+        }
+    }
+
+    fun createTestSource(
+        projectGraph: ProjectGraph,
+        languages: List<LanguageAttributes>,
+        classPerModule: ClassesPerModule
+    ) {
+
+        val nodes = projectGraph.nodes
+
+
+        for (i in 1..projectGraph.classes) {
+            var referencesToAnotherModule = "\n"
+
+            if (nodes.size > 1) {
+                val numberOfImports = nodes.size / 2
+                for (x in 0 until numberOfImports) {
+                    val node = nodes.random()
+                    val classToPick = Random.nextInt(1, node.classes)
+                    referencesToAnotherModule += "        val dependencyClass$x = com.performance.${node.id.titleCase()}_$classToPick().${node.id.lowercase()}_$classToPick()\n"
+                    referencesToAnotherModule += "        println(dependencyClass$x)\n"
+                }
+            }
+
+
+            val classContent = """package com.performance
+import org.junit.Test
+class ${projectGraph.id.titleCase()}_${i}_Test {
+    @Test
+    fun ${projectGraph.id.lowercase()}_$i() {
+        val value = "${projectGraph.id.titleCase()}_$i"
+        println("${projectGraph.id}")
+        $referencesToAnotherModule
+        assert(true)
+    }
+}
+"""
+
+            languages.forEach {
+                val directory =
+                    File("${it.projectName}/layer_${projectGraph.layer}/${projectGraph.id}/src/test/kotlin/com/performance/")
+                directory.mkdirs()
+                File("${directory.path}/${projectGraph.id.titleCase()}_$i.kt").createNewFile()
+                File("${directory.path}/${projectGraph.id.titleCase()}_$i.kt").writeText(classContent)
+            }
+
         }
     }
 
@@ -123,7 +172,8 @@ class ${projectGraph.id.titleCase()}_$i {
 
     private fun createAndroidLibResources(projectGraph: ProjectGraph, languages: List<LanguageAttributes>) {
         val manifest = AndroidManifestLib().get()
-        val valuesString = ValuesStrings().getLib(projectGraph.id)
+        val valuesString = if (typeOfStringResources == "small") ValuesStringsSmall().getLib(projectGraph.id)
+        else ValuesStrings().getLib(projectGraph.id)
         val valuesColors = ValuesColors().getLib(projectGraph.id)
         val drawableIcLauncherBackground = DrawableIcLauncherBackground().get()
         val drawableIcLauncherForeground = DrawableIcLauncherForeground().get()
