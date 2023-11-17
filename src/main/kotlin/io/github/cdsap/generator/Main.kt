@@ -34,7 +34,7 @@ class ProjectReportCli : CliktCommand() {
             Shape.valueOf(shape.uppercase()),
             Language.valueOf(language.uppercase()),
             TypeProjectRequested.valueOf(type.uppercase()),
-            ClassesPerModule(ClassesPerModuleType.valueOf(classesPerModule.uppercase()),classes),
+            ClassesPerModule(ClassesPerModuleType.valueOf(classesPerModule.uppercase()), classes),
             Versions(agp = agpVersion, kgp = kgpVersion)
         ).write()
     }
@@ -55,11 +55,12 @@ class ProjectGenerator(
         println("Calculating layer Distribution")
         val distributions = LayerDistribution(numberOfModules, numberOfLayer).get(shape)
         println("Generating Project Dependency Graph")
-        val nodes = if (shape == Shape.FLAT) {
-            ProjectGraphGenerator(1, distributions, typeOfProjectRequested,classesPerModule).generate()
-        } else {
-            ProjectGraphGenerator(numberOfLayer, distributions, typeOfProjectRequested,classesPerModule).generate()
-        }
+        val nodes = ProjectGraphGenerator(
+            if (shape == Shape.FLAT) 1 else numberOfLayer,
+            distributions,
+            typeOfProjectRequested,
+            classesPerModule
+        ).generate()
 
 
         val projectLanguageAttributes =
