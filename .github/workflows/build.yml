@@ -38,4 +38,11 @@ jobs:
           dot -Tpng projects_generated/inverse_triangle_100/graph.dot > output.png
           echo "<table><img src=\"output.png\"/></table>" >> $GITHUB_STEP_SUMMARY
 
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+            name: output.png
+            path: |
+                output.png
+
 
