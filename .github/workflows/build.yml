@@ -34,23 +34,26 @@ jobs:
         run: |
           ./gradlew test
           ./gradlew fatBinary
-          ./projectGenerator --shape inverse_triangle --language kts --modules 100 --type android --classes 10 --classes-per-module random --number-of-layers 10
-          git config --global user.name 'Inaki '
-          git config --global user.email 'inaki.seri@gmail.com'
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/cdsap/ProjectGenerator
-          dot -Tpng projects_generated/inverse_triangle_100/graph.dot > output.png
-          echo "<table><img src=\"https://github.com/cdsap/ProjectGenerator/blob/images/output.png\"/></table>" >> $GITHUB_STEP_SUMMARY
-          git checkout -b images
-          git add output.png
-          git commit -m "Add generated image"
-          git push origin images
-
+          ./projectGenerator --shape inverse_triangle --language kts --modules 100 --type android --classes 10 --classes-per-module random --number-of-layers 11
+          dot -Tpng projects_generated/inverse_triangle_150/graph.dot > inverse_triangle.png
+          ./projectGenerator --shape triangle --language kts --modules 150 --type android --classes 10 --classes-per-module random --number-of-layers 11
+          dot -Tpng projects_generated/triangle_150/graph.dot > triangle.png
+          ./projectGenerator --shape rhombus --language kts --modules 150 --type android --classes 10 --classes-per-module random --number-of-layers 11
+          dot -Tpng projects_generated/rhombus_150/graph.dot > rhombus.png
+          ./projectGenerator --shape middle_bottleneck --language kts --modules 150 --type android --classes 10 --classes-per-module random --number-of-layers 11
+          dot -Tpng projects_generated/middle_bottleneck_150/graph.dot > middle_bottleneck.png
+          ./projectGenerator --shape rectangle --language kts --modules 150 --type android --classes 10 --classes-per-module random --number-of-layers 11
+          dot -Tpng projects_generated/rectangle_150/graph.dot > rectangle.png
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
-            name: output.png
+            name: graphs
             path: |
-                output.png
+                inverse_triangle.png
+                triangle.png
+                rhombus.png
+                middle_bottleneck.png
+                rectangle.png
 
 
