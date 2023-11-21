@@ -17,7 +17,6 @@ class ProjectGraphGenerator(
         var generalCounter = 0
         var oldLayer = 0
         val nodes = mutableListOf<ProjectGraph>()
-        println(distribution)
         for (i in 0 until numberOfLayers) {
             if (i == 0) {
                 for (x in 0 until distribution[0]) {
@@ -33,9 +32,6 @@ class ProjectGraphGenerator(
                     )
                 }
             } else {
-                println(numberOfLayers)
-                println(distribution[i])
-                println(distribution[oldLayer])
                 val random = generateRandomRelations(distribution[i], distribution[oldLayer])
 
                 for (x in 0 until distribution[i]) {

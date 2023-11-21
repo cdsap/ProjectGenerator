@@ -35,7 +35,7 @@ class ProjectReportCli : CliktCommand() {
             TypeProjectRequested.valueOf(type.uppercase()),
             ClassesPerModule(ClassesPerModuleType.valueOf(classesPerModule.uppercase()), classes),
             Versions(agp = agpVersion, kgp = kgpVersion),
-            TypeOfStringResources.valueOf(typeOfStringResources),
+            TypeOfStringResources.valueOf(typeOfStringResources.uppercase()),
             numberOfLayers
         ).write()
     }

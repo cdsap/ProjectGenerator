@@ -6,7 +6,6 @@ class LayerDistribution(private val numberOfModules: Int, private val numberOfLa
 
     fun get(shape: Shape): List<Int> {
         val distributions = Distributions()
-        println(numberOfLayers)
         return when (shape) {
             Shape.RHOMBUS -> {
                 distributions.distributeModulesForRhombus(numberOfModules,numberOfLayers)
