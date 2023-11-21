@@ -28,9 +28,11 @@ jobs:
           java-version:  ${{ matrix.java }}
 
       - name: Execute test binary and cli
+        uses: ts-graphviz/setup-graphviz@v1
         run: |
           ./gradlew test
           ./gradlew fatBinary
           ./projectGenerator --shape inverse_triangle --language kts --modules 100 --type android --classes 10 --classes-per-module random --number-of-layers 10
+          dot -Tpng projects_generated/inverse_triangle/graph.dot > output.png
 
 
