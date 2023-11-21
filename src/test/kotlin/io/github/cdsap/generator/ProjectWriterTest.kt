@@ -35,7 +35,7 @@ class ProjectWriterTest {
             ClassesPerModule(ClassesPerModuleType.FIXED, numberOfClassPerModule),
             versions,
             typeOfProjectRequested,
-            "small"
+            TypeOfStringResources.SMALL
         )
 
         projectWriter.write()
