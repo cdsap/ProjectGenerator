@@ -7,6 +7,7 @@ class CompositeBuildPlugin1 {
             import org.gradle.api.Plugin
             import org.gradle.api.JavaVersion
             import org.gradle.api.Project
+            import org.gradle.kotlin.dsl.dependencies
             import org.gradle.kotlin.dsl.withType
 
             class Plugin1 : Plugin<Project> {

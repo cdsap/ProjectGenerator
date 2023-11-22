@@ -2,49 +2,28 @@ package io.github.cdsap.generator
 
 import io.github.cdsap.generator.model.Shape
 
-class LayerDistribution(private val numberOfModules: Int, private val numberOfLayers: Int = 5) {
+class LayerDistribution(private val numberOfModules: Int, private val numberOfLayers: Int) {
 
     fun get(shape: Shape): List<Int> {
+        val distributions = Distributions()
         return when (shape) {
             Shape.RHOMBUS -> {
-                listOf(
-                    (numberOfModules * 0.15).toInt(),
-                    (numberOfModules * 0.20).toInt(),
-                    (numberOfModules * 0.30).toInt(),
-                    (numberOfModules * 0.20).toInt(),
-                    (numberOfModules * 0.15).toInt()
-                )
+                distributions.distributeModulesForRhombus(numberOfModules,numberOfLayers)
             }
-
             Shape.MIDDLE_BOTTLENECK -> {
-                listOf(
-                    (numberOfModules * 0.35).toInt(),
-                    (numberOfModules * 0.15).toInt(),
-                    (numberOfModules * 0.02).toInt(),
-                    (numberOfModules * 0.20).toInt(),
-                    (numberOfModules * 0.30).toInt()
-                )
+                distributions.distributeModulesForRhombusInverse(numberOfModules,numberOfLayers)
             }
 
             Shape.RECTANGLE -> {
-                val distributionValue = (numberOfModules.toDouble() / (numberOfLayers))
-                listOf(
-                    (distributionValue).toInt(),
-                    (distributionValue).toInt(),
-                    (distributionValue).toInt(),
-                    (distributionValue).toInt(),
-                    (distributionValue).toInt(),
-                )
+                distributions.distributeModulesEqually(numberOfModules,numberOfLayers)
             }
 
             Shape.TRIANGLE -> {
-                listOf(
-                    (numberOfModules * 0.05).toInt(),
-                    (numberOfModules * 0.10).toInt(),
-                    (numberOfModules * 0.15).toInt(),
-                    (numberOfModules * 0.30).toInt(),
-                    (numberOfModules * 0.40).toInt(),
-                    )
+                distributions.distributeModulesHarmonically(numberOfModules,numberOfLayers)
+            }
+
+            Shape.INVERSE_TRIANGLE -> {
+                distributions.distributeModulesHarmonically(numberOfModules,numberOfLayers).reversed()
             }
 
             Shape.FLAT -> {
@@ -54,4 +33,3 @@ class LayerDistribution(private val numberOfModules: Int, private val numberOfLa
         }
     }
 }
-

@@ -12,7 +12,7 @@ class ProjectWriter(
     private val numberOfClassPerModule: ClassesPerModule,
     private val versions: Versions,
     private val typeOfProjectRequested: TypeProjectRequested,
-    private val typeOfStringResources: String
+    private val typeOfStringResources: TypeOfStringResources
 ) {
     fun write() {
         println("Creating Convention Plugin files")

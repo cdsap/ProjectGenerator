@@ -13,7 +13,7 @@ class ModulesWriter(
     private val nodes: List<ProjectGraph>,
     private val languages: List<LanguageAttributes>,
     private val classPerModule: ClassesPerModule,
-    private val typeOfStringResources: String
+    private val typeOfStringResources: TypeOfStringResources
 ) {
 
     fun write() {
@@ -172,8 +172,9 @@ class ${projectGraph.id.titleCase()}_${i}_Test {
 
     private fun createAndroidLibResources(projectGraph: ProjectGraph, languages: List<LanguageAttributes>) {
         val manifest = AndroidManifestLib().get()
-        val valuesString = if (typeOfStringResources == "small") ValuesStringsSmall().getLib(projectGraph.id)
-        else ValuesStrings().getLib(projectGraph.id)
+        val valuesString =
+            if (typeOfStringResources == TypeOfStringResources.SMALL) ValuesStringsSmall().getLib(projectGraph.id)
+            else ValuesStrings().getLib(projectGraph.id)
         val valuesColors = ValuesColors().getLib(projectGraph.id)
         val drawableIcLauncherBackground = DrawableIcLauncherBackground().get()
         val drawableIcLauncherForeground = DrawableIcLauncherForeground().get()

@@ -33,6 +33,7 @@ class ProjectGraphGenerator(
                 }
             } else {
                 val random = generateRandomRelations(distribution[i], distribution[oldLayer])
+
                 for (x in 0 until distribution[i]) {
                     val nodesLayer = nodes.filter { it.layer == oldLayer }
                     val elements = random[x]
@@ -110,7 +111,6 @@ class ProjectGraphGenerator(
                 if (numberModulesUpperLayer == 1) {
                     listOfModules.add(1)
                 } else {
-
                     var next = Random.nextInt(1, numberModulesUpperLayer)
                     listOfModules.add(next)
                 }
