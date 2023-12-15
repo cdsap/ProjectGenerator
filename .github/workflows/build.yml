@@ -31,7 +31,7 @@ jobs:
 
           ./gradlew :cli:fatBinary
 
-          mv cli/projectGenerator ../projectGenerator
+          mv cli/projectGenerator projectGenerator
 
           ./projectGenerator --shape inverse_triangle --language kts --modules
           150 --type android --classes 10 --classes-per-module random

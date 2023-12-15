@@ -5,11 +5,16 @@ CLI generating modularized Gradle projects based on different shapes
   <img src="resources/project2.png" height="200" />
 </p>
 
+
 # Usage
 ## CLI
 ```bash
 ./projectGenerator --shape triangle --layers 5 --modules 100
 ```
+This command generates a project with 100 modules using Kotlin DSL.
+The project is divided in 5 layers + 1 layer acting as a main entry point of the project.
+The project generated guarantee relationships for project dependencies in the contiguous layers.
+
 ### Install CLI
 ```bash
 curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.1.2/projectGenerator --output projectGenerator
