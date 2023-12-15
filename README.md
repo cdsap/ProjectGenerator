@@ -122,7 +122,7 @@ ProjectGenerator(
 )
 
 // cli
-./projectGenerator --shape triangle --layers 5 --modules 100 --classes-module-type random --classes 150
+./projectGenerator --shape triangle --layers 5 --modules 100 --classes-module-type random --classes-module 150
 ```
 ### AGP/KGP
 #### `AGP version`

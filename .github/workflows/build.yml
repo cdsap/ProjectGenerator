@@ -34,7 +34,7 @@ jobs:
           mv cli/projectGenerator projectGenerator
 
           ./projectGenerator --shape inverse_triangle --language kts --modules
-          150 --type android --classes 10 --classes-per-module random
+          150 --type android --classes-module 10 --classes-per-module random
           --number-of-layers 11
 
           dot -Tpng projects_generated/inverse_triangle_150/graph.dot >
