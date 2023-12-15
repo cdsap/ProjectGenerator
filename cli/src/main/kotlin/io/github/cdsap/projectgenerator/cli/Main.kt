@@ -25,7 +25,7 @@ class ProjectReportCli : CliktCommand() {
     private val agpVersion by option().default("8.1.4")
     private val kgpVersion by option().default("1.9.10")
     private val classesModuleType: String by option().choice("fixed", "random").default("fixed")
-    private val typeOfStringResources: String by option().choice("large", "small").default("small")
+    private val typeOfStringResources: String by option().choice("large", "normal").default("normal")
     private val layers by option().int().default(5)
     private val generateUnitTest by option().flag(default = false)
     private val gradle: String by option().choice("gradle_8_2", "gradle_8_5").default("gradle_8_5")
