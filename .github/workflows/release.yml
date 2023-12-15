@@ -1,29 +1,27 @@
 name: Release
-
-on:
+'on':
   push:
     tags:
-      - 'v*'
+      - v*
 concurrency:
-  group: build-${{ github.ref }}
+  group: 'build-${{ github.ref }}'
   cancel-in-progress: true
 jobs:
   build:
     strategy:
       matrix:
-        java: [17]
-
+        java:
+          - 17
     name: Upload Release Asset
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Set up JDK ${{ matrix.java }}
+      - name: 'Set up JDK ${{ matrix.java }}'
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
-          java-version:  ${{ matrix.java }}
-
+          distribution: temurin
+          java-version: '${{ matrix.java }}'
       - name: Build project
         run: |
           ./gradlew cli:fatBinary
@@ -31,19 +29,19 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: '${{ github.ref }}'
+          release_name: 'Release ${{ github.ref }}'
           draft: false
           prerelease: false
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: '${{ steps.create_release.outputs.upload_url }}'
           asset_path: ./cli/projectGenerator
           asset_name: projectGenerator
           asset_content_type: application/octet-stream
