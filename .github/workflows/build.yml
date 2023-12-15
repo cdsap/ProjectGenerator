@@ -35,37 +35,37 @@ jobs:
 
           ./projectGenerator --shape inverse_triangle --language kts --modules
           150 --type android --classes-module 10 --classes-module-type random
-          --number-of-layers 11
+          --layers 11
 
           dot -Tpng projects_generated/inverse_triangle_150/graph.dot >
           inverse_triangle.png
 
           ./projectGenerator --shape triangle --language kts --modules 150
           --type android --classes-module 10 --classes-module-type random
-          --number-of-layers 11
+          --layers 11
 
           dot -Tpng projects_generated/triangle_150/graph.dot > triangle.png
 
           ./projectGenerator --shape rhombus --language kts --modules 150 --type
-          android --classes-module 10 --classes-module-type random --number-of-layers 11
+          android --classes-module 10 --classes-module-type random --layers 11
 
           dot -Tpng projects_generated/rhombus_150/graph.dot > rhombus.png
 
           ./projectGenerator --shape middle_bottleneck --language kts --modules
           150 --type android --classes-module 10 --classes-module-type random
-          --number-of-layers 11
+          --layers 11
 
           dot -Tpng projects_generated/middle_bottleneck_150/graph.dot >
           middle_bottleneck.png
 
           ./projectGenerator --shape rectangle --language kts --modules 150
           --type android --classes-module 10 --classes-module-type random
-          --number-of-layers 11
+          --layers 11
 
           dot -Tpng projects_generated/rectangle_150/graph.dot > rectangle.png
 
           ./projectGenerator --shape flat --language kts --modules 150 --type
-          android --classes-module 10 --classes-module-type random --number-of-layers 11
+          android --classes-module 10 --classes-module-type random --layers 11
 
           dot -Tpng projects_generated/flat_150/graph.dot > flat.png
       - name: Archive production artifacts
