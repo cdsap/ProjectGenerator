@@ -22,24 +22,21 @@ class CompositeBuildPluginAndroidLib {
                             apply("kotlin-kapt")
                         }
 
-
+                     val name = target.name.replace(":","_")
                      extensions.configure<com.android.build.gradle.LibraryExtension>  {
-                        namespace = "com.example.mylibrary${Random.nextInt(1,130292)}"
+                        namespace = "com.example.mylibrary.${'$'}name"
                         compileSdk = 33
 
                         defaultConfig {
                             minSdk = 24
-
                             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                            consumerProguardFiles("consumer-rules.pro")
                         }
 
                         buildTypes {
                             release {
-                                isMinifyEnabled = false
+                                isMinifyEnabled = true
                                 proguardFiles(
-                                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                                    "proguard-rules.pro"
+                                    getDefaultProguardFile("proguard-android-optimize.txt")
                                 )
                             }
                         }

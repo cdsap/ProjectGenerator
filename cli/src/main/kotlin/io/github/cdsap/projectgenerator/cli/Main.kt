@@ -20,7 +20,7 @@ class ProjectReportCli : CliktCommand() {
     private val language: String by option().choice("kts", "groovy", "both").default("kts")
     private val modules by option().int().required()
         .check("max number of projects 4000") { it in (layers + 1)..4000 }
-    private val type by option().choice("android", "jvm").default("jvm")
+    private val type by option().choice("android", "jvm").default("android")
     private val classesModule by option().int().default(5)
     private val agpVersion by option().default("8.1.4")
     private val kgpVersion by option().default("1.9.10")

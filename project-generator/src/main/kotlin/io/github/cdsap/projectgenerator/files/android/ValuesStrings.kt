@@ -358,7 +358,7 @@ class ValuesStrings {
                 <!-- Long text for a detail explanation indicating what will happen if cookie banner handling is off for a site, this is shown as part of the cookie banner panel in the toolbar. The first parameter is the application name -->
                 <string name="reduce_cookie_banner_details_panel_description_off_for_site">%1a will clear this site’s cookies and refresh the page. Clearing all cookies may sign you out or empty shopping carts.</string>
                 <!-- Long text for a detail explanation indicating what will happen if cookie banner handling is on for a site, this is shown as part of the cookie banner panel in the toolbar. The first and second parameter are the application name -->
-                <string name="reduce_cookie_banner_details_panel_description_on_for_site" >%1a can try to automatically reject cookie requests. If a reject option isn’t available, %2a may accept all cookies to dismiss the banner.</string>
+                <string name="reduce_cookie_banner_details_panel_description_on_for_site" >reduce_cookie_banner_details_panel_description_on_for_site.</string>
                 <!-- Long text for a detail explanation indicating what will happen if cookie banner handling is on for a site, this is shown as part of the cookie banner panel in the toolbar. The first parameter are the application name -->
                 <string name="reduce_cookie_banner_details_panel_description_on_for_site_1"  >%1a can try to automatically reject cookie requests.</string>
                 <!-- Long text for a detail explanation indicating what will happen if cookie banner handling is on for a site, this is shown as part of the cookie banner panel in the toolbar. The first parameter is the application name -->
@@ -584,7 +584,7 @@ class ValuesStrings {
                 <!-- Text for displaying the default device name.
                     The first parameter is the application name, the second is the device manufacturer name
                     and the third is the device model. -->
-                <string name="default_device_name_2">%1a on %2a %3a</string>
+                <string name="default_device_name_2">Default name</string>
                 <!-- Preference for syncing credit cards -->
                 <string name="preferences_sync_credit_cards">Credit cards</string>
                 <!-- Preference for syncing addresses -->
@@ -1191,7 +1191,7 @@ class ValuesStrings {
                 <string name="snackbar_top_site_removed">Site removed</string>
                 <!-- QR code scanner prompt which appears after scanning a code, but before navigating to it
                     First parameter is the name of the app, second parameter is the URL or text scanned-->
-                <string name="qr_scanner_confirmation_dialog_message">Allow %1a to open %2a</string>
+                <string name="qr_scanner_confirmation_dialog_message">qr_scanner_confirmation_dialog_message</string>
                 <!-- QR code scanner prompt dialog positive option to allow navigation to scanned link -->
                 <string name="qr_scanner_dialog_positive">ALLOW</string>
                 <!-- QR code scanner prompt dialog positive option to deny navigation to scanned link -->
