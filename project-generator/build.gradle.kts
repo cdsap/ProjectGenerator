@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.cdsap"
-version = "0.1.5"
+version = "0.1.6"
 
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
