@@ -17,7 +17,7 @@ The project generated guarantee relationships for project dependencies in the co
 
 ### Install CLI
 ```bash
-curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.1.5/projectGenerator --output projectGenerator
+curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.1.6/projectGenerator --output projectGenerator
 chmod 0757 projectGenerator
 ./projectGenerator --shape triangle --layers 5 --modules 100
 ```
@@ -33,7 +33,7 @@ ProjectGenerator(
 ```
 ### Dependency
 ```
-  implementation("io.github.cdsap:projectgenerator:0.1.5")
+  implementation("io.github.cdsap:projectgenerator:0.1.6")
 ```
 
 # Options
