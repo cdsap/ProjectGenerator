@@ -10,7 +10,7 @@ version = "1.0-SNAPSHOT"
 dependencies {
     implementation("com.github.ajalt.clikt:clikt:3.5.0")
     implementation(project(":project-generator"))
-    testImplementation(platform("org.junit:junit-bom:5.9.1"))
+    testImplementation(platform("org.junit:junit-bom:5.10.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
