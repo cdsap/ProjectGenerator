@@ -128,7 +128,7 @@ ProjectGenerator(
 #### `AGP version`
 
 
-Android Gradle Plugin version (default 8.1.4)
+Android Gradle Plugin version (default 8.5.1)
 ##### Example
 ```kotlin
 // dependency
@@ -144,7 +144,7 @@ ProjectGenerator(
 ```
 
 #### `KGP version`
-Kotlin Gradle Plugin version (default 1.9.20)
+Kotlin Gradle Plugin version (default 1.9.24)
 
 ##### Example
 ```kotlin
@@ -200,10 +200,9 @@ ProjectGenerator(
 ```
 ## Gradle
 Gradle used, versions supported:
-* Gradle 7.6.2
-* Gradle 8.1.1
 * Gradle 8.2
-* Gradle 8.5. **default**
+* Gradle 8.5
+* Gradle 8.9. **default**
 
 ##### Example
 ```kotlin
