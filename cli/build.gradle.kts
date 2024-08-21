@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.0.0"
+    kotlin("jvm") version "2.0.10"
     application
     id("io.github.cdsap.fatbinary") version "1.0"
 }
