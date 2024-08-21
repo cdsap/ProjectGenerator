@@ -8,7 +8,7 @@ group = "io.github.cdsap"
 version = "0.1.6"
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.3"))
+    testImplementation(platform("org.junit:junit-bom:5.11.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
