@@ -17,7 +17,7 @@ The project generated guarantee relationships for project dependencies in the co
 
 ### Install CLI
 ```bash
-curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.1.6/projectGenerator --output projectGenerator
+curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.1.7/projectGenerator --output projectGenerator
 chmod 0757 projectGenerator
 ./projectGenerator --shape triangle --layers 5 --modules 100
 ```
@@ -33,7 +33,7 @@ ProjectGenerator(
 ```
 ### Dependency
 ```
-  implementation("io.github.cdsap:projectgenerator:0.1.6")
+  implementation("io.github.cdsap:projectgenerator:0.1.7")
 ```
 
 # Options
@@ -128,7 +128,7 @@ ProjectGenerator(
 #### `AGP version`
 
 
-Android Gradle Plugin version (default 8.5.1)
+Android Gradle Plugin version (default 8.9.0)
 ##### Example
 ```kotlin
 // dependency
@@ -144,7 +144,7 @@ ProjectGenerator(
 ```
 
 #### `KGP version`
-Kotlin Gradle Plugin version (default 1.9.24)
+Kotlin Gradle Plugin version (default 2.1.20)
 
 ##### Example
 ```kotlin
@@ -202,7 +202,8 @@ ProjectGenerator(
 Gradle used, versions supported:
 * Gradle 8.2
 * Gradle 8.5
-* Gradle 8.9. **default**
+* Gradle 8.9
+* Gradle 8.13 **default**
 
 ##### Example
 ```kotlin
