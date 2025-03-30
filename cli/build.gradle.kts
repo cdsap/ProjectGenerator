@@ -8,7 +8,7 @@ group = "org.example"
 version = "1.0-SNAPSHOT"
 
 dependencies {
-    implementation("com.github.ajalt.clikt:clikt:4.4.0")
+    implementation("com.github.ajalt.clikt:clikt:5.0.3")
     implementation(project(":project-generator"))
     testImplementation(platform("org.junit:junit-bom:5.11.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
