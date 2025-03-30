@@ -36,7 +36,7 @@ class ProjectWriterTest {
             typeOfProjectRequested,
             TypeOfStringResources.NORMAL,
             false,
-            GradleWrapper(Gradle.GRADLE_8_5),
+            GradleWrapper(Gradle.GRADLE_8_13),
             true
         )
 

@@ -22,13 +22,13 @@ class ProjectReportCli : CliktCommand() {
         .check("max number of projects 4000") { it in (layers + 1)..4000 }
     private val type by option().choice("android", "jvm").default("android")
     private val classesModule by option().int().default(5)
-    private val agpVersion by option().default("8.5.0")
-    private val kgpVersion by option().default("1.9.24")
+    private val agpVersion by option().default("8.9.0")
+    private val kgpVersion by option().default("2.1.20")
     private val classesModuleType: String by option().choice("fixed", "random").default("fixed")
     private val typeOfStringResources: String by option().choice("large", "normal").default("normal")
     private val layers by option().int().default(5)
     private val generateUnitTest by option().flag(default = false)
-    private val gradle: String by option().choice("gradle_8_2", "gradle_8_5").default("gradle_8_9")
+    private val gradle: String by option().choice("gradle_8_2", "gradle_8_5","gradle_8_9","gradle_8_13").default("gradle_8_13")
 
     override fun run() = ProjectGenerator(
         modules,
