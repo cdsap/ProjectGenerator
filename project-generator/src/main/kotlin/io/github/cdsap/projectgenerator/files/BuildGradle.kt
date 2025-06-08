@@ -1,14 +1,33 @@
 package io.github.cdsap.projectgenerator.files
 
+import io.github.cdsap.projectgenerator.model.KotlinProcessor
+import io.github.cdsap.projectgenerator.model.Processor
 import io.github.cdsap.projectgenerator.model.Versions
 
 class BuildGradle {
 
-    fun get(versions: Versions, dependencyPlugins: Boolean) = """
+    fun getAndroid(versions: Versions, dependencyPlugins: Boolean) = """
         plugins {
-            id("org.jetbrains.kotlin.jvm") version("${versions.kgp}") apply false
-            id("com.android.application") version "${versions.agp}" apply false
-            id("com.android.library") version "${versions.agp}" apply false
+            id("org.jetbrains.kotlin.jvm") version("${versions.kotlin.kgp}") apply false
+            id("org.jetbrains.kotlin.plugin.compose") version("${versions.kotlin.kgp}") apply false
+            id("com.android.application") version "${versions.android.agp}" apply false
+            id("com.android.library") version "${versions.android.agp}" apply false
+            id("org.jetbrains.kotlin.android") version "${versions.kotlin.kgp}" apply false
+           ${ provideKotlinProcessor(versions)}
+            id("com.google.dagger.hilt.android") version "${versions.android.hilt}" apply false
+
+            ${dependencyPlugins(dependencyPlugins)}
+        }
+        """.trimIndent()
+
+    fun getAndroidSimple(versions: Versions, dependencyPlugins: Boolean) = """
+        plugins {
+            id("org.jetbrains.kotlin.jvm") version("${versions.kotlin.kgp}") apply false
+            id("com.android.application") version "${versions.android.agp}" apply false
+            id("com.android.library") version "${versions.android.agp}" apply false
+            id("org.jetbrains.kotlin.android") version "${versions.kotlin.kgp}" apply false
+            ${ provideKotlinProcessor(versions)}
+
             ${dependencyPlugins(dependencyPlugins)}
         }
         """.trimIndent()
@@ -23,9 +42,16 @@ class BuildGradle {
         } else ""
     }
 
-    fun getJvm(versions: Versions) = """
+    fun getJvm(versions: Versions, dependencyPlugins: Boolean) = """
         plugins {
-            id("org.jetbrains.kotlin.jvm") version("${versions.kgp}") apply false
+            kotlin("jvm") version("${versions.kotlin.kgp}") apply false
+            ${dependencyPlugins(dependencyPlugins)}
         }
         """.trimIndent()
+
+    fun provideKotlinProcessor(versions: Versions) = if (versions.kotlin.kotlinProcessor.processor == Processor.KAPT)
+        """"""
+    else
+        """id("com.google.devtools.ksp") version "${versions.kotlin.ksp}" apply false"""
+
 }

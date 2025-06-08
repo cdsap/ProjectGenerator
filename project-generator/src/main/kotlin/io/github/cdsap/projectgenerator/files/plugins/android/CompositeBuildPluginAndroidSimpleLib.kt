@@ -1,8 +1,6 @@
-package io.github.cdsap.projectgenerator.files
+package io.github.cdsap.projectgenerator.files.plugins.android
 
-import kotlin.random.Random
-
-class CompositeBuildPluginAndroidLib {
+class CompositeBuildPluginAndroidSimpleLib {
     fun get() = """
             package com.logic
 

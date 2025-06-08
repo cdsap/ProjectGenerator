@@ -8,46 +8,63 @@ class CompositeBuildBuildGradle {
     fun get(versions: Versions, requested: TypeProjectRequested): String {
         val classpath = if (requested == TypeProjectRequested.ANDROID) {
             """
-                implementation("com.android.tools.build:gradle:${versions.agp}")
-            """.trimIndent()
+                |implementation("com.android.tools.build:gradle:${versions.android.agp}")
+                |implementation("com.google.dagger:hilt-android-gradle-plugin:${versions.android.hilt}")
+            """.trimMargin()
         } else {
             ""
         }
-        return """
-            plugins {
-                `kotlin-dsl`
-            }
-
-            dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kgp}")
-                $classpath
-            }
-
-            gradlePlugin {
-                plugins {
-                    register("kotlinPlugin") {
-                        id = "awesome.kotlin.plugin"
-                        implementationClass = "com.logic.Plugin1"
-                    }
-                }
-            }
-            gradlePlugin {
-                plugins {
-                    register("androidLibPlugin") {
-                        id = "awesome.androidlib.plugin"
-                        implementationClass = "com.logic.CompositeBuildPluginAndroidLib"
-                    }
-                }
-            }
-            gradlePlugin {
-                plugins {
-                    register("androidAppPlugin") {
-                        id = "awesome.androidapp.plugin"
-                        implementationClass = "com.logic.CompositeBuildPluginAndroidApp"
-                    }
-                }
-            }
-
-        """.trimIndent()
+        return  if (requested == TypeProjectRequested.ANDROID) {
+            """
+            |plugins {
+            |    `kotlin-dsl`
+            |}
+            |
+            |dependencies {
+            |    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin.kgp}")
+            |    implementation("org.jetbrains.kotlin.plugin.compose:org.jetbrains.kotlin.plugin.compose.gradle.plugin:${versions.kotlin.kgp}")
+            |
+            |    $classpath
+            |}
+            |
+            |gradlePlugin {
+            |    plugins {
+            |        register("androidLibPlugin") {
+            |            id = "awesome.androidlib.plugin"
+            |            implementationClass = "com.logic.CompositeBuildPluginAndroidLib"
+            |        }
+            |    }
+            |}
+            |gradlePlugin {
+            |    plugins {
+            |        register("androidAppPlugin") {
+            |            id = "awesome.androidapp.plugin"
+            |            implementationClass = "com.logic.CompositeBuildPluginAndroidApp"
+            |        }
+            |    }
+            |}
+            |
+        """.trimMargin()
+        }else{
+            """
+            |plugins {
+            |    `kotlin-dsl`
+            |}
+            |
+            |dependencies {
+            |    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin.kgp}")
+            |}
+            |
+            |gradlePlugin {
+            |    plugins {
+            |        register("kotlinPlugin") {
+            |            id = "awesome.kotlin.plugin"
+            |            implementationClass = "com.logic.PluginJvmLib"
+            |        }
+            |    }
+            |}
+            |
+        """.trimMargin()
+        }
     }
 }

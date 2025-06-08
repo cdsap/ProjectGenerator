@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.0.10"
+    kotlin("jvm") version "2.1.10"
     application
     id("io.github.cdsap.fatbinary") version "1.0"
 }
@@ -10,6 +10,8 @@ version = "1.0-SNAPSHOT"
 dependencies {
     implementation("com.github.ajalt.clikt:clikt:4.4.0")
     implementation(project(":project-generator"))
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.3")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.3")
     testImplementation(platform("org.junit:junit-bom:5.11.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }

@@ -1,6 +1,61 @@
 package io.github.cdsap.projectgenerator.model
 
+import kotlin.String
+
 data class Versions(
-    val agp: String = "8.5.1",
-    val kgp: String = "1.9.24"
+    val kotlin: Kotlin = Kotlin(),
+    val android: Android = Android(),
+    val testing: Testing = Testing(),
+    val project: Project = Project(),
+    val additionalBuildGradleRootPlugins: Map<String, String> = emptyMap(),
+    val additionalSettingsPlugins: Map<String, String> = emptyMap(),
+)
+
+enum class Processor {
+    KSP,
+    KSP_K2,
+    KAPT,
+}
+
+data class Project(
+    val jdk: String = "23",
+    val develocity: String = "4.0.1",
+)
+
+data class KotlinProcessor(
+    val processor: Processor = Processor.KSP
+)
+
+data class Testing(
+    val junit4: String = "4.13.2",
+    val junit5: String = "5.10.1",
+    val truth: String = "1.1.5",
+    val mockk: String = "1.13.9",
+    val coreTesting: String = "2.2.0",
+    val junitExt: String = "1.1.5",
+)
+
+data class Kotlin(
+    val kgp: String = "2.1.20",
+    val ksp: String = "2.1.20-2.0.0",
+    val coroutines: String = "1.7.3",
+    val kotlinTest: String = "1.9.22",
+    val kotlinProcessor: KotlinProcessor = KotlinProcessor(),
+)
+
+data class Android(
+    val agp: String = "8.9.1",
+    val androidxCore: String = "1.9.0",
+    val appcompat: String = "1.7.0",
+    val material: String = "1.8.0",
+    val lifecycle: String = "2.7.0",
+    val fragment: String = "1.6.2",
+    val activity: String = "1.8.2",
+    val constraintlayout: String = "2.1.4",
+    val work: String = "2.10.1",
+    val hilt: String = "2.56.1",
+    val hiltAandroidx: String = "1.2.0",
+    val composeBom: String = "2025.05.00",
+    val robolectric: String = "4.11.1",
+    val espresso: String = "3.5.1",
 )

@@ -1,6 +1,6 @@
-package io.github.cdsap.projectgenerator.files
+package io.github.cdsap.projectgenerator.files.plugins.android
 
-class CompositeBuildPluginAndroidApp {
+class CompositeBuildPluginAndroidSimpleAppApp {
     fun get() = """
             package com.logic
 

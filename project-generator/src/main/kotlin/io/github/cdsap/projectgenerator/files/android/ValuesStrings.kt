@@ -1,5 +1,7 @@
 package io.github.cdsap.projectgenerator.files.android
 
+import io.github.cdsap.projectgenerator.model.TypeOfStringResources
+
 class ValuesStrings {
     fun get() = """
         <resources>
@@ -2200,4 +2202,21 @@ class ValuesStrings {
         </resources>
 
     """.trimIndent()
+
+    fun createStrings(moduleName: String, type: TypeOfStringResources): String {
+        val stringCount = when (type) {
+            TypeOfStringResources.LARGE -> 100
+            TypeOfStringResources.NORMAL -> 25
+        }
+
+        val strings = (1..stringCount).joinToString("\n") { i ->
+            """    <string name="string_${moduleName}_$i">String $i for module $moduleName</string>"""
+        }
+
+        return """<?xml version="1.0" encoding="utf-8"?>
+            <resources>
+            $strings
+            </resources>
+        """.trimIndent()
+    }
 }

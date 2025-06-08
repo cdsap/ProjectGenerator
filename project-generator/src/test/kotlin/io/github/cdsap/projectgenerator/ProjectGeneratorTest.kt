@@ -1,8 +1,8 @@
 package io.github.cdsap.projectgenerator
 
-import io.github.cdsap.projectgenerator.model.ClassesPerModule
-import io.github.cdsap.projectgenerator.model.ClassesPerModuleType
-import io.github.cdsap.projectgenerator.model.Shape
+import io.github.cdsap.projectgenerator.model.*
+import io.github.cdsap.projectgenerator.writer.GradleWrapper
+import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
@@ -22,13 +22,13 @@ class ProjectGeneratorTest {
             Shape.RECTANGLE,
             Shape.MIDDLE_BOTTLENECK
         ).forEach {
-        ProjectGenerator(
-            modules = 51,
-            shape = it,
-            classesPerModule = ClassesPerModule(ClassesPerModuleType.RANDOM, 8),
-            layers = 5,
-            path = tempDir.toString()
-        ).write()
+            ProjectGenerator(
+                modules = 51,
+                shape = it,
+                classesPerModule = ClassesPerModule(ClassesPerModuleType.RANDOM, 8),
+                layers = 5,
+                path = tempDir.toString()
+            ).write()
             assert(File("$tempDir/${it.name.lowercase()}_51/project_kts/build.gradle.kts").exists())
             assert(File("$tempDir/${it.name.lowercase()}_51/project_kts/settings.gradle.kts").exists())
             assert(File("$tempDir/${it.name.lowercase()}_51/project_kts/gradle.properties").exists())

@@ -1,18 +1,44 @@
 package io.github.cdsap.projectgenerator.cli
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.choice
+import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.int
 import io.github.cdsap.projectgenerator.ProjectGenerator
 import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
+import java.io.File
 
 fun main(args: Array<String>) {
-    ProjectReportCli().main(args)
+//    ProjectGenerator(
+//        50,
+//        Shape.TRIANGLE,
+//        Language.KTS,
+//        TypeProjectRequested.ANDROID,
+//        ClassesPerModule(ClassesPerModuleType.FIXED, 20),
+//        Versions(),
+//        TypeOfStringResources.LARGE,
+//        5,
+//        true,
+//        GradleWrapper(Gradle.GRADLE_8_13)
+//    ).write()
+    ProjectReportCli()
+        .subcommands(GenerateProjects(), GenerateYaml())
+        .main(args)
+    //  ProjectReportCli().main(args)
 }
 
 class ProjectReportCli : CliktCommand() {
+    override fun run() = Unit // Root doesn't do anything itself
+}
+
+class GenerateProjects : CliktCommand(name = "generate-project") {
     private val shape: String by option().choice(
         "rhombus", "triangle", "flat",
         "rectangle", "middle_bottleneck", "inverse_triangle"
@@ -20,15 +46,17 @@ class ProjectReportCli : CliktCommand() {
     private val language: String by option().choice("kts", "groovy", "both").default("kts")
     private val modules by option().int().required()
         .check("max number of projects 4000") { it in (layers + 1)..4000 }
-    private val type by option().choice("android", "jvm").default("android")
+    private val type by option().choice("android", "jvm", "quarkus", "spring", "android_simple").default("android")
     private val classesModule by option().int().default(5)
-    private val agpVersion by option().default("8.9.0")
-    private val kgpVersion by option().default("2.1.20")
     private val classesModuleType: String by option().choice("fixed", "random").default("fixed")
     private val typeOfStringResources: String by option().choice("large", "normal").default("normal")
     private val layers by option().int().default(5)
     private val generateUnitTest by option().flag(default = false)
-    private val gradle: String by option().choice("gradle_8_2", "gradle_8_5","gradle_8_9","gradle_8_13").default("gradle_8_13")
+    private val gradle: String by option().choice("gradle_8_2", "gradle_8_5", "gradle_8_9", "gradle_8_13")
+        .default("gradle_8_13")
+    private val develocity by option().flag(default = false)
+    private val versionsFile by option().file()
+
 
     override fun run() = ProjectGenerator(
         modules,
@@ -36,10 +64,35 @@ class ProjectReportCli : CliktCommand() {
         Language.valueOf(language.uppercase()),
         TypeProjectRequested.valueOf(type.uppercase()),
         ClassesPerModule(ClassesPerModuleType.valueOf(classesModuleType.uppercase()), classesModule),
-        Versions(agp = agpVersion, kgp = kgpVersion),
+        versions = if (versionsFile != null) parseYaml(versionsFile!!) else Versions(),
         TypeOfStringResources.valueOf(typeOfStringResources.uppercase()),
         layers,
         generateUnitTest,
-        GradleWrapper(Gradle.valueOf(gradle.uppercase()))
+        GradleWrapper(Gradle.valueOf(gradle.uppercase())),
+        develocity = develocity
     ).write()
+
+    private fun parseYaml(rules: File): Versions {
+        val mapper = ObjectMapper(YAMLFactory()).apply {
+            registerModule(KotlinModule())
+        }
+        return mapper.readValue(rules)
+    }
+}
+
+class GenerateYaml : CliktCommand(name = "generate-yaml-versions") {
+    // Add any options specific to YAML generation if needed
+    override fun run() {
+        GenerateVersionsYaml().generate()
+        val a = parseYaml(File("versions.yaml"))
+        println(a.kotlin.kotlinTest)
+        // Add your logic here
+    }
+
+    private fun parseYaml(rules: File): Versions {
+        val mapper = ObjectMapper(YAMLFactory()).apply {
+            registerModule(KotlinModule())
+        }
+        return mapper.readValue(rules)
+    }
 }
