@@ -16,22 +16,9 @@ import io.github.cdsap.projectgenerator.writer.GradleWrapper
 import java.io.File
 
 fun main(args: Array<String>) {
-//    ProjectGenerator(
-//        50,
-//        Shape.TRIANGLE,
-//        Language.KTS,
-//        TypeProjectRequested.ANDROID,
-//        ClassesPerModule(ClassesPerModuleType.FIXED, 20),
-//        Versions(),
-//        TypeOfStringResources.LARGE,
-//        5,
-//        true,
-//        GradleWrapper(Gradle.GRADLE_8_13)
-//    ).write()
     ProjectReportCli()
         .subcommands(GenerateProjects(), GenerateYaml())
         .main(args)
-    //  ProjectReportCli().main(args)
 }
 
 class ProjectReportCli : CliktCommand() {
