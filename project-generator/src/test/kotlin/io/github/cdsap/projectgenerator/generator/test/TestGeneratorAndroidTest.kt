@@ -29,7 +29,6 @@ class TestGeneratorAndroidTest {
             TypeOfStringResources.NORMAL,
             true, // generateUnitTest
             GradleWrapper(Gradle.GRADLE_8_13),
-            false,
             false
         )
         projectWriter.write()
