@@ -272,8 +272,6 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
             |    }
             """.trimMargin()
         }
-        println("**************")
-
         return testContent
     }
 

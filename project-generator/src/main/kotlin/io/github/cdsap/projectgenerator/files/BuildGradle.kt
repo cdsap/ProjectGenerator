@@ -35,7 +35,7 @@ class BuildGradle {
     fun additionalBuildGradlePlugins(versions: Versions): String {
         var additionalPlugins = ""
         versions.additionalBuildGradleRootPlugins.forEach {
-            additionalPlugins += "alias(\"${it.id}\") version \"${it.version}\" apply ${it.apply}\n"
+            additionalPlugins += "id(\"${it.id}\") version \"${it.version}\" apply ${it.apply}\n"
         }
         return additionalPlugins
     }
