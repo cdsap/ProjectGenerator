@@ -52,6 +52,6 @@ class BuildGradle {
     fun provideKotlinProcessor(versions: Versions) = if (versions.kotlin.kotlinProcessor.processor == Processor.KAPT)
         """"""
     else
-        """alias(libs.plugins.kotlin.ksp) apply false"""
+        """ alias(libs.plugins.kotlin.ksp) apply false"""
 
 }
