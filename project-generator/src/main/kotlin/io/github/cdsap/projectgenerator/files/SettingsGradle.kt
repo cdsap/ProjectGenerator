@@ -1,13 +1,16 @@
 package io.github.cdsap.projectgenerator.files
 
+import io.github.cdsap.projectgenerator.model.Versions
+
 class SettingsGradle {
 
-    fun get(develocity: Boolean) : String {
-        val develocityBlock = if(develocity) {
+    fun get(versions: Versions, develocity: Boolean): String {
+        val develocityBlock = if (develocity) {
             """
                 |plugins {
                 |    id("com.gradle.develocity") version "4.0.1"
                 |    id("com.gradle.common-custom-user-data-gradle-plugin") version "2.2"
+                |    ${additionalSettingsPlugins(versions)}
                 |}
                 |
                 |develocity {
@@ -39,5 +42,13 @@ class SettingsGradle {
             |    }
             |}
         """.trimMargin()
+    }
+
+    fun additionalSettingsPlugins(versions: Versions): String {
+        var additionalPlugins = ""
+        versions.additionalSettingsPlugins.forEach {
+            additionalPlugins += "id(\"${it.id}\") version \"${it.version}\"\n"
+        }
+        return additionalPlugins
     }
 }

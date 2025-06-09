@@ -17,7 +17,6 @@ class ProjectWriter(
     private val typeOfStringResources: TypeOfStringResources,
     private val generateUnitTest: Boolean,
     private val gradle: GradleWrapper,
-    private val dependencyPlugins: Boolean,
     private val develocity: Boolean
 ) {
     fun write() {
@@ -34,8 +33,8 @@ class ProjectWriter(
         createGradleProperties(languages)
         copyGradleWrapper(gradle, languages)
         createToml(languages)
-        writeSettingsGradle(nodes, languages,develocity)
-        createProjectBuildGradle(languages, dependencyPlugins)
+        writeSettingsGradle(nodes, languages,versions, develocity)
+        createProjectBuildGradle(languages)
     }
 
     private fun createToml(languages: List<LanguageAttributes>) {
@@ -52,18 +51,17 @@ class ProjectWriter(
     }
 
     private fun createProjectBuildGradle(
-        languages: List<LanguageAttributes>,
-        dependencyPlugins: Boolean
+        languages: List<LanguageAttributes>
     ) {
-        val plugins = if (typeOfProjectRequested == TypeProjectRequested.JVM) BuildGradle().getJvm(versions,true)
-        else BuildGradle().getAndroid(versions, dependencyPlugins)
+        val plugins = if (typeOfProjectRequested == TypeProjectRequested.JVM) BuildGradle().getJvm(versions)
+        else BuildGradle().getAndroid(versions)
         languages.forEach {
             File("${it.projectName}/build.${it.extension}").projectFile(plugins)
         }
     }
 
-    private fun writeSettingsGradle(nodes: List<ProjectGraph>, languages: List<LanguageAttributes>, develocity: Boolean) {
-        var settingsGradleContent = SettingsGradle().get(develocity)
+    private fun writeSettingsGradle(nodes: List<ProjectGraph>, languages: List<LanguageAttributes>, versions: Versions, develocity: Boolean) {
+        var settingsGradleContent = SettingsGradle().get(versions, develocity)
 
         nodes.forEach {
             settingsGradleContent += "\ninclude (\":layer_${it.layer}:${it.id}\")"

@@ -16,7 +16,6 @@ class ProjectGenerator(
     private val generateUnitTest: Boolean = false,
     private val gradle: GradleWrapper = GradleWrapper(Gradle.GRADLE_8_5),
     private val path: String = "projects_generated",
-    private val dependencyPlugins: Boolean = false,
     private val develocity: Boolean = false,
 ) {
 
@@ -41,7 +40,6 @@ class ProjectGenerator(
             typeOfStringResources,
             generateUnitTest,
             gradle,
-            dependencyPlugins,
             develocity
         ).write()
         GraphWriter(nodes, "$path/${shape.name.lowercase()}_$modules").write()

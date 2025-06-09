@@ -7,8 +7,13 @@ data class Versions(
     val android: Android = Android(),
     val testing: Testing = Testing(),
     val project: Project = Project(),
-    val additionalBuildGradleRootPlugins: Map<String, String> = emptyMap(),
-    val additionalSettingsPlugins: Map<String, String> = emptyMap(),
+    val additionalBuildGradleRootPlugins: List<AdditionalPlugin> = listOf(
+        AdditionalPlugin(
+            "com.autonomousapps.dependency-analysis",
+            "2.18.0"
+        )
+    ),
+    val additionalSettingsPlugins: List<AdditionalPlugin> = listOf(),
 )
 
 enum class Processor {
@@ -16,6 +21,13 @@ enum class Processor {
     KSP_K2,
     KAPT,
 }
+
+data class AdditionalPlugin(
+    val id: String,
+    val version: String,
+    val apply: Boolean = true
+)
+
 
 data class Project(
     val jdk: String = "23",

@@ -1,5 +1,7 @@
 package io.github.cdsap.projectgenerator.cli
 
+import com.fasterxml.jackson.annotation.JsonSetter
+import com.fasterxml.jackson.annotation.Nulls
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -62,6 +64,7 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
     private fun parseYaml(rules: File): Versions {
         val mapper = ObjectMapper(YAMLFactory()).apply {
             registerModule(KotlinModule())
+            configOverride(List::class.java).setterInfo = JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY)
         }
         return mapper.readValue(rules)
     }
@@ -79,6 +82,7 @@ class GenerateYaml : CliktCommand(name = "generate-yaml-versions") {
     private fun parseYaml(rules: File): Versions {
         val mapper = ObjectMapper(YAMLFactory()).apply {
             registerModule(KotlinModule())
+            configOverride(List::class.java).setterInfo = JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY)
         }
         return mapper.readValue(rules)
     }
