@@ -25,7 +25,6 @@ class CompositeBuildPluginAndroidLib {
         |                apply("org.jetbrains.kotlin.plugin.compose")
         |            }
         |
-        |            val moduleName = target.name.replace(":","_")
         |            extensions.configure<com.android.build.gradle.LibraryExtension>  {
         |                namespace = "com.awesome." + target.name.replace(":","_")
         |                compileSdk = 35

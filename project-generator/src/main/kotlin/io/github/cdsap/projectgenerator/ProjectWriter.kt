@@ -9,12 +9,6 @@ import io.github.cdsap.projectgenerator.generator.modules.JvmModulesWriter
 import io.github.cdsap.projectgenerator.generator.toml.AndroidToml
 import java.io.File
 
-/*
-  type-project android
-  kotlin-processor ksp
-  root-gradle-dependencies
-  gradle properties
- */
 class ProjectWriter(
     private val nodes: List<ProjectGraph>,
     private val languages: List<LanguageAttributes>,
@@ -34,11 +28,7 @@ class ProjectWriter(
         when(typeOfProjectRequested) {
             TypeProjectRequested.ANDROID -> AndroidModulesWriter(nodes, languages, typeOfStringResources, generateUnitTest,versions).write()
             TypeProjectRequested.JVM -> JvmModulesWriter(nodes, languages, generateUnitTest,versions).write()
-            TypeProjectRequested.SPRING -> JvmModulesWriter(nodes, languages, generateUnitTest,versions).write()
-            TypeProjectRequested.QUARKUS -> JvmModulesWriter(nodes, languages, generateUnitTest,versions).write()
-            TypeProjectRequested.ANDROID_SIMPLE -> AndroidModulesWriter(nodes, languages, typeOfStringResources, generateUnitTest,versions).write()
         }
-
 
         println("Creating Project files")
         createGradleProperties(languages)
@@ -90,5 +80,3 @@ class ProjectWriter(
         }
     }
 }
-
-

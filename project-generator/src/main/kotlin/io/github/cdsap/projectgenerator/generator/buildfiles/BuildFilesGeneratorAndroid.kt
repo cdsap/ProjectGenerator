@@ -61,9 +61,8 @@ class BuildFilesGeneratorAndroid(val versions: Versions) : BuildFilesGenerator {
             |
             |dependencies {
             |    $deps
-            |    ${implementations.joinToString("\n    ")}
-            |    ${testImplementations.joinToString("\n    ")}
-            |    ${testImplementations.joinToString("\n    ")}
+            |${implementations.joinToString("\n    ")}
+            |${testImplementations.joinToString("\n    ")}
             |
             |}
         """.trimMargin()
@@ -109,9 +108,8 @@ class BuildFilesGeneratorAndroid(val versions: Versions) : BuildFilesGenerator {
             |
             |dependencies {
             |    $deps
-            |    ${implementations.joinToString("\n    ")}
-            |    ${testImplementations.joinToString("\n    ")}
-            |    ${testImplementations.joinToString("\n    ")}
+            |${implementations.filter { it.isNotBlank() }.joinToString("\n    ", prefix = if (implementations.isNotEmpty()) "    " else "")}
+            |${testImplementations.filter { it.isNotBlank() }.joinToString("\n    ", prefix = if (testImplementations.isNotEmpty()) "    " else "")}
             |
             |}
         """.trimMargin()
