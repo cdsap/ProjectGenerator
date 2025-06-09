@@ -96,7 +96,7 @@ class ProjectGraphGenerator(
     private fun getClasses() = if (classesPerModule.type == ClassesPerModuleType.FIXED) {
         classesPerModule.classes
     } else {
-        Random.nextInt(5, classesPerModule.classes)
+        Random.nextInt(MIN_CLASSES_PER_MODULE, classesPerModule.classes)
     }
 
     private fun generateRandomRelations(numberModules: Int, numberModulesUpperLayer: Int): List<Int> {
