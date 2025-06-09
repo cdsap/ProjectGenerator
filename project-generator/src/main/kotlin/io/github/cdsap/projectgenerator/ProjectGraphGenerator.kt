@@ -134,4 +134,8 @@ class ProjectGraphGenerator(
             TypeProject.APPLICATION
         }
     }
+
+    companion object {
+        val MIN_CLASSES_PER_MODULE = 5
+    }
 }
