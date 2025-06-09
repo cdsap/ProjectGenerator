@@ -20,13 +20,8 @@ class Manifest {
             TypeProject.ANDROID_APP -> {
                 val s = a.filter { it.key == module }
                 val name = if (s.isNotEmpty()) {
-                    val x = s.values.flatten().first { it.type == ClassTypeAndroid.ACTIVITY }
-                    if (x != null) {
-                        val repoClassName = x.className
-                        repoClassName
-                    } else {
-                        ""
-                    }
+                    val x = s.values.flatten().firstOrNull { it.type == ClassTypeAndroid.ACTIVITY }
+                    x?.className ?: ""
                 } else {
                     ""
                 }
