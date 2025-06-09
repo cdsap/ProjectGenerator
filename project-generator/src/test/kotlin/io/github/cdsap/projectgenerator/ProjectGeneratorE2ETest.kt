@@ -1,8 +1,10 @@
 package io.github.cdsap.projectgenerator
 
+import io.github.cdsap.projectgenerator.model.Android
 import io.github.cdsap.projectgenerator.model.ClassesPerModule
 import io.github.cdsap.projectgenerator.model.ClassesPerModuleType
 import io.github.cdsap.projectgenerator.model.Gradle
+import io.github.cdsap.projectgenerator.model.Kotlin
 import io.github.cdsap.projectgenerator.model.Language
 import io.github.cdsap.projectgenerator.model.Project
 import io.github.cdsap.projectgenerator.model.Shape
@@ -56,7 +58,6 @@ class ProjectGeneratorE2ETest {
         )
 
         assert(resultTest.output.contains("BUILD SUCCESSFUL"))
-
     }
 
     @ParameterizedTest
@@ -89,7 +90,28 @@ class ProjectGeneratorE2ETest {
 
         println(result.output)
         assert(result.output.contains("BUILD SUCCESSFUL"))
+    }
 
+    @Test
+    fun changedVersionReflectsInTomlFile() {
+        val modules = 30
+        val shape = Shape.RHOMBUS
+        ProjectGenerator(
+            modules,
+            shape,
+            Language.KTS,
+            TypeProjectRequested.ANDROID,
+            ClassesPerModule(ClassesPerModuleType.FIXED, 20),
+            Versions(project = Project(jdk = "17"), android = Android(agp = "9.9.9")),
+            TypeOfStringResources.LARGE,
+            5,
+            true,
+            GradleWrapper(Gradle.GRADLE_8_13),
+            path = tempDir.toFile().path
+        ).write()
+        val toml = File("$tempDir/${shape.name.lowercase()}_$modules/project_kts/gradle/libs.versions.toml")
+        assert(toml.exists())
+        assert(toml.readText().contains("agp = \"9.9.9\""))
     }
 }
 

@@ -8,13 +8,13 @@ class BuildGradle {
 
     fun getAndroid(versions: Versions, dependencyPlugins: Boolean) = """
         plugins {
-            id("org.jetbrains.kotlin.jvm") version("${versions.kotlin.kgp}") apply false
-            id("org.jetbrains.kotlin.plugin.compose") version("${versions.kotlin.kgp}") apply false
-            id("com.android.application") version "${versions.android.agp}" apply false
-            id("com.android.library") version "${versions.android.agp}" apply false
-            id("org.jetbrains.kotlin.android") version "${versions.kotlin.kgp}" apply false
+            alias(libs.plugins.kotlin.jvm) apply false
+            alias(libs.plugins.kotlin.android) apply false
+            alias(libs.plugins.kotlin.compose) apply false
+            alias(libs.plugins.android.application) apply false
+            alias(libs.plugins.android.library) apply false
            ${ provideKotlinProcessor(versions)}
-            id("com.google.dagger.hilt.android") version "${versions.android.hilt}" apply false
+            alias(libs.plugins.hilt) apply false
 
             ${dependencyPlugins(dependencyPlugins)}
         }
@@ -52,6 +52,6 @@ class BuildGradle {
     fun provideKotlinProcessor(versions: Versions) = if (versions.kotlin.kotlinProcessor.processor == Processor.KAPT)
         """"""
     else
-        """id("com.google.devtools.ksp") version "${versions.kotlin.ksp}" apply false"""
+        """alias(libs.plugins.kotlin.ksp) apply false"""
 
 }

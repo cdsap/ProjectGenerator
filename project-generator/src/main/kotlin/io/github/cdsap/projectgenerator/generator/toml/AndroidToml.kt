@@ -7,6 +7,10 @@ class AndroidToml {
 
     fun toml(version: Versions) = """
         [versions]
+        agp = "${version.android.agp}"
+        kotlin = "${version.kotlin.kgp}"
+        ksp = "${version.kotlin.ksp}"
+
         androidx-core = "${version.android.androidxCore}"
         appcompat = "${version.android.appcompat}"
         material = "${version.android.material}"
@@ -73,6 +77,15 @@ class AndroidToml {
         robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
         androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit-ext" }
         espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+
+        [plugins]
+        android-application = { id = "com.android.application", version.ref = "agp" }
+        android-library = { id = "com.android.library", version.ref = "agp" }
+        hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+        kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+        kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+        kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+        kotlin-ksp = { id ="com.google.devtools.ksp", version.ref = "ksp" }
     """.trimIndent()
 
     fun tomlImplementations(version: Versions) = """
