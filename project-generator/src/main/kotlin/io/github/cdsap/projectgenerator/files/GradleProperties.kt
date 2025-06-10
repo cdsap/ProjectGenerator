@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator.files
 
+import io.github.cdsap.projectgenerator.model.Processor
 import io.github.cdsap.projectgenerator.model.Versions
 
 class GradleProperties {
@@ -12,7 +13,7 @@ class GradleProperties {
 
     // Disable K2 for KSP 2.0
     private fun k2usage(versions: Versions): String {
-        return if (versions.kotlin.kotlinProcessor.processor == io.github.cdsap.projectgenerator.model.Processor.KSP) {
+        return if (versions.kotlin.kotlinProcessor.processor == Processor.KSP) {
             "ksp.useKSP2=false"
         } else ""
     }
