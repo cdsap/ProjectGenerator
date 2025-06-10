@@ -16,7 +16,7 @@ class ProjectGenerator(
     private val generateUnitTest: Boolean = false,
     private val gradle: GradleWrapper = GradleWrapper(Gradle.GRADLE_8_5),
     private val path: String = "projects_generated",
-    private val dependencyPlugins: Boolean = false
+    private val develocity: Boolean = false,
 ) {
 
     fun write() {
@@ -40,7 +40,7 @@ class ProjectGenerator(
             typeOfStringResources,
             generateUnitTest,
             gradle,
-            dependencyPlugins
+            develocity
         ).write()
         GraphWriter(nodes, "$path/${shape.name.lowercase()}_$modules").write()
         println("Project created in $path/${shape.name.lowercase()}_$modules")
@@ -49,7 +49,7 @@ class ProjectGenerator(
     private fun getProjectLanguageAttributes(language: Language, labelProject: String) = when (language) {
         Language.KTS -> listOf(LanguageAttributes("gradle.kts", "$labelProject/project_kts"))
 
-        Language.GROOVY -> listOf(LanguageAttributes("gradle", "$labelProject/project_groovy_$labelProject"))
+        Language.GROOVY -> listOf(LanguageAttributes("gradle", "$labelProject/project_groovy"))
 
         Language.BOTH -> listOf(
             LanguageAttributes("gradle", "$labelProject/project_groovy"),

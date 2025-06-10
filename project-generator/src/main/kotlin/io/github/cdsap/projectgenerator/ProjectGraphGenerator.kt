@@ -96,7 +96,7 @@ class ProjectGraphGenerator(
     private fun getClasses() = if (classesPerModule.type == ClassesPerModuleType.FIXED) {
         classesPerModule.classes
     } else {
-        Random.nextInt(2, classesPerModule.classes)
+        Random.nextInt(MIN_CLASSES_PER_MODULE, classesPerModule.classes)
     }
 
     private fun generateRandomRelations(numberModules: Int, numberModulesUpperLayer: Int): List<Int> {
@@ -131,7 +131,11 @@ class ProjectGraphGenerator(
         return if (typeOfProject == TypeProjectRequested.ANDROID) {
             TypeProject.ANDROID_APP
         } else {
-            TypeProject.LIB
+            TypeProject.APPLICATION
         }
+    }
+
+    companion object {
+        val MIN_CLASSES_PER_MODULE = 5
     }
 }

@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.0.10"
+    kotlin("jvm") version "2.1.10"
     `maven-publish`
     `signing`
 }
@@ -8,8 +8,10 @@ group = "io.github.cdsap"
 version = "0.1.7"
 
 dependencies {
+    implementation("com.squareup:kotlinpoet:2.1.0")
     testImplementation(platform("org.junit:junit-bom:5.11.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation(gradleTestKit())
 }
 
 tasks.test {
