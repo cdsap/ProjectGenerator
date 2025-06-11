@@ -8,19 +8,46 @@ CLI generating modularized Gradle projects based on different shapes
 
 # Usage
 ## CLI
-```bash
-./projectGenerator --shape triangle --layers 5 --modules 100
-```
-This command generates a project with 100 modules using Kotlin DSL.
-The project is divided in 5 layers + 1 layer acting as a main entry point of the project.
-The project generated guarantee relationships for project dependencies in the contiguous layers.
 
-### Install CLI
+### Modes
+
+#### 1. Generate Project (default)
 ```bash
-curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.1.7/projectGenerator --output projectGenerator
-chmod 0757 projectGenerator
+./projectGenerator generate-project --shape triangle --layers 5 --modules 100
+```
+This command generates a project with the specified shape, layers, and modules. All options below can be combined with this mode.
+
+#### 2. Generate YAML Versions File
+```bash
+./projectGenerator generate-yaml-versions
+```
+This command generates a `versions.yaml` file template for custom dependency versions.
+
+### CLI Options
+- `--shape` (required): triangle, rhombus, flat, rectangle, middle_bottleneck, inverse_triangle
+- `--modules` (required): Number of modules to create
+- `--layers`: Number of layers (default: 5)
+- `--language`: kts (default), groovy, both
+- `--type`: android (default), jvm
+- `--classesModule`: Number of classes per module (default: 5)
+- `--classesModuleType`: fixed (default), random
+- `--typeOfStringResources`: normal (default), large
+- `--generateUnitTest`: Generate unit tests (default: false)
+- `--gradle`: gradle_8_2, gradle_8_5, gradle_8_9, gradle_8_13 (default: gradle_8_13)
+- `--develocity`: Enable Develocity build scan plugin (default: false)
+- `--versionsFile`: Path to a custom YAML file with dependency versions
+
+#### Example: Generate a project with custom options
+```bash
+./projectGenerator generate-project --shape rhombus --modules 50 --layers 4 --language both --type jvm --classesModule 10 --classesModuleType random --typeOfStringResources large --generateUnitTest --gradle gradle_8_9 --develocity --versionsFile ./my_versions.yaml
+```
+
+### Legacy (default) mode
+You can still use the legacy CLI without specifying a mode:
+```bash
 ./projectGenerator --shape triangle --layers 5 --modules 100
 ```
+This is equivalent to `generate-project` mode.
 
 ## Library
 ```kotlin
