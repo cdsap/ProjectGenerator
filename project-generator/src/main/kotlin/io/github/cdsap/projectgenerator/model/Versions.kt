@@ -65,7 +65,7 @@ data class Android(
     val activity: String = "1.8.2",
     val constraintlayout: String = "2.1.4",
     val work: String = "2.10.1",
-    val hilt: String = "2.56.1",
+    val hilt: String = "2.56.2",
     val hiltAandroidx: String = "1.2.0",
     val composeBom: String = "2025.05.00",
     val robolectric: String = "4.11.1",
