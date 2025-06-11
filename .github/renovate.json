@@ -1,6 +1,268 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base"
-  ]
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "config:base"
+    ],
+    "regexManagers": [
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val agp: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "com.android.tools.build:gradle",
+            "datasourceTemplate": "https://maven.google.com/"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val androidxCore: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "androidx.core:core",
+            "datasourceTemplate": "https://maven.google.com/"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val appcompat: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "androidx.appcompat:appcompat",
+            "datasourceTemplate":"https://maven.google.com/"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val material: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "com.google.android.material:material",
+            "datasourceTemplate": "https://maven.google.com/"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val lifecycle: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "androidx.lifecycle:lifecycle-runtime-ktx",
+            "datasourceTemplate": "https://maven.google.com/"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val fragment: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "androidx.fragment:fragment-ktx",
+            "datasourceTemplate": "https://maven.google.com/"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val activity: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "androidx.activity:activity-ktx",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val constraintlayout: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "androidx.constraintlayout:constraintlayout",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val work: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "androidx.work:work-runtime-ktx",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val hilt: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "com.google.dagger:hilt-android",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val hiltAandroidx: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "androidx.hilt:hilt-navigation-compose",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val composeBom: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "androidx.compose:compose-bom",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val robolectric: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "org.robolectric:robolectric",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val espresso: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "androidx.test.espresso:espresso-core",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val kgp: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "org.jetbrains.kotlin:kotlin-gradle-plugin",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val ksp: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+-\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "com.google.devtools.ksp:symbol-processing-gradle-plugin",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val coroutines: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "org.jetbrains.kotlinx:kotlinx-coroutines-core",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val kotlinTest: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "org.jetbrains.kotlin:kotlin-test",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val junit4: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "junit:junit",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val junit5: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "org.junit.jupiter:junit-jupiter",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val truth: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "com.google.truth:truth",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val mockk: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "io.mockk:mockk",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val coreTesting: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "androidx.arch.core:core-testing",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val junitExt: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "androidx.test.ext:junit",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "val develocity: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "com.gradle:develocity-gradle-plugin",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": [
+                "^.*Versions\\.kt$"
+            ],
+            "matchStrings": [
+                "AdditionalPlugin\\(\"com\\.autonomousapps\\.dependency-analysis\",\\s*\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+            ],
+            "depNameTemplate": "com.autonomousapps:dependency-analysis-gradle-plugin",
+            "datasourceTemplate": "maven"
+        }
+    ]
 }
