@@ -38,7 +38,7 @@ class BuildFilesGeneratorAndroidTest {
             TypeProjectRequested.ANDROID,
             TypeOfStringResources.NORMAL,
             false,
-            GradleWrapper(Gradle.GRADLE_8_13),
+            GradleWrapper(Gradle.GRADLE_8_14_2),
             false
         )
         projectWriter.write()
@@ -70,7 +70,7 @@ class BuildFilesGeneratorAndroidTest {
             TypeProjectRequested.ANDROID,
             TypeOfStringResources.NORMAL,
             false,
-            GradleWrapper(Gradle.GRADLE_8_13),
+            GradleWrapper(Gradle.GRADLE_8_14_2),
             false
         )
         projectWriter.write()

@@ -33,7 +33,7 @@ This command generates a `versions.yaml` file template for custom dependency ver
 - `--classesModuleType`: fixed (default), random
 - `--typeOfStringResources`: normal (default), large
 - `--generateUnitTest`: Generate unit tests (default: false)
-- `--gradle`: gradle_8_2, gradle_8_5, gradle_8_9, gradle_8_13 (default: gradle_8_13)
+- `--gradle`: gradle_8_2, gradle_8_5, gradle_8_9, gradle_8_13, gradle_8_14_2 (default: gradle_8_14_2)
 - `--develocity`: Enable Develocity build scan plugin (default: false)
 - `--versionsFile`: Path to a custom YAML file with dependency versions
 

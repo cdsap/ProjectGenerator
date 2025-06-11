@@ -36,7 +36,7 @@ class CursorValidationTest {
             TypeOfStringResources.LARGE,
             5,
             true,
-            GradleWrapper(Gradle.GRADLE_8_13),
+            GradleWrapper(Gradle.GRADLE_8_14_2),
             path = tempDir.toFile().path
         ).write()
         val filePath = File("$tempDir/${shape.name.lowercase()}_$modules/project_kts")
