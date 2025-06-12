@@ -136,6 +136,6 @@ class ProjectGraphGenerator(
     }
 
     companion object {
-        val MIN_CLASSES_PER_MODULE = 5
+        const val MIN_CLASSES_PER_MODULE = 5
     }
 }

@@ -78,6 +78,12 @@ class AndroidToml {
         androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit-ext" }
         espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
 
+        # Dependencies of the included build-logic
+        android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+        kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+        hilt-plugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }
+        kotlin-compose-plugin = { group = "org.jetbrains.kotlin.plugin.compose", name = "org.jetbrains.kotlin.plugin.compose.gradle.plugin", version.ref="kotlin" }
+
         [plugins]
         android-application = { id = "com.android.application", version.ref = "agp" }
         android-library = { id = "com.android.library", version.ref = "agp" }
