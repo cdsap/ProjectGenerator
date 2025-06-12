@@ -1,6 +1,5 @@
 package io.github.cdsap.projectgenerator.files
 
-import io.github.cdsap.projectgenerator.model.KotlinProcessor
 import io.github.cdsap.projectgenerator.model.Processor
 import io.github.cdsap.projectgenerator.model.Versions
 

@@ -8,9 +8,9 @@ class CompositeBuildBuildGradle {
     fun get(versions: Versions, requested: TypeProjectRequested): String {
         val classpath = if (requested == TypeProjectRequested.ANDROID) {
             """
-                |implementation("com.android.tools.build:gradle:${versions.android.agp}")
-                |implementation("com.google.dagger:hilt-android-gradle-plugin:${versions.android.hilt}")
-            """.trimMargin()
+                implementation(libs.android.gradle.plugin)
+                implementation(libs.hilt.plugin)
+            """
         } else {
             ""
         }
@@ -21,8 +21,8 @@ class CompositeBuildBuildGradle {
             |}
             |
             |dependencies {
-            |    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin.kgp}")
-            |    implementation("org.jetbrains.kotlin.plugin.compose:org.jetbrains.kotlin.plugin.compose.gradle.plugin:${versions.kotlin.kgp}")
+            |    implementation(libs.kotlin.plugin)
+            |    implementation(libs.kotlin.compose.plugin)
             |
             |    $classpath
             |}

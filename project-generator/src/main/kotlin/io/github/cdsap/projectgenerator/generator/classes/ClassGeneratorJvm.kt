@@ -34,7 +34,6 @@ class ClassGeneratorJvm :
         projectName: String,
         a: MutableMap<String, MutableList<GenerateDictionaryJvm>>
     )  {
-        println("paso "+moduleDefinition.classes.count())
         moduleDefinition.classes.forEach { classDefinition ->
             val classContent = generateClassContent(classDefinition, moduleDefinition, a)
             writeClassFile(classContent, classDefinition, moduleDefinition, projectName)
