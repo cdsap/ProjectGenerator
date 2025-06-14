@@ -1,12 +1,12 @@
 package io.github.cdsap.projectgenerator.generator.resources
 
-import io.github.cdsap.projectgenerator.files.android.ActivityLayout
-import io.github.cdsap.projectgenerator.files.android.AndroidApplication
-import io.github.cdsap.projectgenerator.files.android.ClassTheme
-import io.github.cdsap.projectgenerator.files.android.FragmentLayout
-import io.github.cdsap.projectgenerator.files.android.Manifest
-import io.github.cdsap.projectgenerator.files.android.ValuesStrings
-import io.github.cdsap.projectgenerator.generator.ResourceGeneratorA
+import io.github.cdsap.projectgenerator.generator.android.ActivityLayout
+import io.github.cdsap.projectgenerator.generator.android.AndroidApplication
+import io.github.cdsap.projectgenerator.generator.android.ClassTheme
+import io.github.cdsap.projectgenerator.generator.android.FragmentLayout
+import io.github.cdsap.projectgenerator.generator.android.Manifest
+import io.github.cdsap.projectgenerator.generator.android.ValuesStrings
+import io.github.cdsap.projectgenerator.writer.ResourceGeneratorA
 import io.github.cdsap.projectgenerator.generator.classes.GenerateDictionaryAndroid
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.model.ProjectGraph
