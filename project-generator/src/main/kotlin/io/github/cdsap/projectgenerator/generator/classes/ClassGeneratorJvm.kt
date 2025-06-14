@@ -1,6 +1,7 @@
 package io.github.cdsap.projectgenerator.generator.classes
 
 import io.github.cdsap.projectgenerator.model.*
+import io.github.cdsap.projectgenerator.writer.ClassGenerator
 import java.io.File
 import kotlin.text.appendLine
 
@@ -14,7 +15,7 @@ data class GenerateDictionaryJvm(
 )
 
 class ClassGeneratorJvm :
-    io.github.cdsap.projectgenerator.generator.ClassGenerator<ModuleClassDefinitionJvm, GenerateDictionaryJvm> {
+    ClassGenerator<ModuleClassDefinitionJvm, GenerateDictionaryJvm> {
     override fun obtainClassesGenerated(
         moduleDefinition: ModuleClassDefinitionJvm,
         classesDictionary: MutableMap<String, MutableList<GenerateDictionaryJvm>>

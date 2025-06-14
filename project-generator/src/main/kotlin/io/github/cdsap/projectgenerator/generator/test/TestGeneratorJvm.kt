@@ -1,6 +1,6 @@
 package io.github.cdsap.projectgenerator.generator.test
 
-import io.github.cdsap.projectgenerator.generator.TestGenerator
+import io.github.cdsap.projectgenerator.writer.TestGenerator
 import io.github.cdsap.projectgenerator.generator.classes.GenerateDictionaryJvm
 import io.github.cdsap.projectgenerator.model.ClassDefinitionJvm
 import io.github.cdsap.projectgenerator.model.ClassTypeJvm

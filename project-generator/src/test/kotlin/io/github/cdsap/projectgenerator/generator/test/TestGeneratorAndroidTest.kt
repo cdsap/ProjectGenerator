@@ -1,6 +1,6 @@
 package io.github.cdsap.projectgenerator.generator.test
 
-import io.github.cdsap.projectgenerator.ProjectWriter
+import io.github.cdsap.projectgenerator.writer.ProjectWriter
 import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
 import org.junit.jupiter.api.Test
