@@ -1,6 +1,6 @@
 package io.github.cdsap.projectgenerator.generator.files
 
-import io.github.cdsap.projectgenerator.files.GradleProperties
+import io.github.cdsap.projectgenerator.generator.root.GradleProperties
 import io.github.cdsap.projectgenerator.model.Android
 import io.github.cdsap.projectgenerator.model.Kotlin
 import io.github.cdsap.projectgenerator.model.KotlinProcessor

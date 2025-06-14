@@ -1,9 +1,11 @@
 package io.github.cdsap.projectgenerator.writer
 
-import io.github.cdsap.projectgenerator.files.*
-import io.github.cdsap.projectgenerator.files.plugins.android.CompositeBuildPluginAndroidApp
-import io.github.cdsap.projectgenerator.files.plugins.android.CompositeBuildPluginAndroidLib
-import io.github.cdsap.projectgenerator.files.plugins.jvm.CompositeBuildJvmLib
+import io.github.cdsap.projectgenerator.generator.extensions.projectFile
+import io.github.cdsap.projectgenerator.generator.includedbuild.CompositeBuildBuildGradle
+import io.github.cdsap.projectgenerator.generator.includedbuild.CompositeBuildSettingsGradle
+import io.github.cdsap.projectgenerator.generator.plugins.android.CompositeBuildPluginAndroidApp
+import io.github.cdsap.projectgenerator.generator.plugins.android.CompositeBuildPluginAndroidLib
+import io.github.cdsap.projectgenerator.generator.plugins.jvm.CompositeBuildJvmLib
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
 import io.github.cdsap.projectgenerator.model.Versions

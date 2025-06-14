@@ -1,6 +1,6 @@
 package io.github.cdsap.projectgenerator.generator.buildfiles
 
-import io.github.cdsap.projectgenerator.ProjectWriter
+import io.github.cdsap.projectgenerator.writer.ProjectWriter
 import io.github.cdsap.projectgenerator.model.Gradle
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.model.ProjectGraph

@@ -1,8 +1,7 @@
 package io.github.cdsap.projectgenerator.generator.buildfiles
 
-import io.github.cdsap.projectgenerator.generator.BuildFilesGenerator
+import io.github.cdsap.projectgenerator.writer.BuildFilesGenerator
 import io.github.cdsap.projectgenerator.generator.toml.AndroidToml
-import io.github.cdsap.projectgenerator.model.Android
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.TypeProject

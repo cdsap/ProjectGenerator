@@ -1,6 +1,6 @@
 package io.github.cdsap.projectgenerator.generator.planner
 
-import io.github.cdsap.projectgenerator.generator.ModuleClassPlanner
+import io.github.cdsap.projectgenerator.writer.ModuleClassPlanner
 import io.github.cdsap.projectgenerator.model.*
 
 /**

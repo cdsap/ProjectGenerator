@@ -1,7 +1,7 @@
 package io.github.cdsap.projectgenerator.generator.test
 
 import io.github.cdsap.projectgenerator.generator.classes.GenerateDictionaryAndroid
-import io.github.cdsap.projectgenerator.generator.TestGenerator
+import io.github.cdsap.projectgenerator.writer.TestGenerator
 import io.github.cdsap.projectgenerator.model.ClassDefinitionAndroid
 import io.github.cdsap.projectgenerator.model.ClassDependencyAndroid
 import io.github.cdsap.projectgenerator.model.ClassTypeAndroid
