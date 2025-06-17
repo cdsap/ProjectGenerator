@@ -27,16 +27,16 @@ class CursorValidationTest {
         val modules = 50
         val shape = Shape.RHOMBUS
         ProjectGenerator(
-            50,
-            shape,
-            Language.KTS,
-            TypeProjectRequested.ANDROID,
-            ClassesPerModule(ClassesPerModuleType.FIXED, 20),
-            Versions(project = Project(jdk = "17")),
-            TypeOfStringResources.LARGE,
-            5,
-            true,
-            GradleWrapper(Gradle.GRADLE_8_14_2),
+            modules = 50,
+            shape =shape,
+            language = Language.KTS,
+            typeOfProjectRequested = TypeProjectRequested.ANDROID,
+            classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 20),
+            versions = Versions(project = Project(jdk = "17")),
+            typeOfStringResources = TypeOfStringResources.LARGE,
+            layers = 5,
+            generateUnitTest = true,
+            gradle = GradleWrapper(Gradle.GRADLE_8_14_2),
             path = tempDir.toFile().path
         ).write()
         val filePath = File("$tempDir/${shape.name.lowercase()}_$modules/project_kts")
