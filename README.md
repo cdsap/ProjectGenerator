@@ -171,18 +171,6 @@ Gradle used, versions supported:
 ./projectGenerator  generate-project  --shape triangle --layers 5 --modules 100 --gradle 8.13
 ```
 
-## Dependency Plugins
-**default false**
-
-Includes in the root build gradle the plugins:
-- [jraska/modules-graph-assert](https://github.com/jraska/modules-graph-assert)
-- [autonomousapps/dependency-analysis-gradle-plugin](https://github.com/autonomousapps/dependency-analysis-gradle-plugin)
-- [siggijons/graph-untangler-plugin](https://github.com/siggijons/graph-untangler-plugin)
-
-##### Example
-```kotlin
-./projectGenerator --shape triangle --layers 5 --modules 100 --dependency-plugins true
-```
 
 ## Versions
 Example output versions.yaml:
