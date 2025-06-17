@@ -52,19 +52,22 @@ Then, you can use the versions.yaml in the `generate-project` command:
 ./projectGenerator generate-project --shape rhombus --modules 50 --layers 4 --language both --type jvm --classesModule 10 --classesModuleType random --typeOfStringResources large --generateUnitTest --gradle gradle_8_9 --develocity --versionsFile ./my_versions.yaml
 ```
 
-### Legacy (default) mode
-You can still use the legacy CLI without specifying a mode:
-```bash
-./projectGenerator --shape triangle --layers 5 --modules 100
-```
-This is equivalent to `generate-project` mode.
-
 ## Library
 ```kotlin
+val modules = 50
+val shape = Shape.RHOMBUS
 ProjectGenerator(
     modules = 50,
-    shape = Shape.MIDDLE_BOTTLENECK,
-    layers = 5
+    shape =shape,
+    language = Language.KTS,
+    typeOfProjectRequested = TypeProjectRequested.ANDROID,
+    classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 20),
+    versions = Versions(project = Project(jdk = "17")),
+    typeOfStringResources = TypeOfStringResources.LARGE,
+    layers = 5,
+    generateUnitTest = true,
+    gradle = GradleWrapper(Gradle.GRADLE_8_14_2),
+    path = file.path
 ).write()
 
 ```
@@ -107,16 +110,7 @@ Two projects will be generated using Kotlin DSL and Groovy
 
 #### Example
 ```kotlin
-// dependency
-ProjectGenerator(
-    modules = 50,
-    shape = Shape.MIDDLE_BOTTLENECK,
-    layers = 5,
-    language = Language.GROOVY
-).write()
-
-// cli
-./projectGenerator --shape triangle --layers 5 --modules 100 --language groovy
+./projectGenerator  generate-project  --shape triangle --layers 5 --modules 100 --language groovy
 ```
 ## `type`
 Type of project generated:
@@ -129,16 +123,7 @@ Kotlin-JVM project
 
 #### Example
 ```kotlin
-// dependency
-ProjectGenerator(
-    modules = 50,
-    shape = Shape.MIDDLE_BOTTLENECK,
-    layers = 5,
-    typeOfProjectRequested = TypeProjectRequested.JVM
-).write()
-
-// cli
-./projectGenerator --shape triangle --layers 5 --modules 100 --type jvm
+./projectGenerator  generate-project  --shape triangle --layers 5 --modules 100 --type jvm
 ```
 
 ## `Classes Module`
@@ -150,51 +135,7 @@ Classes generated per module, options:
 
 #### Example
 ```kotlin
-// dependency
-ProjectGenerator(
-    modules = 50,
-    layers = 5,
-    shape = Shape.INVERSE_TRIANGLE,
-    classesPerModule = ClassesPerModule(ClassesPerModuleType.RANDOM,100)
-)
-
-// cli
-./projectGenerator --shape triangle --layers 5 --modules 100 --classes-module-type random --classes-module 150
-```
-### AGP/KGP
-#### `AGP version`
-
-
-Android Gradle Plugin version (default 8.9.0)
-##### Example
-```kotlin
-// dependency
-ProjectGenerator(
-    modules = 50,
-    layers = 5,
-    shape = Shape.INVERSE_TRIANGLE,
-    versions = Versions(agp = "8.1.3")
-)
-
-// cli
-./projectGenerator --shape triangle --layers 5 --modules 100 --agp-version 8.1.3
-```
-
-#### `KGP version`
-Kotlin Gradle Plugin version (default 2.1.20)
-
-##### Example
-```kotlin
-// dependency
-ProjectGenerator(
-    modules = 50,
-    layers = 5,
-    shape = Shape.INVERSE_TRIANGLE,
-    versions = Versions(kgp = "1.9.0")
-)
-
-// cli
-./projectGenerator --shape triangle --layers 5 --modules 100 --kgp-version 1.9.0
+./projectGenerator  generate-project  --shape triangle --layers 5 --modules 100 --classes-module-type random --classes-module 150
 ```
 
 ## String Resources type
@@ -206,16 +147,7 @@ Each module generated includes 900 string resources in the file `strings.xml`
 
 ##### Example
 ```kotlin
-// dependency
-ProjectGenerator(
-    modules = 50,
-    layers = 5,
-    shape = Shape.INVERSE_TRIANGLE,
-    typeOfStringResources = TypeOfStringResources.LARGE
-)
-
-// cli
-./projectGenerator --shape triangle --layers 5 --modules 100 --type-of-string-rresources large
+./projectGenerator  generate-project  --shape triangle --layers 5 --modules 100 --type-of-string-rresources large
 ```
 ## Generate Unit Test
 **default false**
@@ -224,16 +156,7 @@ If enabled, each module will generate n unit tests, where n is the argument `cla
 
 ##### Example
 ```kotlin
-// dependency
-ProjectGenerator(
-    modules = 50,
-    layers = 5,
-    shape = Shape.INVERSE_TRIANGLE,
-    generateUnitTest = true
-)
-
-// cli
-./projectGenerator --shape triangle --layers 5 --modules 100 --generate-unit-test true
+./projectGenerator  generate-project  --shape triangle --layers 5 --modules 100 --generate-unit-test true
 ```
 ## Gradle
 Gradle used, versions supported:
@@ -245,16 +168,7 @@ Gradle used, versions supported:
 
 ##### Example
 ```kotlin
-// dependency
-ProjectGenerator(
-    modules = 50,
-    layers = 5,
-    shape = Shape.INVERSE_TRIANGLE,
-    gradle = GradleWrapper(Gradle.GRADLE_7_6_2)
-)
-
-// cli
-./projectGenerator --shape triangle --layers 5 --modules 100 --gradle 7.6.2
+./projectGenerator  generate-project  --shape triangle --layers 5 --modules 100 --gradle 8.13
 ```
 
 ## Dependency Plugins
@@ -267,36 +181,51 @@ Includes in the root build gradle the plugins:
 
 ##### Example
 ```kotlin
-// dependency
-ProjectGenerator(
-    modules = 50,
-    layers = 5,
-    shape = Shape.INVERSE_TRIANGLE,
-    dependencyPlugins = true
-)
-
-// cli
 ./projectGenerator --shape triangle --layers 5 --modules 100 --dependency-plugins true
 ```
 
-## Extending Project
-The default project generated is composed by the modules and one convention plugin defined as composite build.
-This convention plugin is used in all the modules of the project.
+## Versions
+Example output versions.yaml:
+```yaml
+project:
+  develocity: 4.0.1
+  jdk: 23
+kotlin:
+  kgp: 2.1.20
+  ksp: 2.1.20-2.0.0
+  coroutines: 1.7.3
+  kotlinProcessor:
+    processor: KSP
+android:
+  agp: 8.9.1
+  androidxCore: 1.9.0
+  appcompat: 1.7.0
+  material: 1.8.0
+  lifecycle: 2.7.0
+  fragment: 1.6.2
+  activity: 1.8.2
+  constraintlayout: 2.1.4
+  work: 2.10.1
+  hilt: 2.56.1
+  hiltAandroidx: 1.2.0
+  composeBom: 2025.05.00
+testing:
+  junit4: 4.13.2
+  junit5: 5.10.1
+  truth: 1.1.5
+  mockk: 1.13.9
+  coreTesting: 2.2.0
+  junitExt: 1.1.5
+additionalSettingsPlugins:
 
-If you want to extend the build logic used in the project:
+additionalBuildGradleRootPlugins:
+    - id: com.autonomousapps.dependency-analysis
+      version: 2.18.999
+      apply: true
 
-#### Main root Build Gradle
-[BuildGradle.kt](src%2Fmain%2Fkotlin%2Fio%2Fgithub%2Fcdsap%2Fgenerator%2Ffiles%2FBuildGradle.kt)
-#### Gradle properties
-[GradleProperties.kt](src%2Fmain%2Fkotlin%2Fio%2Fgithub%2Fcdsap%2Fgenerator%2Ffiles%2FGradleProperties.kt)
-#### Root Settings Gradle
-[SettingsGradle.kt](src%2Fmain%2Fkotlin%2Fio%2Fgithub%2Fcdsap%2Fgenerator%2Ffiles%2FSettingsGradle.kt)
-#### Build Gradle composite build
-[CompositeBuildBuildGradle.kt](src%2Fmain%2Fkotlin%2Fio%2Fgithub%2Fcdsap%2Fgenerator%2Ffiles%2FCompositeBuildBuildGradle.kt)
-#### Convention Plugin used in the modules
-[CompositeBuildPlugin1.kt](src%2Fmain%2Fkotlin%2Fio%2Fgithub%2Fcdsap%2Fgenerator%2Ffiles%2FCompositeBuildPlugin1.kt)
-#### Settings Gradle composite build
-[CompositeBuildSettingsGradle.kt](src%2Fmain%2Fkotlin%2Fio%2Fgithub%2Fcdsap%2Fgenerator%2Ffiles%2FCompositeBuildSettingsGradle.kt)
+```
+
+
 
 ## Libraries used
 * [clikt](https://github.com/ajalt/clikt)
