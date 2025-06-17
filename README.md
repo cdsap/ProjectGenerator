@@ -8,6 +8,11 @@ CLI generating modularized Gradle projects based on different shapes
 
 # Usage
 ## CLI
+### Install
+```
+curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.2.0/projectGenerator  --output projectGenerator
+chmod 0757 projectGenerator
+```
 
 ### Modes
 
@@ -21,7 +26,12 @@ This command generates a project with the specified shape, layers, and modules. 
 ```bash
 ./projectGenerator generate-yaml-versions
 ```
+
 This command generates a `versions.yaml` file template for custom dependency versions.
+Then, you can use the versions.yaml in the `generate-project` command:
+```
+./projectGenerator generate-project --shape triangle --layers 5 --modules 100 --versions-file versions.yaml
+```
 
 ### CLI Options
 - `--shape` (required): triangle, rhombus, flat, rectangle, middle_bottleneck, inverse_triangle
@@ -29,13 +39,13 @@ This command generates a `versions.yaml` file template for custom dependency ver
 - `--layers`: Number of layers (default: 5)
 - `--language`: kts (default), groovy, both
 - `--type`: android (default), jvm
-- `--classesModule`: Number of classes per module (default: 5)
-- `--classesModuleType`: fixed (default), random
-- `--typeOfStringResources`: normal (default), large
-- `--generateUnitTest`: Generate unit tests (default: false)
+- `--classes-module`: Number of classes per module (default: 5)
+- `--classes-module-type`: fixed (default), random
+- `--type-of-string-resources`: normal (default), large
+- `--generate-unit-test`: Generate unit tests (default: false)
 - `--gradle`: gradle_8_2, gradle_8_5, gradle_8_9, gradle_8_13, gradle_8_14_2 (default: gradle_8_14_2)
 - `--develocity`: Enable Develocity build scan plugin (default: false)
-- `--versionsFile`: Path to a custom YAML file with dependency versions
+- `--versions-file`: Path to a custom YAML file with dependency versions
 
 #### Example: Generate a project with custom options
 ```bash
@@ -230,7 +240,8 @@ Gradle used, versions supported:
 * Gradle 8.2
 * Gradle 8.5
 * Gradle 8.9
-* Gradle 8.13 **default**
+* Gradle 8.13
+* Gradle 8.14_2 **default**
 
 ##### Example
 ```kotlin
