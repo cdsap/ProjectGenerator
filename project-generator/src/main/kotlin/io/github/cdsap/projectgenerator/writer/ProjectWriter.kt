@@ -20,23 +20,31 @@ class ProjectWriter(
     private val typeOfStringResources: TypeOfStringResources,
     private val generateUnitTest: Boolean,
     private val gradle: GradleWrapper,
-    private val develocity: Boolean
+    private val develocity: Boolean,
+    private val projectName: String = "project"
 ) {
     fun write() {
         println("Creating Convention Plugin files")
         ConventionPluginWriter(languages, versions, typeOfProjectRequested).write()
         println("Creating Modules files")
 
-        when(typeOfProjectRequested) {
-            TypeProjectRequested.ANDROID -> AndroidModulesWriter(nodes, languages, typeOfStringResources, generateUnitTest,versions).write()
-            TypeProjectRequested.JVM -> JvmModulesWriter(nodes, languages, generateUnitTest,versions).write()
+        when (typeOfProjectRequested) {
+            TypeProjectRequested.ANDROID -> AndroidModulesWriter(
+                nodes,
+                languages,
+                typeOfStringResources,
+                generateUnitTest,
+                versions
+            ).write()
+
+            TypeProjectRequested.JVM -> JvmModulesWriter(nodes, languages, generateUnitTest, versions).write()
         }
 
         println("Creating Project files")
         createGradleProperties(languages)
         copyGradleWrapper(gradle, languages)
         createToml(languages)
-        writeSettingsGradle(nodes, languages,versions, develocity)
+        writeSettingsGradle(nodes, languages, versions, develocity, projectName)
         createProjectBuildGradle(languages)
     }
 
@@ -63,8 +71,14 @@ class ProjectWriter(
         }
     }
 
-    private fun writeSettingsGradle(nodes: List<ProjectGraph>, languages: List<LanguageAttributes>, versions: Versions, develocity: Boolean) {
-        var settingsGradleContent = SettingsGradle().get(versions, develocity)
+    private fun writeSettingsGradle(
+        nodes: List<ProjectGraph>,
+        languages: List<LanguageAttributes>,
+        versions: Versions,
+        develocity: Boolean,
+        projectName: String
+    ) {
+        var settingsGradleContent = SettingsGradle().get(versions, develocity, projectName)
 
         nodes.forEach {
             settingsGradleContent += "\ninclude (\":layer_${it.layer}:${it.id}\")"

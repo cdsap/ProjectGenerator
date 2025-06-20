@@ -16,7 +16,7 @@ import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.nio.file.Path
 
-class CursorValidationTest {
+class SingleE2EValidationTest {
 
     @TempDir
     lateinit var tempDir: Path

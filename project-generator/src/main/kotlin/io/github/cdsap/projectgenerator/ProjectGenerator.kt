@@ -21,6 +21,13 @@ class ProjectGenerator(
 ) {
 
     fun write() {
+        val nameProject = buildString {
+            append(typeOfProjectRequested.name.lowercase())
+            append(shape.name.replaceFirstChar { it.uppercase() })
+            append(modules)
+            append("modules")
+        }
+        println("Creating project $nameProject in $path")
         println("Calculating layer Distribution")
         val distributions = LayerDistribution(modules, layers).get(shape)
         println("Generating Project Dependency Graph")
@@ -41,7 +48,8 @@ class ProjectGenerator(
             typeOfStringResources,
             generateUnitTest,
             gradle,
-            develocity
+            develocity,
+            nameProject
         ).write()
         GraphWriter(nodes, "$path/${shape.name.lowercase()}_$modules").write()
         println("Project created in $path/${shape.name.lowercase()}_$modules")
