@@ -72,7 +72,7 @@
                 "val activity: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "androidx.activity:activity-ktx",
-            "datasourceTemplate": "maven"
+            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
         },
         {
             "fileMatch": [
@@ -82,7 +82,7 @@
                 "val constraintlayout: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "androidx.constraintlayout:constraintlayout",
-            "datasourceTemplate": "maven"
+            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
         },
         {
             "fileMatch": [
@@ -92,7 +92,7 @@
                 "val work: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "androidx.work:work-runtime-ktx",
-            "datasourceTemplate": "maven"
+            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
         },
         {
             "fileMatch": [
@@ -252,7 +252,7 @@
                 "val develocity: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "com.gradle:develocity-gradle-plugin",
-            "datasourceTemplate": "maven"
+            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
         },
         {
             "fileMatch": [
