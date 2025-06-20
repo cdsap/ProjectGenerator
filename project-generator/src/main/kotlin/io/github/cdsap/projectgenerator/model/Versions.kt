@@ -62,7 +62,7 @@ data class Android(
     val material: String = "1.8.0",
     val lifecycle: String = "2.7.0",
     val fragment: String = "1.6.2",
-    val activity: String = "1.8.2",
+    val activity: String = "1.10.1",
     val constraintlayout: String = "2.1.4",
     val work: String = "2.10.1",
     val hilt: String = "2.56.2",
