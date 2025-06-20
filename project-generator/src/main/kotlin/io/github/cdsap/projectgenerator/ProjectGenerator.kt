@@ -23,7 +23,7 @@ class ProjectGenerator(
     fun write() {
         val nameProject = buildString {
             append(typeOfProjectRequested.name.lowercase())
-            append(shape.name.replaceFirstChar { it.uppercase() })
+            append(shape.name.lowercase().replaceFirstChar { it.uppercase() })
             append(modules)
             append("modules")
         }

@@ -33,7 +33,7 @@ class ProjectGeneratorTest {
             assert(File("$tempDir/${it.name.lowercase()}_51/project_kts/settings.gradle.kts").exists())
             assert(
                 File("$tempDir/${it.name.lowercase()}_51/project_kts/settings.gradle.kts").readText()
-                    .contains("android${it.name.replaceFirstChar { it.uppercase() }}51modules")
+                    .contains("android${it.name.lowercase().replaceFirstChar { it.uppercase() }}51modules")
             )
             assert(File("$tempDir/${it.name.lowercase()}_51/project_kts/gradle.properties").exists())
         }
