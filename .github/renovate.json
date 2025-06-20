@@ -10,6 +10,16 @@
             "https://repo1.maven.org/maven2/"
         ]
     },
+    "packageRules": [
+        {
+            "matchDatasources": ["maven"],
+            "registryUrls": [
+                "https://dl.google.com/dl/android/maven2/",
+                "https://plugins.gradle.org/m2/",
+                "https://repo1.maven.org/maven2/"
+            ]
+        }
+    ],
     "regexManagers": [
         {
             "fileMatch": [
@@ -18,8 +28,7 @@
             "matchStrings": [
                 "val agp: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "com.android.tools.build:gradle",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "com.android.tools.build:gradle"
         },
         {
             "fileMatch": [
@@ -28,8 +37,7 @@
             "matchStrings": [
                 "val androidxCore: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "androidx.core:core",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "androidx.core:core"
         },
         {
             "fileMatch": [
@@ -38,8 +46,7 @@
             "matchStrings": [
                 "val appcompat: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "androidx.appcompat:appcompat",
-            "datasourceTemplate":"maven"
+            "depNameTemplate": "androidx.appcompat:appcompat"
         },
         {
             "fileMatch": [
@@ -48,8 +55,7 @@
             "matchStrings": [
                 "val material: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "com.google.android.material:material",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "com.google.android.material:material"
         },
         {
             "fileMatch": [
@@ -58,8 +64,7 @@
             "matchStrings": [
                 "val lifecycle: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "androidx.lifecycle:lifecycle-runtime-ktx",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "androidx.lifecycle:lifecycle-runtime-ktx"
         },
         {
             "fileMatch": [
@@ -68,8 +73,7 @@
             "matchStrings": [
                 "val fragment: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "androidx.fragment:fragment-ktx",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "androidx.fragment:fragment-ktx"
         },
         {
             "fileMatch": [
@@ -78,8 +82,7 @@
             "matchStrings": [
                 "val activity: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "androidx.activity:activity-ktx",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "androidx.activity:activity-ktx"
         },
         {
             "fileMatch": [
@@ -88,8 +91,7 @@
             "matchStrings": [
                 "val constraintlayout: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "androidx.constraintlayout:constraintlayout",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "androidx.constraintlayout:constraintlayout"
         },
         {
             "fileMatch": [
@@ -98,8 +100,7 @@
             "matchStrings": [
                 "val work: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "androidx.work:work-runtime-ktx",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "androidx.work:work-runtime-ktx"
         },
         {
             "fileMatch": [
@@ -108,8 +109,7 @@
             "matchStrings": [
                 "val hilt: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "com.google.dagger:hilt-android",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "com.google.dagger:hilt-android"
         },
         {
             "fileMatch": [
@@ -118,8 +118,7 @@
             "matchStrings": [
                 "val hiltAandroidx: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "androidx.hilt:hilt-navigation-compose",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "androidx.hilt:hilt-navigation-compose"
         },
         {
             "fileMatch": [
@@ -128,8 +127,7 @@
             "matchStrings": [
                 "val composeBom: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "androidx.compose:compose-bom",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "androidx.compose:compose-bom"
         },
         {
             "fileMatch": [
@@ -138,8 +136,7 @@
             "matchStrings": [
                 "val robolectric: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "org.robolectric:robolectric",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "org.robolectric:robolectric"
         },
         {
             "fileMatch": [
@@ -148,8 +145,7 @@
             "matchStrings": [
                 "val espresso: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "androidx.test.espresso:espresso-core",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "androidx.test.espresso:espresso-core"
         },
         {
             "fileMatch": [
@@ -158,8 +154,7 @@
             "matchStrings": [
                 "val kgp: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "org.jetbrains.kotlin:kotlin-gradle-plugin",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "org.jetbrains.kotlin:kotlin-gradle-plugin"
         },
         {
             "fileMatch": [
@@ -168,8 +163,7 @@
             "matchStrings": [
                 "val ksp: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+-\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "com.google.devtools.ksp:symbol-processing-gradle-plugin",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "com.google.devtools.ksp:symbol-processing-gradle-plugin"
         },
         {
             "fileMatch": [
@@ -178,8 +172,7 @@
             "matchStrings": [
                 "val coroutines: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "org.jetbrains.kotlinx:kotlinx-coroutines-core",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "org.jetbrains.kotlinx:kotlinx-coroutines-core"
         },
         {
             "fileMatch": [
@@ -188,8 +181,7 @@
             "matchStrings": [
                 "val kotlinTest: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "org.jetbrains.kotlin:kotlin-test",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "org.jetbrains.kotlin:kotlin-test"
         },
         {
             "fileMatch": [
@@ -198,8 +190,7 @@
             "matchStrings": [
                 "val junit4: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "junit:junit",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "junit:junit"
         },
         {
             "fileMatch": [
@@ -208,8 +199,7 @@
             "matchStrings": [
                 "val junit5: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "org.junit.jupiter:junit-jupiter",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "org.junit.jupiter:junit-jupiter"
         },
         {
             "fileMatch": [
@@ -218,8 +208,7 @@
             "matchStrings": [
                 "val truth: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "com.google.truth:truth",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "com.google.truth:truth"
         },
         {
             "fileMatch": [
@@ -228,8 +217,7 @@
             "matchStrings": [
                 "val mockk: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "io.mockk:mockk",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "io.mockk:mockk"
         },
         {
             "fileMatch": [
@@ -238,8 +226,7 @@
             "matchStrings": [
                 "val coreTesting: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "androidx.arch.core:core-testing",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "androidx.arch.core:core-testing"
         },
         {
             "fileMatch": [
@@ -248,8 +235,7 @@
             "matchStrings": [
                 "val junitExt: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "androidx.test.ext:junit",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "androidx.test.ext:junit"
         },
         {
             "fileMatch": [
@@ -258,8 +244,7 @@
             "matchStrings": [
                 "val develocity: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "com.gradle:develocity-gradle-plugin",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "com.gradle:develocity-gradle-plugin"
         },
         {
             "fileMatch": [
@@ -268,8 +253,7 @@
             "matchStrings": [
                 "AdditionalPlugin\\(\"com\\.autonomousapps\\.dependency-analysis\",\\s*\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
-            "depNameTemplate": "com.autonomousapps:dependency-analysis-gradle-plugin",
-            "datasourceTemplate": "maven"
+            "depNameTemplate": "com.autonomousapps:dependency-analysis-gradle-plugin"
         }
     ]
 }
