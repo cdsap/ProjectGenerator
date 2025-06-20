@@ -31,7 +31,7 @@ data class AdditionalPlugin(
 
 data class Project(
     val jdk: String = "23",
-    val develocity: String = "4.0.1",
+    val develocity: String = "4.0.2",
 )
 
 data class KotlinProcessor(
