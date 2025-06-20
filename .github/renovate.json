@@ -3,6 +3,13 @@
     "extends": [
         "config:base"
     ],
+    "maven": {
+        "repositories": [
+            "https://dl.google.com/dl/android/maven2/",
+            "https://plugins.gradle.org/m2/",
+            "https://repo1.maven.org/maven2/"
+        ]
+    },
     "regexManagers": [
         {
             "fileMatch": [
@@ -12,7 +19,7 @@
                 "val agp: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "com.android.tools.build:gradle",
-            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
+            "datasourceTemplate": "maven"
         },
         {
             "fileMatch": [
@@ -22,7 +29,7 @@
                 "val androidxCore: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "androidx.core:core",
-            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
+            "datasourceTemplate": "maven"
         },
         {
             "fileMatch": [
@@ -32,7 +39,7 @@
                 "val appcompat: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "androidx.appcompat:appcompat",
-            "datasourceTemplate":"https://dl.google.com/dl/android/maven2/"
+            "datasourceTemplate":"maven"
         },
         {
             "fileMatch": [
@@ -42,7 +49,7 @@
                 "val material: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "com.google.android.material:material",
-            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
+            "datasourceTemplate": "maven"
         },
         {
             "fileMatch": [
@@ -52,7 +59,7 @@
                 "val lifecycle: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "androidx.lifecycle:lifecycle-runtime-ktx",
-            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
+            "datasourceTemplate": "maven"
         },
         {
             "fileMatch": [
@@ -62,7 +69,7 @@
                 "val fragment: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "androidx.fragment:fragment-ktx",
-            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
+            "datasourceTemplate": "maven"
         },
         {
             "fileMatch": [
@@ -72,7 +79,7 @@
                 "val activity: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "androidx.activity:activity-ktx",
-            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
+            "datasourceTemplate": "maven"
         },
         {
             "fileMatch": [
@@ -82,7 +89,7 @@
                 "val constraintlayout: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "androidx.constraintlayout:constraintlayout",
-            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
+            "datasourceTemplate": "maven"
         },
         {
             "fileMatch": [
@@ -92,7 +99,7 @@
                 "val work: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "androidx.work:work-runtime-ktx",
-            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
+            "datasourceTemplate": "maven"
         },
         {
             "fileMatch": [
@@ -252,7 +259,7 @@
                 "val develocity: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "com.gradle:develocity-gradle-plugin",
-            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
+            "datasourceTemplate": "maven"
         },
         {
             "fileMatch": [
