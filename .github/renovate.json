@@ -12,7 +12,7 @@
                 "val agp: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "com.android.tools.build:gradle",
-            "datasourceTemplate": "https://maven.google.com/"
+            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
         },
         {
             "fileMatch": [
@@ -22,7 +22,7 @@
                 "val androidxCore: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "androidx.core:core",
-            "datasourceTemplate": "https://maven.google.com/"
+            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
         },
         {
             "fileMatch": [
@@ -32,7 +32,7 @@
                 "val appcompat: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "androidx.appcompat:appcompat",
-            "datasourceTemplate":"https://maven.google.com/"
+            "datasourceTemplate":"https://dl.google.com/dl/android/maven2/"
         },
         {
             "fileMatch": [
@@ -42,7 +42,7 @@
                 "val material: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "com.google.android.material:material",
-            "datasourceTemplate": "https://maven.google.com/"
+            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
         },
         {
             "fileMatch": [
@@ -52,7 +52,7 @@
                 "val lifecycle: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "androidx.lifecycle:lifecycle-runtime-ktx",
-            "datasourceTemplate": "https://maven.google.com/"
+            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
         },
         {
             "fileMatch": [
@@ -62,7 +62,7 @@
                 "val fragment: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
             ],
             "depNameTemplate": "androidx.fragment:fragment-ktx",
-            "datasourceTemplate": "https://maven.google.com/"
+            "datasourceTemplate": "https://dl.google.com/dl/android/maven2/"
         },
         {
             "fileMatch": [

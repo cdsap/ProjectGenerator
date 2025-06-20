@@ -147,7 +147,7 @@ Each module generated includes 900 string resources in the file `strings.xml`
 
 ##### Example
 ```kotlin
-./projectGenerator  generate-project  --shape triangle --layers 5 --modules 100 --type-of-string-rresources large
+./projectGenerator  generate-project  --shape triangle --layers 5 --modules 100 --type-of-string-resources large
 ```
 ## Generate Unit Test
 **default false**
