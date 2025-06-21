@@ -45,7 +45,7 @@ data class Testing(
     val truth: String = "1.4.4",
     val mockk: String = "1.14.2",
     val coreTesting: String = "2.2.0",
-    val junitExt: String = "1.1.5",
+    val junitExt: String = "1.2.1",
 )
 
 data class Kotlin(
