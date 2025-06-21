@@ -164,6 +164,12 @@
         },
         {
             "fileMatch": ["^.*Versions\\.kt$"],
+            "matchStrings": ["val ccud: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""],
+            "depNameTemplate": "com.gradle:common-custom-user-data-gradle-plugin",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": ["^.*Versions\\.kt$"],
             "matchStrings": ["AdditionalPlugin\\(\"com\\.autonomousapps\\.dependency-analysis\",\\s*\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""],
             "depNameTemplate": "com.autonomousapps:dependency-analysis-gradle-plugin",
             "datasourceTemplate": "maven"

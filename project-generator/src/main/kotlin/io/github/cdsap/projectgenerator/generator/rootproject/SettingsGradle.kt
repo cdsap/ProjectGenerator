@@ -4,12 +4,12 @@ import io.github.cdsap.projectgenerator.model.Versions
 
 class SettingsGradle {
 
-    fun get(versions: Versions, develocity: Boolean): String {
+    fun get(versions: Versions, develocity: Boolean, projectName: String): String {
         val develocityBlock = if (develocity) {
             """
                 |plugins {
-                |    id("com.gradle.develocity") version "4.0.1"
-                |    id("com.gradle.common-custom-user-data-gradle-plugin") version "2.2"
+                |    id("com.gradle.develocity") version "${versions.project.develocity}"
+                |    id("com.gradle.common-custom-user-data-gradle-plugin") version "${versions.project.ccud}"
                 |    ${additionalSettingsPlugins(versions)}
                 |}
                 |
@@ -32,7 +32,7 @@ class SettingsGradle {
             |        gradlePluginPortal()
             |    }
             |}
-            |rootProject.name="project"
+            |rootProject.name="$projectName"
             |$develocityBlock
             |dependencyResolutionManagement {
             |    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
