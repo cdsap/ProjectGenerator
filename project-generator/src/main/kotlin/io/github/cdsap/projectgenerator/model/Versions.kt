@@ -64,7 +64,7 @@ data class Android(
     val lifecycle: String = "2.7.0",
     val fragment: String = "1.6.2",
     val activity: String = "1.10.1",
-    val constraintlayout: String = "2.1.4",
+    val constraintlayout: String = "2.2.1",
     val work: String = "2.10.2",
     val hilt: String = "2.56.2",
     val hiltAandroidx: String = "1.2.0",
