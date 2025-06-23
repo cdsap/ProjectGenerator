@@ -70,5 +70,5 @@ data class Android(
     val hiltAandroidx: String = "1.2.0",
     val composeBom: String = "2025.06.01",
     val robolectric: String = "4.14.1",
-    val espresso: String = "3.5.1",
+    val espresso: String = "3.6.1",
 )
