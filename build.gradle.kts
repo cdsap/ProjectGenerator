@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.1.21"
+    kotlin("jvm") version "2.2.0"
     id("org.jlleitschuh.gradle.ktlint") version "12.3.0"
 }
 
