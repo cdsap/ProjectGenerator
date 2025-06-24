@@ -9,7 +9,7 @@ version = "0.2.0"
 
 dependencies {
     implementation("com.squareup:kotlinpoet:2.1.0")
-    testImplementation(platform("org.junit:junit-bom:5.11.1"))
+    testImplementation(platform("org.junit:junit-bom:5.13.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation(gradleTestKit())
 }
