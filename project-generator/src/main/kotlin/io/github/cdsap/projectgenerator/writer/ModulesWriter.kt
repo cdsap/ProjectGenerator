@@ -27,7 +27,7 @@ abstract class ModulesWrite<MODULE_DEF, DICT>(
             languages.forEach { lang ->
                 createModuleStructure(module, lang)
                 classGenerator.generate(plan, lang.projectName, classesDictionary)
-                buildFilesGenerator.generateBuildFiles(module, lang)
+                buildFilesGenerator.generateBuildFiles(module, lang, generateUnitTest)
                 resourceGeneratorA?.generate(
                     module,
                     lang,
@@ -85,7 +85,7 @@ interface TestGenerator<MODULE_DEF, DICT> {
 }
 
 interface BuildFilesGenerator {
-    fun generateBuildFiles(node: ProjectGraph, lang: LanguageAttributes)
+    fun generateBuildFiles(node: ProjectGraph, lang: LanguageAttributes, generateUnitTests: Boolean)
 }
 
 interface ResourceGeneratorA<DICT> {

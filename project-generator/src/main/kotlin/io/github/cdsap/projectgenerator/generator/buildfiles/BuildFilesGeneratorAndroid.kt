@@ -11,19 +11,20 @@ import java.io.File
 class BuildFilesGeneratorAndroid(val versions: Versions) : BuildFilesGenerator {
     override fun generateBuildFiles(
         node: ProjectGraph,
-        lang: LanguageAttributes
+        lang: LanguageAttributes,
+        generateUnitTests: Boolean
     ) {
 
         val buildFile = File("${lang.projectName}/layer_${node.layer}/${node.id}/build.${lang.extension}")
         val buildContent = when (node.type) {
-            TypeProject.ANDROID_APP -> createAndroidAppBuildFile(node)
-            TypeProject.ANDROID_LIB -> createAndroidLibBuildFile(node)
+            TypeProject.ANDROID_APP -> createAndroidAppBuildFile(node, generateUnitTests)
+            TypeProject.ANDROID_LIB -> createAndroidLibBuildFile(node, generateUnitTests)
             else -> ""
         }
         buildFile.writeText(buildContent)
     }
 
-    private fun createAndroidAppBuildFile(node: ProjectGraph): String {
+    private fun createAndroidAppBuildFile(node: ProjectGraph, generateUnitTests: Boolean): String {
         val implementations = mutableSetOf<String>()
         val testImplementations = mutableSetOf<String>()
         node.nodes.forEach { dependency ->
@@ -67,7 +68,7 @@ ${testImplementations.joinToString("\n").prependIndent("    ")}
         """.trimMargin()
     }
 
-    private fun createAndroidLibBuildFile(node: ProjectGraph): String {
+    private fun createAndroidLibBuildFile(node: ProjectGraph, generateUnitTests: Boolean): String {
         val implementations = mutableSetOf<String>()
         val testImplementations = mutableSetOf<String>()
         val deps = AndroidToml().tomlImplementations(versions)
@@ -76,7 +77,9 @@ ${testImplementations.joinToString("\n").prependIndent("    ")}
             if (dependency.layer != node.layer) {
                 val dependencyPath = ":layer_${dependency.layer}:${dependency.id}"
                 implementations.add("implementation(project(\"$dependencyPath\"))")
-                testImplementations.add("testImplementation(project(\"$dependencyPath\"))")
+                if(generateUnitTests) {
+                    testImplementations.add("testImplementation(project(\"$dependencyPath\"))")
+                }
             }
         }
 
@@ -88,8 +91,8 @@ ${testImplementations.joinToString("\n").prependIndent("    ")}
             currentNode.nodes.forEach { dependency ->
                 if (dependency.layer != node.layer) {
                     val dependencyPath = ":layer_${dependency.layer}:${dependency.id}"
-                    implementations.add("implementation(project(\"$dependencyPath\"))")
-                    testImplementations.add("testImplementation(project(\"$dependencyPath\"))")
+                 //   implementations.add("implementation(project(\"$dependencyPath\"))")
+                  //  testImplementations.add("testImplementation(project(\"$dependencyPath\"))")
                     collectAllDependencies(dependency, visited)
                 }
             }
