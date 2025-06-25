@@ -90,10 +90,7 @@ ${testImplementations.joinToString("\n").prependIndent("    ")}
 
             currentNode.nodes.forEach { dependency ->
                 if (dependency.layer != node.layer) {
-                    val dependencyPath = ":layer_${dependency.layer}:${dependency.id}"
-                 //   implementations.add("implementation(project(\"$dependencyPath\"))")
-                  //  testImplementations.add("testImplementation(project(\"$dependencyPath\"))")
-                    collectAllDependencies(dependency, visited)
+                     collectAllDependencies(dependency, visited)
                 }
             }
         }
