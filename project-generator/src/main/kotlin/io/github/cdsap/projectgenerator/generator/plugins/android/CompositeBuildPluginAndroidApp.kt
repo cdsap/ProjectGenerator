@@ -13,6 +13,7 @@ class CompositeBuildPluginAndroidApp {
         |import org.gradle.kotlin.dsl.configure
         |import org.gradle.kotlin.dsl.dependencies
         |import org.gradle.kotlin.dsl.withType
+        |import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
         |
         |class CompositeBuildPluginAndroidApp : Plugin<Project> {
         |    override fun apply(target: Project) {
@@ -50,10 +51,8 @@ class CompositeBuildPluginAndroidApp {
         |                    compose = true
         |                }
         |            }
-        |            target.tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-        |                kotlinOptions {
-        |                    jvmTarget = JavaVersion.VERSION_${versions.project.jdk}.toString()
-        |                }
+        |            target.extensions.getByType(KotlinAndroidProjectExtension::class.java).apply {
+        |                    jvmToolchain(${versions.project.jdk})
         |            }
         |
         |
