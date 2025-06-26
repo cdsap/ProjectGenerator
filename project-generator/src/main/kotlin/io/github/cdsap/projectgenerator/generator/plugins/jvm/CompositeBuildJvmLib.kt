@@ -11,6 +11,8 @@ class CompositeBuildJvmLib {
         |import org.gradle.api.Project
         |import org.gradle.kotlin.dsl.dependencies
         |import org.gradle.kotlin.dsl.withType
+        |import org.gradle.kotlin.dsl.withType
+        |import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
         |
         |class PluginJvmLib : Plugin<Project> {
         |    override fun apply(target: Project) {
@@ -26,10 +28,8 @@ class CompositeBuildJvmLib {
         |                add("testImplementation","org.junit.vintage:junit-vintage-engine:5.10.1")
         |            }
         |        }
-        |        target.tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-        |            kotlinOptions {
-        |                jvmTarget = JavaVersion.VERSION_${versions.project.jdk}.toString()
-        |            }
+        |        target.extensions.getByType(KotlinJvmProjectExtension::class.java).apply {
+        |            jvmToolchain(${versions.project.jdk})
         |        }
         |    }
         |}
