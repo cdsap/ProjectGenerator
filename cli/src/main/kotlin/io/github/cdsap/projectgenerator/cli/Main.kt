@@ -31,7 +31,7 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
     private val shape: String by option().choice(
         "rhombus", "triangle", "flat",
         "rectangle", "middle_bottleneck", "inverse_triangle"
-    ).required()
+    ).default("rhombus")
     private val language: String by option().choice("kts", "groovy", "both").default("kts")
     private val modules by option().int().required()
         .check("max number of projects 4000") { it in (layers + 1)..4000 }
