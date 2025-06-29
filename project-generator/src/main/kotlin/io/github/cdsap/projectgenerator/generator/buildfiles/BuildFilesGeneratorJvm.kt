@@ -9,7 +9,8 @@ import java.io.File
 class BuildFilesGeneratorJvm : BuildFilesGenerator {
     override fun generateBuildFiles(
         node: ProjectGraph,
-        lang: LanguageAttributes
+        lang: LanguageAttributes,
+        generateUnitTests: Boolean
     ) {
         val buildFile = File("${lang.projectName}/layer_${node.layer}/${node.id}/build.${lang.extension}")
         val buildContent = when (node.type) {
