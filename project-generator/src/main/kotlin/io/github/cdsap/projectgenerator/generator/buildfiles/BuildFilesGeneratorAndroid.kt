@@ -77,7 +77,7 @@ ${testImplementations.joinToString("\n").prependIndent("    ")}
             if (dependency.layer != node.layer) {
                 val dependencyPath = ":layer_${dependency.layer}:${dependency.id}"
                 implementations.add("implementation(project(\"$dependencyPath\"))")
-                if(generateUnitTests) {
+                if (generateUnitTests) {
                     testImplementations.add("testImplementation(project(\"$dependencyPath\"))")
                 }
             }
@@ -90,7 +90,11 @@ ${testImplementations.joinToString("\n").prependIndent("    ")}
 
             currentNode.nodes.forEach { dependency ->
                 if (dependency.layer != node.layer) {
-                     collectAllDependencies(dependency, visited)
+                    val dependencyPath = ":layer_${dependency.layer}:${dependency.id}"
+                    if (generateUnitTests) {
+                        testImplementations.add("testImplementation(project(\"$dependencyPath\"))")
+                    }
+                    collectAllDependencies(dependency, visited)
                 }
             }
         }
