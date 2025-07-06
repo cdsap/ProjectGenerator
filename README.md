@@ -10,7 +10,7 @@ CLI generating modularized Gradle projects based on different shapes
 ## CLI
 ### Install
 ```
-curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.2.0/projectGenerator  --output projectGenerator
+curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.2.1/projectGenerator  --output projectGenerator
 chmod 0757 projectGenerator
 ```
 
@@ -73,7 +73,7 @@ ProjectGenerator(
 ```
 ### Dependency
 ```
-  implementation("io.github.cdsap:projectgenerator:0.2.0")
+  implementation("io.github.cdsap:projectgenerator:0.2.1")
 ```
 
 # Options

@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.cdsap"
-version = "0.2.0"
+version = "0.2.1"
 
 dependencies {
     implementation("com.squareup:kotlinpoet:2.1.0")
