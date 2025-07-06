@@ -77,19 +77,7 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
 }
 
 class GenerateYaml : CliktCommand(name = "generate-yaml-versions") {
-    // Add any options specific to YAML generation if needed
     override fun run() {
         GenerateVersionsYaml().generate()
-        val a = parseYaml(File("versions.yaml"))
-        println(a.kotlin.kotlinTest)
-        // Add your logic here
-    }
-
-    private fun parseYaml(rules: File): Versions {
-        val mapper = ObjectMapper(YAMLFactory()).apply {
-            registerModule(KotlinModule())
-            configOverride(List::class.java).setterInfo = JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY)
-        }
-        return mapper.readValue(rules)
     }
 }
