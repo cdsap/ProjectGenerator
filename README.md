@@ -18,7 +18,7 @@ chmod 0757 projectGenerator
 
 #### 1. Generate Project (default)
 ```bash
-./projectGenerator generate-project --shape triangle --layers 5 --modules 100
+./projectGenerator generate-project --modules 100
 ```
 This command generates a project with the specified shape, layers, and modules. All options below can be combined with this mode.
 
@@ -34,7 +34,7 @@ Then, you can use the versions.yaml in the `generate-project` command:
 ```
 
 ### CLI Options
-- `--shape` (required): triangle, rhombus, flat, rectangle, middle_bottleneck, inverse_triangle
+- `--shape`: triangle, rhombus, flat, rectangle, middle_bottleneck, inverse_triangle (default: rectangle)
 - `--modules` (required): Number of modules to create
 - `--layers`: Number of layers (default: 5)
 - `--language`: kts (default), groovy, both
@@ -91,7 +91,7 @@ Current shapes supported:
 ![Triangle](resources/inverse_triangle.png)
 ### `rhombus`
 ![Rhombus](resources/rhombus.png)
-### `rectangle`
+### `rectangle` (default)
 ![Rectangle](resources/rectangle.png)
 ### `flat`
 ![Flat](resources/flat.png)
