@@ -10,7 +10,7 @@ data class Versions(
     val additionalBuildGradleRootPlugins: List<AdditionalPlugin> = listOf(
         AdditionalPlugin(
             "com.autonomousapps.dependency-analysis",
-            "2.18.0"
+            "2.19.0"
         )
     ),
     val additionalSettingsPlugins: List<AdditionalPlugin> = listOf(),
