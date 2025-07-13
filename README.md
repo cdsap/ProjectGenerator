@@ -43,7 +43,7 @@ Then, you can use the versions.yaml in the `generate-project` command:
 - `--classes-module-type`: fixed (default), random
 - `--type-of-string-resources`: normal (default), large
 - `--generate-unit-test`: Generate unit tests (default: false)
-- `--gradle`: gradle_8_2, gradle_8_5, gradle_8_9, gradle_8_13, gradle_8_14_2 (default: gradle_8_14_2)
+- `--gradle`: gradle_8_2, gradle_8_5, gradle_8_9, gradle_8_13, gradle_8_14_3 (default: gradle_8_14_3)
 - `--develocity`: Enable Develocity build scan plugin (default: false)
 - `--versions-file`: Path to a custom YAML file with dependency versions
 
@@ -66,7 +66,7 @@ ProjectGenerator(
     typeOfStringResources = TypeOfStringResources.LARGE,
     layers = 5,
     generateUnitTest = true,
-    gradle = GradleWrapper(Gradle.GRADLE_8_14_2),
+    gradle = GradleWrapper(Gradle.GRADLE_8_14_3),
     path = file.path
 ).write()
 

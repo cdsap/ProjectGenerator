@@ -4,7 +4,6 @@ import io.github.cdsap.projectgenerator.model.Android
 import io.github.cdsap.projectgenerator.model.ClassesPerModule
 import io.github.cdsap.projectgenerator.model.ClassesPerModuleType
 import io.github.cdsap.projectgenerator.model.Gradle
-import io.github.cdsap.projectgenerator.model.Kotlin
 import io.github.cdsap.projectgenerator.model.Language
 import io.github.cdsap.projectgenerator.model.Project
 import io.github.cdsap.projectgenerator.model.Shape
@@ -38,7 +37,7 @@ class ProjectGeneratorE2ETest {
             TypeOfStringResources.LARGE,
             5,
             true,
-            GradleWrapper(Gradle.GRADLE_8_14_2),
+            GradleWrapper(Gradle.GRADLE_8_14_3),
             path = tempDir.toFile().path
         ).write()
         val filePath = File("$tempDir/${shape.name.lowercase()}_$modules/project_kts")
@@ -106,7 +105,7 @@ class ProjectGeneratorE2ETest {
             TypeOfStringResources.LARGE,
             5,
             true,
-            GradleWrapper(Gradle.GRADLE_8_14_2),
+            GradleWrapper(Gradle.GRADLE_8_14_3),
             path = tempDir.toFile().path
         ).write()
         val toml = File("$tempDir/${shape.name.lowercase()}_$modules/project_kts/gradle/libs.versions.toml")
