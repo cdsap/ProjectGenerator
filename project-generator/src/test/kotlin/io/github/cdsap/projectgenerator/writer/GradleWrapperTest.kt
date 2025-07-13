@@ -16,7 +16,7 @@ class GradleWrapperTest {
     @Test
     fun `installGradleVersion should unzip files and make them executable`() {
 
-        val gradle = Gradle.GRADLE_8_14_2// Will look for test-wrapper.zip
+        val gradle = Gradle.GRADLE_8_14_3
         val gradleWrapper = GradleWrapper(gradle)
 
         gradleWrapper.installGradleVersion(tempDir.absolutePath)

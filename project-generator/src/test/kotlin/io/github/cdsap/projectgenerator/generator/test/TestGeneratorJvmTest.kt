@@ -28,7 +28,7 @@ class TestGeneratorJvmTest {
             TypeProjectRequested.JVM,
             TypeOfStringResources.NORMAL,
             true, // generateUnitTest
-            GradleWrapper(Gradle.GRADLE_8_14_2),
+            GradleWrapper(Gradle.GRADLE_8_14_3),
             false
         )
         projectWriter.write()

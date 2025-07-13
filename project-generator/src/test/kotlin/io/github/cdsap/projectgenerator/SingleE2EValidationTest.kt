@@ -36,7 +36,7 @@ class SingleE2EValidationTest {
             typeOfStringResources = TypeOfStringResources.LARGE,
             layers = 5,
             generateUnitTest = true,
-            gradle = GradleWrapper(Gradle.GRADLE_8_14_2),
+            gradle = GradleWrapper(Gradle.GRADLE_8_14_3),
             path = tempDir.toFile().path
         ).write()
         val filePath = File("$tempDir/${shape.name.lowercase()}_$modules/project_kts")
