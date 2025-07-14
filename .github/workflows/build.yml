@@ -27,7 +27,7 @@ jobs:
           java-version: '${{ matrix.java }}'
       - name: Execute test binary and cli
         run: >
-          ./gradlew :project-generator:test --tests SingleE2EValidationTest
+          ./gradlew :project-generator:test
 
           ./gradlew :cli:fatBinary
 
