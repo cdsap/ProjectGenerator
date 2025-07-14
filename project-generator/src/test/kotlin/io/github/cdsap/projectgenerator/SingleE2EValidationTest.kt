@@ -43,7 +43,8 @@ class SingleE2EValidationTest {
         val result = GradleRunner.create()
             .withProjectDir(filePath)
             .withArguments("assembleDebug")
-            .build();
+            .build()
+        println(result.output)
         assert(result.output.contains("BUILD SUCCESSFUL"))
         val resultTest = GradleRunner.create()
             .withProjectDir(filePath)
