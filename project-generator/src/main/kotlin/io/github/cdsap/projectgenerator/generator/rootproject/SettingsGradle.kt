@@ -14,7 +14,7 @@ class SettingsGradle {
                 |}
                 |
                 |develocity {
-                |    server = "https://ge.solutions-team.gradle.com/"
+                |    server = "${versions.project.develocityUrl}"
                 |    allowUntrustedServer = true
                 |    buildScan {
                 |        uploadInBackground.set(false)

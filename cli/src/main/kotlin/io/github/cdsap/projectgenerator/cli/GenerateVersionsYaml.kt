@@ -11,6 +11,7 @@ class GenerateVersionsYaml {
         val content = """
             |project:
             |  develocity: ${versions.project.develocity}
+            |  develocityUrl: ${versions.project.develocityUrl}
             |  jdk: ${versions.project.jdk}
             |kotlin:
             |  kgp: ${versions.kotlin.kgp}
