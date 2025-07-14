@@ -51,6 +51,9 @@ class CompositeBuildPluginAndroidLib {
         |                    jvmToolchain(${versions.project.jdk})
         |            }
         |
+        |            target.extensions.getByType(org.gradle.api.plugins.JavaPluginExtension::class.java).apply {
+        |                toolchain.languageVersion.set(org.gradle.jvm.toolchain.JavaLanguageVersion.of(${versions.project.jdk}))
+        |            }
         |
         |            dependencies {
         |

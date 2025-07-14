@@ -18,6 +18,7 @@ class CompositeBuildBuildGradle {
             """
             |plugins {
             |    `kotlin-dsl`
+            |    kotlin("jvm") version "${versions.kotlin.kgp}"
             |}
             |
             |dependencies {
@@ -26,6 +27,7 @@ class CompositeBuildBuildGradle {
             |
             |    $classpath
             |}
+            |
             |
             |gradlePlugin {
             |    plugins {
@@ -49,11 +51,13 @@ class CompositeBuildBuildGradle {
             """
             |plugins {
             |    `kotlin-dsl`
+            |    kotlin("jvm") version "${versions.kotlin.kgp}"
             |}
             |
             |dependencies {
             |    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin.kgp}")
             |}
+            |
             |
             |gradlePlugin {
             |    plugins {
