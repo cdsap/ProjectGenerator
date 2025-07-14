@@ -11,6 +11,9 @@ class CompositeBuildPluginAndroidApp {
         |import org.gradle.api.JavaVersion
         |import org.gradle.api.Project
         |import org.gradle.kotlin.dsl.configure
+        |import org.gradle.api.tasks.compile.JavaCompile
+        |import org.gradle.jvm.toolchain.JavaLanguageVersion
+        |import org.gradle.jvm.toolchain.JavaToolchainService
         |import org.gradle.kotlin.dsl.dependencies
         |import org.gradle.kotlin.dsl.withType
         |import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
@@ -43,10 +46,6 @@ class CompositeBuildPluginAndroidApp {
         |                        proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         |                    }
         |                }
-        |                compileOptions {
-        |                    sourceCompatibility = JavaVersion.VERSION_${versions.project.jdk}
-        |                    targetCompatibility = JavaVersion.VERSION_${versions.project.jdk}
-        |                }
         |                buildFeatures {
         |                    compose = true
         |                }
@@ -54,7 +53,20 @@ class CompositeBuildPluginAndroidApp {
         |            target.extensions.getByType(KotlinAndroidProjectExtension::class.java).apply {
         |                    jvmToolchain(${versions.project.jdk})
         |            }
-        |
+        |            target.extensions.getByType(org.gradle.api.plugins.JavaPluginExtension::class.java).apply {
+        |                toolchain.languageVersion.set(org.gradle.jvm.toolchain.JavaLanguageVersion.of(${versions.project.jdk}))
+        |            }
+        |            // Hilt missing Java Toolchain support https://github.com/google/dagger/issues/4623
+        |            val toolchains = target.extensions.getByType(JavaToolchainService::class.java)
+        |            target.tasks.withType(JavaCompile::class.java)
+        |                 .matching { it.name.startsWith("hiltJavaCompile") }
+        |                 .configureEach {
+        |                     javaCompiler.set(
+        |                         toolchains.compilerFor {
+        |                             languageVersion.set(JavaLanguageVersion.of(23))
+        |                         }
+        |                     )
+        |                 }
         |
         |            dependencies {
         |
