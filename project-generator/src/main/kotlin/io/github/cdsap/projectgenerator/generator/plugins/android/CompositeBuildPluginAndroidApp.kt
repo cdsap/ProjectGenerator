@@ -63,7 +63,7 @@ class CompositeBuildPluginAndroidApp {
         |                 .configureEach {
         |                     javaCompiler.set(
         |                         toolchains.compilerFor {
-        |                             languageVersion.set(JavaLanguageVersion.of(23))
+        |                             languageVersion.set(JavaLanguageVersion.of(${versions.project.jdk}))
         |                         }
         |                     )
         |                 }
