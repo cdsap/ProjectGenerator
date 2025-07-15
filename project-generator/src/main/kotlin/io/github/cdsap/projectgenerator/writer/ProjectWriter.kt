@@ -4,6 +4,7 @@ import io.github.cdsap.projectgenerator.generator.rootproject.BuildGradle
 import io.github.cdsap.projectgenerator.generator.rootproject.GradleProperties
 import io.github.cdsap.projectgenerator.generator.rootproject.SettingsGradle
 import io.github.cdsap.projectgenerator.generator.extension.projectFile
+import io.github.cdsap.projectgenerator.generator.rootproject.Gitignore
 import io.github.cdsap.projectgenerator.generator.toml.AndroidToml
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.model.ProjectGraph
@@ -42,10 +43,18 @@ class ProjectWriter(
 
         println("Creating Project files")
         createGradleProperties(languages)
+        createGitignore(languages)
         copyGradleWrapper(gradle, languages)
         createToml(languages)
         writeSettingsGradle(nodes, languages, versions, develocity, projectName)
         createProjectBuildGradle(languages)
+    }
+
+    private fun createGitignore(languages: List<LanguageAttributes>) {
+        val gitIgnore = Gitignore().get()
+        languages.forEach {
+            File("${it.projectName}/.gitignore").projectFile(gitIgnore)
+        }
     }
 
     private fun createToml(languages: List<LanguageAttributes>) {
