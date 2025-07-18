@@ -16,6 +16,7 @@ import io.github.cdsap.projectgenerator.ProjectGenerator
 import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
 import java.io.File
+import kotlin.text.buildString
 
 fun main(args: Array<String>) {
     ProjectReportCli()
@@ -51,22 +52,33 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
         .default("gradle_8_14_3")
     private val develocity by option().flag(default = false)
     private val versionsFile by option().file()
+    private val projectName by  option()
 
 
-    override fun run() = ProjectGenerator(
-        modules,
-        Shape.valueOf(shape.uppercase()),
-        Language.valueOf(language.uppercase()),
-        TypeProjectRequested.valueOf(type.uppercase()),
-        ClassesPerModule(ClassesPerModuleType.valueOf(classesModuleType.uppercase()), classesModule),
-        versions = if (versionsFile != null) parseYaml(versionsFile!!) else Versions(),
-        TypeOfStringResources.valueOf(typeOfStringResources.uppercase()),
-        layers,
-        generateUnitTest,
-        GradleWrapper(Gradle.valueOf(gradle.uppercase())),
-        develocity = develocity
-    ).write()
+    override fun run() {
+        val typeOfProjectRequested = TypeProjectRequested.valueOf(type.uppercase())
+        val shape = Shape.valueOf(shape.uppercase())
+        ProjectGenerator(
+            modules,
+            shape,
+            Language.valueOf(language.uppercase()),
+            typeOfProjectRequested,
+            ClassesPerModule(ClassesPerModuleType.valueOf(classesModuleType.uppercase()), classesModule),
+            versions = if (versionsFile != null) parseYaml(versionsFile!!) else Versions(),
+            TypeOfStringResources.valueOf(typeOfStringResources.uppercase()),
+            layers,
+            generateUnitTest,
+            GradleWrapper(Gradle.valueOf(gradle.uppercase())),
+            develocity = develocity,
+            projectName = projectName ?: buildString {
+                append(typeOfProjectRequested.name.lowercase())
+                append(shape.name.lowercase().replaceFirstChar { it.uppercase() })
+                append(modules)
+                append("modules")
+            }
 
+        ).write()
+    }
     private fun parseYaml(rules: File): Versions {
         val mapper = ObjectMapper(YAMLFactory()).apply {
             registerModule(KotlinModule())

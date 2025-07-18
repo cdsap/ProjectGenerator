@@ -20,16 +20,12 @@ class ProjectGenerator(
     private val develocity: Boolean = false,
     private val layerNames: List<String> = DefaultNames.layerNames,
     private val moduleNameParts: List<String> = DefaultNames.moduleNames,
+    private val projectName: String
 ) {
 
     fun write() {
-        val nameProject = buildString {
-            append(typeOfProjectRequested.name.lowercase())
-            append(shape.name.lowercase().replaceFirstChar { it.uppercase() })
-            append(modules)
-            append("modules")
-        }
-        println("Creating project $nameProject in $path")
+
+        println("Creating project $projectName in $path")
         println("Calculating layer Distribution")
 
         // Generate name mappings for layers and modules
@@ -71,7 +67,7 @@ class ProjectGenerator(
             generateUnitTest,
             gradle,
             develocity,
-            nameProject
+            projectName
         ).write()
         GraphWriter(nodes, projectLanguageAttributes.first().projectName).write()
         println("Project created in ${projectLanguageAttributes.first().projectName}")

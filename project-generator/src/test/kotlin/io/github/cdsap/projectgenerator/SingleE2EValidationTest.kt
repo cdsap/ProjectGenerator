@@ -38,7 +38,8 @@ class SingleE2EValidationTest {
             layers = 5,
             generateUnitTest = true,
             gradle = GradleWrapper(Gradle.GRADLE_8_14_3),
-            path = tempDir.toFile().path
+            path = tempDir.toFile().path,
+            projectName = "${shape.name.lowercase()}_$modules"
         ).write()
         val filePath = File("$tempDir/android${shape.name.lowercase().capitalize()}${modules}modules/project_kts")
         val result = GradleRunner.create()

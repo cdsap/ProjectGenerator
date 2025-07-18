@@ -28,7 +28,6 @@ class ProjectGeneratorE2ETest {
     @EnumSource(Shape::class)
     fun testBuildAndroidProjects(shape: Shape) {
         val modules = 50
-
         ProjectGenerator(
             modules,
             shape,
@@ -40,7 +39,9 @@ class ProjectGeneratorE2ETest {
             5,
             true,
             GradleWrapper(Gradle.GRADLE_8_14_3),
-            path = tempDir.toFile().path
+            path = tempDir.toFile().path,
+            false,
+            "${shape.name.lowercase()}_$modules"
         ).write()
         val filePath = File("$tempDir/android${shape.name.lowercase().capitalize()}${modules}modules/project_kts")
         val result = GradleRunner.create()
@@ -78,6 +79,12 @@ class ProjectGeneratorE2ETest {
             5,
             true,
             GradleWrapper(Gradle.GRADLE_8_13),
+            path = tempDir.toFile().path,
+            false,
+            "${shape.name.lowercase()}_$modules"
+
+            ).write()
+        val filePath = File("$tempDir/${shape.name.lowercase()}_$modules/project_kts")
             path = tempDir.toFile().path
         ).write()
         val filePath = File("$tempDir/jvm${shape.name.lowercase().capitalize()}${modules}modules/project_kts")
@@ -112,7 +119,9 @@ class ProjectGeneratorE2ETest {
             5,
             true,
             GradleWrapper(Gradle.GRADLE_8_14_3),
-            path = tempDir.toFile().path
+            path = tempDir.toFile().path,
+            false,
+            "${shape.name.lowercase()}_$modules"
         ).write()
         val toml = File("$tempDir/android${shape.name.lowercase().capitalize()}${modules}modules/project_kts/gradle/libs.versions.toml")
         assert(toml.exists())

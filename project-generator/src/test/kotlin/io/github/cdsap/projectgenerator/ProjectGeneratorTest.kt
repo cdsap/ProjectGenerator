@@ -27,15 +27,16 @@ class ProjectGeneratorTest {
                 shape = it,
                 classesPerModule = ClassesPerModule(ClassesPerModuleType.RANDOM, 8),
                 layers = 5,
-                path = tempDir.toString()
+                path = tempDir.toString(),
+                projectName = "awesome_project"
             ).write()
-            assert(File("$tempDir/android${it.name.lowercase().capitalize()}51modules/project_kts/build.gradle.kts").exists())
-            assert(File("$tempDir/android${it.name.lowercase().capitalize()}51modules/project_kts/settings.gradle.kts").exists())
+            assert(File("$tempDir/awesome_project/project_kts/build.gradle.kts").exists())
+            assert(File("$tempDir/awesome_project/project_kts/settings.gradle.kts").exists())
             assert(
-                File("$tempDir/android${it.name.lowercase().capitalize()}51modules/project_kts/settings.gradle.kts").readText()
+                File("$tempDir/awesome_project/project_kts/settings.gradle.kts").readText()
                     .contains("android${it.name.lowercase().replaceFirstChar { it.uppercase() }}51modules")
             )
-            assert(File("$tempDir/android${it.name.lowercase().capitalize()}51modules/project_kts/gradle.properties").exists())
+            assert(File("$tempDir/awesome_project/project_kts/gradle.properties").exists())
         }
     }
 }
