@@ -27,9 +27,10 @@ jobs:
           java-version: '${{ matrix.java }}'
       - name: Execute test binary and cli
         run: >
-          ./gradlew :project-generator:test
+            ./gradlew :project-generator:test --tests BuildFilesGeneratorAndroidTest
+            ./gradlew :project-generator:test --tests TestGeneratorAndroidTest
 
-          ./gradlew :cli:fatBinary
+            ./gradlew :cli:fatBinary
 
           mv cli/projectGenerator projectGenerator
 

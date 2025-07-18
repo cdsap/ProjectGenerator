@@ -23,7 +23,7 @@ class ProjectWriter(
     private val generateUnitTest: Boolean,
     private val gradle: GradleWrapper,
     private val develocity: Boolean,
-    private val projectName: String = "project"
+    private val projectName: String
 ) {
     fun write() {
         println("Creating Convention Plugin files")
