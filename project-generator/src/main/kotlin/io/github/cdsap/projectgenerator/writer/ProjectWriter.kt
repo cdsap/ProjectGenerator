@@ -88,14 +88,15 @@ class ProjectWriter(
         develocity: Boolean,
         projectName: String
     ) {
-        var settingsGradleContent = SettingsGradle().get(versions, develocity, projectName)
+        var settingsModules = ""
 
         nodes.forEach {
             val layerName = NameMappings.layerName(it.layer)
             val moduleName = NameMappings.moduleName(it.id)
-            settingsGradleContent += "\ninclude (\":$layerName:$moduleName\")"
+            settingsModules += "\ninclude (\":$layerName:$moduleName\")"
         }
         languages.forEach {
+            val settingsGradleContent = "${SettingsGradle().get(versions, develocity, it.projectName)} $settingsModules"
             File("${it.projectName}/settings.${it.extension}").projectFile(settingsGradleContent)
         }
     }
