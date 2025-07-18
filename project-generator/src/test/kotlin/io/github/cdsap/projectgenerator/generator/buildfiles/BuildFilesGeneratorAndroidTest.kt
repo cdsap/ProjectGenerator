@@ -40,7 +40,7 @@ class BuildFilesGeneratorAndroidTest {
             false,
             GradleWrapper(Gradle.GRADLE_8_14_3),
             false,
-            "awesome"
+            ""
         )
         projectWriter.write()
         val buildFile = File("${tempDir.path}/layer_1/module_1_1/build.gradle.kts")
@@ -73,7 +73,7 @@ class BuildFilesGeneratorAndroidTest {
             false,
             GradleWrapper(Gradle.GRADLE_8_14_3),
             false,
-            "awesome"
+            ""
         )
         projectWriter.write()
         val buildFile = File("${tempDir.path}/layer_1/module_1_1/build.gradle.kts")
