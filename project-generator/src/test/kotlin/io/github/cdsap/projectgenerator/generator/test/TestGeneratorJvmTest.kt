@@ -30,7 +30,7 @@ class TestGeneratorJvmTest {
             true, // generateUnitTest
             GradleWrapper(Gradle.GRADLE_8_14_3),
             false,
-            "awesomeapp"
+            ""
         )
         projectWriter.write()
         val testFile = File(tempDir, "layer_1/module_1_1/src/test/kotlin/com/awesomeapp/module_1_1/Usecase1_1Test.kt")
