@@ -10,6 +10,7 @@ import io.github.cdsap.projectgenerator.model.TypeOfStringResources
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
 import io.github.cdsap.projectgenerator.model.Versions
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
+import io.github.cdsap.projectgenerator.NameMappings
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -51,9 +52,11 @@ class SingleE2EValidationTest {
             .withArguments("testDebugUnitTest")
             .build()
 
+        val layerDir = NameMappings.layerName(0)
+        val moduleDir = NameMappings.moduleName("module_0_1")
         assert(
-            File("$tempDir/${shape.name.lowercase()}_$modules/project_kts/layer_0/module_0_1/build").exists()
-                && File("$tempDir/${shape.name.lowercase()}_$modules/project_kts/layer_0/module_0_1/build").isDirectory
+            File("$tempDir/${shape.name.lowercase()}_$modules/project_kts/$layerDir/$moduleDir/build").exists()
+                && File("$tempDir/${shape.name.lowercase()}_$modules/project_kts/$layerDir/$moduleDir/build").isDirectory
         )
 
         assert(resultTest.output.contains("BUILD SUCCESSFUL"))

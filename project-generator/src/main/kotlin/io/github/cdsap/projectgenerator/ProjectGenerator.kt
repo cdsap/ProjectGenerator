@@ -2,6 +2,7 @@ package io.github.cdsap.projectgenerator
 
 import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
+import io.github.cdsap.projectgenerator.DefaultNames
 import io.github.cdsap.projectgenerator.writer.GraphWriter
 import io.github.cdsap.projectgenerator.writer.ProjectWriter
 
@@ -18,8 +19,8 @@ class ProjectGenerator(
     private val gradle: GradleWrapper = GradleWrapper(Gradle.GRADLE_8_5),
     private val path: String = "projects_generated",
     private val develocity: Boolean = false,
-    private val layerNameLookup: Map<Int, String> = emptyMap(),
-    private val moduleNameLookup: Map<String, String> = emptyMap(),
+    private val layerNames: List<String> = DefaultNames.layerNames,
+    private val moduleNameParts: List<String> = DefaultNames.moduleNames,
 ) {
 
     fun write() {
@@ -32,9 +33,10 @@ class ProjectGenerator(
         println("Creating project $nameProject in $path")
         println("Calculating layer Distribution")
 
-        // Apply custom naming lookups so that writers can resolve custom names
-        NameMappings.layerNames = layerNameLookup
-        NameMappings.moduleNames = moduleNameLookup
+        // Generate name mappings for layers and modules
+        NameMappings.layerNames = (0..layers).associateWith { index ->
+            layerNames.getOrNull(index) ?: "layer_$index"
+        }
 
         val distributions = LayerDistribution(modules, layers).get(shape)
         println("Generating Project Dependency Graph")
@@ -44,6 +46,12 @@ class ProjectGenerator(
             typeOfProjectRequested,
             classesPerModule
         ).generate()
+
+        NameMappings.moduleNames = nodes
+            .sortedBy { it.id.substringAfterLast("_").toInt() }
+            .mapIndexed { index, node ->
+                node.id to generateModuleName(index)
+            }.toMap()
 
         val projectLanguageAttributes =
             getProjectLanguageAttributes(language, "$path/${shape.name.lowercase()}_$modules")
@@ -71,5 +79,16 @@ class ProjectGenerator(
             LanguageAttributes("gradle", "$labelProject/project_groovy"),
             LanguageAttributes("gradle.kts", "$labelProject/project_kts")
         )
+    }
+
+    private fun generateModuleName(index: Int): String {
+        var remaining = index
+        val base = moduleNameParts.size
+        val parts = mutableListOf<String>()
+        do {
+            parts.add(moduleNameParts[remaining % base])
+            remaining /= base
+        } while (remaining > 0)
+        return parts.joinToString("-")
     }
 }
