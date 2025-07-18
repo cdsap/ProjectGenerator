@@ -2,18 +2,21 @@ package io.github.cdsap.projectgenerator.generator.android
 
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.model.ProjectGraph
+import io.github.cdsap.projectgenerator.NameMappings
 import java.io.File
 
 class AndroidApplication {
     fun createApplicationClass(node: ProjectGraph, lang: LanguageAttributes) {
+        val layerDir = NameMappings.layerName(node.layer)
+        val moduleDir = NameMappings.moduleName(node.id)
         val appDir =
-            File("${lang.projectName}/layer_${node.layer}/${node.id}/src/main/kotlin/com/awesomeapp/${node.id}/")
+            File("${lang.projectName}/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$moduleDir/")
         appDir.mkdirs()
         val appFile = File(appDir, "MainApplication.kt")
 
         // Create a more robust Application class that properly initializes Hilt
         val appContent = """
-            |package com.awesomeapp.${node.id}
+            |package com.awesomeapp.$moduleDir
             |
             |import android.app.Application
             |import android.content.Context

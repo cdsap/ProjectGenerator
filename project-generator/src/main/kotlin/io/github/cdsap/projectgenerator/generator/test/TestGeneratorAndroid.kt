@@ -6,6 +6,7 @@ import io.github.cdsap.projectgenerator.model.ClassDefinitionAndroid
 import io.github.cdsap.projectgenerator.model.ClassDependencyAndroid
 import io.github.cdsap.projectgenerator.model.ClassTypeAndroid
 import io.github.cdsap.projectgenerator.model.ModuleClassDefinitionAndroid
+import io.github.cdsap.projectgenerator.NameMappings
 import java.io.File
 
 
@@ -17,8 +18,10 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
         projectName: String,
         classesDictionary: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
     ) {
+        val layerDir = NameMappings.layerName(moduleDefinition.layer)
+        val moduleDir = NameMappings.moduleName(moduleDefinition.moduleId)
         val testDir =
-            File("$projectName/layer_${moduleDefinition.layer}/${moduleDefinition.moduleId}/src/test/kotlin/com/awesomeapp/${moduleDefinition.moduleId}/")
+            File("$projectName/$layerDir/$moduleDir/src/test/kotlin/com/awesomeapp/$moduleDir/")
         testDir.mkdirs()
 
         moduleDefinition.classes.forEach { classDefinition ->

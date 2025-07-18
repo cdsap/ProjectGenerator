@@ -2,15 +2,16 @@ package io.github.cdsap.projectgenerator.generator.planner
 
 import io.github.cdsap.projectgenerator.writer.ModuleClassPlanner
 import io.github.cdsap.projectgenerator.model.*
+import io.github.cdsap.projectgenerator.NameMappings
 
 /**
  * Plans what classes each module should have and their dependencies
  */
 class ModuleClassPlannerJvm : ModuleClassPlanner<ModuleClassDefinitionJvm> {
    override fun planModuleClasses(projectGraph: ProjectGraph): ModuleClassDefinitionJvm {
-        val moduleId = projectGraph.id
+        val moduleId = NameMappings.moduleName(projectGraph.id)
         val layer = projectGraph.layer
-        val moduleNumber = moduleId.split("_").last().toInt()
+        val moduleNumber = projectGraph.id.split("_").last().toInt()
         val classes = mutableListOf<ClassDefinitionJvm>()
         var currentIndex = 1
 
@@ -85,7 +86,7 @@ class ModuleClassPlannerJvm : ModuleClassPlanner<ModuleClassDefinitionJvm> {
 
 
         // Extract the module IDs from node dependencies for proper Hilt module dependencies
-        val dependencies = projectGraph.nodes.map { it.id }
+        val dependencies = projectGraph.nodes.map { NameMappings.moduleName(it.id) }
 
         return ModuleClassDefinitionJvm(
             moduleId = moduleId,
@@ -104,7 +105,7 @@ class ModuleClassPlannerJvm : ModuleClassPlanner<ModuleClassDefinitionJvm> {
 
         return availableModules
             .filter { module -> hasClassType(module, dependencyType) }
-            .map { module -> ClassDependencyJvm(dependencyType, module.id) }
+            .map { module -> ClassDependencyJvm(dependencyType, NameMappings.moduleName(module.id)) }
     }
 
     private fun getAvailableModules(currentModule: ProjectGraph): List<ProjectGraph> {

@@ -1,6 +1,7 @@
 package io.github.cdsap.projectgenerator.writer
 
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
+import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.TypeOfStringResources
 import java.io.File
@@ -50,11 +51,13 @@ abstract class ModulesWrite<MODULE_DEF, DICT>(
 
     private fun createModuleStructure(node: ProjectGraph, lang: LanguageAttributes) {
         // Create main source directory
-        File("${lang.projectName}/layer_${node.layer}/${node.id}/src/main/kotlin/com/awesomeapp/${node.id}/").mkdirs()
+        val layerDir = NameMappings.layerName(node.layer)
+        val moduleDir = NameMappings.moduleName(node.id)
+        File("${lang.projectName}/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$moduleDir/").mkdirs()
 
         // Create test directory if needed
         if (generateUnitTest) {
-            File("${lang.projectName}/layer_${node.layer}/${node.id}/src/test/kotlin/com/awesomeapp/${node.id}/").mkdirs()
+            File("${lang.projectName}/$layerDir/$moduleDir/src/test/kotlin/com/awesomeapp/$moduleDir/").mkdirs()
         }
     }
 }

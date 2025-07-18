@@ -18,6 +18,8 @@ class ProjectGenerator(
     private val gradle: GradleWrapper = GradleWrapper(Gradle.GRADLE_8_5),
     private val path: String = "projects_generated",
     private val develocity: Boolean = false,
+    private val layerNameLookup: Map<Int, String> = emptyMap(),
+    private val moduleNameLookup: Map<String, String> = emptyMap(),
 ) {
 
     fun write() {
@@ -29,6 +31,11 @@ class ProjectGenerator(
         }
         println("Creating project $nameProject in $path")
         println("Calculating layer Distribution")
+
+        // Apply custom naming lookups so that writers can resolve custom names
+        NameMappings.layerNames = layerNameLookup
+        NameMappings.moduleNames = moduleNameLookup
+
         val distributions = LayerDistribution(modules, layers).get(shape)
         println("Generating Project Dependency Graph")
         val nodes = ProjectGraphGenerator(

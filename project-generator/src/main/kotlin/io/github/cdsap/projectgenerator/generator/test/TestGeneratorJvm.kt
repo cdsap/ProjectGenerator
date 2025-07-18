@@ -5,6 +5,7 @@ import io.github.cdsap.projectgenerator.generator.classes.GenerateDictionaryJvm
 import io.github.cdsap.projectgenerator.model.ClassDefinitionJvm
 import io.github.cdsap.projectgenerator.model.ClassTypeJvm
 import io.github.cdsap.projectgenerator.model.ModuleClassDefinitionJvm
+import io.github.cdsap.projectgenerator.NameMappings
 import java.io.File
 
 
@@ -15,8 +16,10 @@ class TestGeneratorJvm : TestGenerator<ModuleClassDefinitionJvm, GenerateDiction
         projectName: String,
         classesDictionary: MutableMap<String, MutableList<GenerateDictionaryJvm>>
     ) {
+        val layerDir = NameMappings.layerName(moduleDefinition.layer)
+        val moduleDir = NameMappings.moduleName(moduleDefinition.moduleId)
         val testDir =
-            File("$projectName/layer_${moduleDefinition.layer}/${moduleDefinition.moduleId}/src/test/kotlin/com/awesomeapp/${moduleDefinition.moduleId}/")
+            File("$projectName/$layerDir/$moduleDir/src/test/kotlin/com/awesomeapp/$moduleDir/")
         testDir.mkdirs()
 
         moduleDefinition.classes.forEach { classDefinition ->

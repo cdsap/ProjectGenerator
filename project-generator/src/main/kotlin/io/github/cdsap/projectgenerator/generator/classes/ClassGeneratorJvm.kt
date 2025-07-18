@@ -1,6 +1,7 @@
 package io.github.cdsap.projectgenerator.generator.classes
 
 import io.github.cdsap.projectgenerator.model.*
+import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.writer.ClassGenerator
 import java.io.File
 import kotlin.text.appendLine
@@ -191,8 +192,10 @@ class ClassGeneratorJvm :
         moduleDefinition: ModuleClassDefinitionJvm,
         projectName: String
     ) {
+        val layerDir = NameMappings.layerName(moduleDefinition.layer)
+        val moduleDir = NameMappings.moduleName(moduleDefinition.moduleId)
         val directory =
-            File("$projectName/layer_${moduleDefinition.layer}/${moduleDefinition.moduleId}/src/main/kotlin/com/awesomeapp/${moduleDefinition.moduleId}/")
+            File("$projectName/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$moduleDir/")
         directory.mkdirs()
 
         val fileName = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}.kt"
