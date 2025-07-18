@@ -26,11 +26,11 @@ jobs:
           distribution: temurin
           java-version: '${{ matrix.java }}'
       - name: Execute test binary and cli
-        run: >
-            ./gradlew :project-generator:test --tests BuildFilesGeneratorAndroidTest
-            ./gradlew :project-generator:test --tests TestGeneratorAndroidTest
+        run: |
+          ./gradlew :project-generator:test --tests BuildFilesGeneratorAndroidTest
+          ./gradlew :project-generator:test --tests TestGeneratorAndroidTest
 
-            ./gradlew :cli:fatBinary
+          ./gradlew :cli:fatBinary
 
           mv cli/projectGenerator projectGenerator
 
