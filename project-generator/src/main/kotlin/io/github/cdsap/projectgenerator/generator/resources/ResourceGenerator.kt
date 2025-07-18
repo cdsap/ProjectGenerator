@@ -85,7 +85,7 @@ class ResourceGenerator() : ResourceGeneratorA<GenerateDictionaryAndroid> {
 
     private fun createValueFiles(valuesDir: File, moduleId: String, typeOfStringResources: TypeOfStringResources) {
         valuesDir.mkdirs()
-        val strings = ValuesStrings().createStrings(moduleId.split("_").last(), typeOfStringResources)
+        val strings = ValuesStrings().createStrings(NameMappings.modulePackageName(moduleId), typeOfStringResources)
         File(valuesDir, "strings.xml").writeText(strings)
     }
 
