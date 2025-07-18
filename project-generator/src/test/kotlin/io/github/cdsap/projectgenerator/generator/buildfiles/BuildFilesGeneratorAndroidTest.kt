@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator.generator.buildfiles
 
+import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.writer.ProjectWriter
 import io.github.cdsap.projectgenerator.model.Gradle
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
@@ -43,11 +44,11 @@ class BuildFilesGeneratorAndroidTest {
             ""
         )
         projectWriter.write()
-        val buildFile = File("${tempDir.path}/layer_1/module_1_1/build.gradle.kts")
+        val buildFile = File("${tempDir.path}/${NameMappings.layerName(1)}/module_1_1/build.gradle.kts")
         val content = buildFile.readText()
         assertTrue(content.contains("id(\"awesome.androidlib.plugin\")"))
         assertTrue(content.contains("implementation(libs.compose.ui)"))
-        assertTrue(content.contains("implementation(project(\":layer_2:module_0_1\"))"))
+        assertTrue(content.contains("implementation(project(\":${NameMappings.layerName(2)}:${NameMappings.moduleName("module_0_1")}\"))"))
     }
 
     @Test
@@ -76,11 +77,12 @@ class BuildFilesGeneratorAndroidTest {
             ""
         )
         projectWriter.write()
-        val buildFile = File("${tempDir.path}/layer_1/module_1_1/build.gradle.kts")
+        val buildFile = File("${tempDir.path}/${NameMappings.layerName(1)}/module_1_1/build.gradle.kts")
+
         val content = buildFile.readText()
         assertTrue(content.contains("id(\"awesome.androidapp.plugin\")"))
         assertTrue(content.contains("implementation(libs.compose.ui)"))
-        assertTrue(content.contains("implementation(project(\":layer_2:module_0_1\"))"))
+        assertTrue(content.contains("implementation(project(\":${NameMappings.layerName(2)}:${NameMappings.moduleName("module_0_1")}\"))"))
         buildFile.delete()
     }
 }

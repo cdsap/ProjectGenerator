@@ -2,7 +2,6 @@ package io.github.cdsap.projectgenerator
 
 import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
-import io.github.cdsap.projectgenerator.DefaultNames
 import io.github.cdsap.projectgenerator.writer.GraphWriter
 import io.github.cdsap.projectgenerator.writer.ProjectWriter
 
@@ -62,7 +61,7 @@ class ProjectGenerator(
             }.toMap()
 
         val projectLanguageAttributes =
-            getProjectLanguageAttributes(language, "$path/${shape.name.lowercase()}_$modules")
+            getProjectLanguageAttributes(language, "$path/$nameProject")
         ProjectWriter(
             nodes,
             projectLanguageAttributes,
@@ -74,8 +73,8 @@ class ProjectGenerator(
             develocity,
             nameProject
         ).write()
-        GraphWriter(nodes, "$path/${shape.name.lowercase()}_$modules").write()
-        println("Project created in $path/${shape.name.lowercase()}_$modules")
+        GraphWriter(nodes, projectLanguageAttributes.first().projectName).write()
+        println("Project created in ${projectLanguageAttributes.first().projectName}")
     }
 
     private fun getProjectLanguageAttributes(language: Language, labelProject: String) = when (language) {

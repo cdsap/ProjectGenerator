@@ -96,7 +96,9 @@ class ProjectWriter(
             settingsModules += "\ninclude (\":$layerName:$moduleName\")"
         }
         languages.forEach {
-            val settingsGradleContent = "${SettingsGradle().get(versions, develocity, it.projectName)} $settingsModules"
+            val settingsGradleContent = "${SettingsGradle().get(versions, develocity, projectName)} $settingsModules"
+            println(it.projectName)
+            println(projectName)
             File("${it.projectName}/settings.${it.extension}").projectFile(settingsGradleContent)
         }
     }
