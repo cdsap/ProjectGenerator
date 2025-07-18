@@ -9,14 +9,15 @@ class AndroidApplication {
     fun createApplicationClass(node: ProjectGraph, lang: LanguageAttributes) {
         val layerDir = NameMappings.layerName(node.layer)
         val moduleDir = NameMappings.moduleName(node.id)
+        val packageDir = NameMappings.modulePackageName(node.id)
         val appDir =
-            File("${lang.projectName}/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$moduleDir/")
+            File("${lang.projectName}/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$packageDir/")
         appDir.mkdirs()
         val appFile = File(appDir, "MainApplication.kt")
 
         // Create a more robust Application class that properly initializes Hilt
         val appContent = """
-            |package com.awesomeapp.$moduleDir
+            |package com.awesomeapp.$packageDir
             |
             |import android.app.Application
             |import android.content.Context

@@ -27,7 +27,7 @@ class CompositeBuildPluginAndroidLib {
         |            }
         |
         |            extensions.configure<com.android.build.gradle.LibraryExtension>  {
-        |                namespace = "com.awesome." + target.name.replace(":","_")
+        |                namespace = "com.awesome." + target.name.replace(":","_").replace("-", "")
         |                compileSdk = 35
         |                defaultConfig {
         |                    minSdk = 24

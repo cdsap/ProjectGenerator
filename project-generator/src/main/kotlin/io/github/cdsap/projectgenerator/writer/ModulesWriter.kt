@@ -53,11 +53,12 @@ abstract class ModulesWrite<MODULE_DEF, DICT>(
         // Create main source directory
         val layerDir = NameMappings.layerName(node.layer)
         val moduleDir = NameMappings.moduleName(node.id)
-        File("${lang.projectName}/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$moduleDir/").mkdirs()
+        val packageDir = NameMappings.modulePackageName(node.id)
+        File("${lang.projectName}/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$packageDir/").mkdirs()
 
         // Create test directory if needed
         if (generateUnitTest) {
-            File("${lang.projectName}/$layerDir/$moduleDir/src/test/kotlin/com/awesomeapp/$moduleDir/").mkdirs()
+            File("${lang.projectName}/$layerDir/$moduleDir/src/test/kotlin/com/awesomeapp/$packageDir/").mkdirs()
         }
     }
 }

@@ -10,4 +10,10 @@ object NameMappings {
 
     fun layerName(layer: Int): String = layerNames[layer] ?: "layer_${layer}"
     fun moduleName(id: String): String = moduleNames[id] ?: id
+
+    /**
+     * Returns a module name sanitized for use in package declarations.
+     * Currently this simply strips dashes from the mapped module name.
+     */
+    fun modulePackageName(id: String): String = moduleName(id).replace("-", "")
 }

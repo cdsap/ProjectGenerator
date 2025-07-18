@@ -54,7 +54,7 @@ class ClassGeneratorAndroid :
         projectName: String,
         a: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
     ) {
-        val packageName = "com.awesomeapp.${moduleDefinition.moduleId}"
+        val packageName = "com.awesomeapp.${NameMappings.modulePackageName(moduleDefinition.moduleId)}"
         val moduleName = "Module_${moduleDefinition.moduleNumber}"
 
         // Create imports for this module's classes
@@ -170,7 +170,7 @@ class ClassGeneratorAndroid :
         moduleDefinition: ModuleClassDefinitionAndroid,
         a: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
     ): String {
-        val packageName = "com.awesomeapp.${moduleDefinition.moduleId}"
+        val packageName = "com.awesomeapp.${NameMappings.modulePackageName(moduleDefinition.moduleId)}"
         val className = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}"
 
         return when (classDefinition.type) {
@@ -575,8 +575,9 @@ class ClassGeneratorAndroid :
     ) {
         val layerDir = NameMappings.layerName(moduleDefinition.layer)
         val moduleDir = NameMappings.moduleName(moduleDefinition.moduleId)
+        val packageDir = NameMappings.modulePackageName(moduleDefinition.moduleId)
         val directory =
-            File("$projectName/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$moduleDir/")
+            File("$projectName/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$packageDir/")
         directory.mkdirs()
 
         val fileName = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}.kt"
@@ -584,7 +585,7 @@ class ClassGeneratorAndroid :
     }
 
     private fun createApplicationClass(moduleDefinition: ModuleClassDefinitionAndroid, projectName: String) {
-        val packageName = "com.awesomeapp.${NameMappings.moduleName(moduleDefinition.moduleId)}"
+        val packageName = "com.awesomeapp.${NameMappings.modulePackageName(moduleDefinition.moduleId)}"
         val content = """
             |package $packageName
             |

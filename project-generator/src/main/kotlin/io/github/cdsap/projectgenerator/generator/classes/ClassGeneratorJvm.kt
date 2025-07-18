@@ -48,7 +48,7 @@ class ClassGeneratorJvm :
         moduleDefinition: ModuleClassDefinitionJvm,
         a: MutableMap<String, MutableList<GenerateDictionaryJvm>>
     ): String {
-        val packageName = "com.awesomeapp.${moduleDefinition.moduleId}"
+        val packageName = "com.awesomeapp.${NameMappings.modulePackageName(moduleDefinition.moduleId)}"
         val className = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}"
 
         return when (classDefinition.type) {
@@ -194,8 +194,9 @@ class ClassGeneratorJvm :
     ) {
         val layerDir = NameMappings.layerName(moduleDefinition.layer)
         val moduleDir = NameMappings.moduleName(moduleDefinition.moduleId)
+        val packageDir = NameMappings.modulePackageName(moduleDefinition.moduleId)
         val directory =
-            File("$projectName/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$moduleDir/")
+            File("$projectName/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$packageDir/")
         directory.mkdirs()
 
         val fileName = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}.kt"
