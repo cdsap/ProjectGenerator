@@ -43,7 +43,7 @@ class BuildFilesGeneratorAndroidTest {
             "awesome"
         )
         projectWriter.write()
-        val buildFile = File("${tempDir.path}/project/layer_1/module_1_1/build.gradle.kts")
+        val buildFile = File("${tempDir.path}/layer_1/module_1_1/build.gradle.kts")
         val content = buildFile.readText()
         assertTrue(content.contains("id(\"awesome.androidlib.plugin\")"))
         assertTrue(content.contains("implementation(libs.compose.ui)"))
