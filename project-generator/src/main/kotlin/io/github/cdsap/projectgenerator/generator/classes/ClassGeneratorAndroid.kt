@@ -85,7 +85,7 @@ class ClassGeneratorAndroid :
                             val xa = mutableListOf<String>()
 
                             classDefinition.dependencies.mapIndexed { index, dep ->
-                                val depModuleId = dep.sourceModuleId
+                                val depModuleId =  NameMappings.modulePackageName(dep.sourceModuleId)
                                 val s = a.filter { it.key == depModuleId }
                                 if (s.isNotEmpty()) {
                                     val x = s.values.flatten().first { it.type == ClassTypeAndroid.API }
@@ -184,7 +184,7 @@ class ClassGeneratorAndroid :
             ClassTypeAndroid.REPOSITORY -> generateRepository(packageName, className, classDefinition.dependencies, a)
             ClassTypeAndroid.API -> generateApi(packageName, className)
             ClassTypeAndroid.WORKER -> generateWorker(packageName, className)
-            ClassTypeAndroid.ACTIVITY -> generateComposeActivity(packageName, className)
+            ClassTypeAndroid.ACTIVITY -> generateComposeActivity(packageName, className,moduleDefinition.moduleNumber)
             ClassTypeAndroid.FRAGMENT -> generateFragment(packageName, className)
             ClassTypeAndroid.SERVICE -> generateService(packageName, className)
             ClassTypeAndroid.STATE -> generateState(packageName, className)
@@ -223,7 +223,7 @@ class ClassGeneratorAndroid :
                     val x = s.values.flatten().first { it.type == ClassTypeAndroid.REPOSITORY }
                     if (x != null) {
                         val repoClassName = x.className
-                        appendLine("import com.awesomeapp.$depModuleId.$repoClassName")
+                        appendLine("import com.awesomeapp.${NameMappings.modulePackageName(dep.sourceModuleId)}.$repoClassName")
                     }
                 }
 
@@ -289,7 +289,7 @@ class ClassGeneratorAndroid :
                     val x = s.values.flatten().first { it.type == ClassTypeAndroid.API }
                     if (x != null) {
                         val apiClassName = x.className
-                        appendLine("import com.awesomeapp.$depModuleId.$apiClassName")
+                        appendLine("import com.awesomeapp.${NameMappings.modulePackageName(dep.sourceModuleId)}.$apiClassName")
                     }
                 }
 
@@ -359,7 +359,6 @@ class ClassGeneratorAndroid :
             appendLine("import androidx.fragment.app.Fragment")
             appendLine("import androidx.fragment.app.viewModels")
             appendLine("import dagger.hilt.android.AndroidEntryPoint")
-            appendLine("//import com.awesomeapp.$moduleId.R")
         }
 
         val viewModelClass = "Feature${moduleNumber}_1"
@@ -432,9 +431,8 @@ class ClassGeneratorAndroid :
         """.trimMargin()
     }
 
-    private fun generateComposeActivity(packageName: String, className: String): String {
+    private fun generateComposeActivity(packageName: String, className: String, moduleNumber: Int): String {
         val moduleId = packageName.split(".").last()
-        val moduleNumber = moduleId.split("_").last()
         val viewModelClass = "Viewmodel${moduleNumber}_1"
 
         val imports = buildString {
@@ -450,7 +448,7 @@ class ClassGeneratorAndroid :
             appendLine("import androidx.compose.runtime.getValue")
             appendLine("import androidx.compose.ui.Alignment")
             appendLine("import androidx.compose.ui.Modifier")
-            appendLine("import com.awesomeapp.$moduleId.ui.theme.FeatureTheme")
+            appendLine("import com.awesomeapp.${NameMappings.modulePackageName(moduleId)}.ui.theme.FeatureTheme")
             appendLine("import dagger.hilt.android.AndroidEntryPoint")
         }
 

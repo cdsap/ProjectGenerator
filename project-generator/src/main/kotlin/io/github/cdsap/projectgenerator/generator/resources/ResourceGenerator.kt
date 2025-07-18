@@ -78,9 +78,9 @@ class ResourceGenerator() : ResourceGeneratorA<GenerateDictionaryAndroid> {
     private fun createLayoutFiles(layoutDir: File, moduleId: String) {
         layoutDir.mkdirs()
         val activityLayout = ActivityLayout().createActivityLayout(moduleId)
-        File(layoutDir, "activity_feature_${moduleId.lowercase()}.xml").writeText(activityLayout)
+        File(layoutDir, "activity_feature_${NameMappings.modulePackageName(moduleId).lowercase()}.xml").writeText(activityLayout)
         val fragmentLayout = FragmentLayout().createFragmentLayout(moduleId)
-        File(layoutDir, "fragment_feature_${moduleId.lowercase()}.xml").writeText(fragmentLayout)
+        File(layoutDir, "fragment_feature_${NameMappings.modulePackageName(moduleId).lowercase()}.xml").writeText(fragmentLayout)
     }
 
     private fun createValueFiles(valuesDir: File, moduleId: String, typeOfStringResources: TypeOfStringResources) {
