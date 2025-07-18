@@ -56,8 +56,8 @@ class ProjectGeneratorE2ETest {
         val layerDir = NameMappings.layerName(0)
         val moduleDir = NameMappings.moduleName("module_0_1")
         assert(
-            File("$tempDir/${shape.name.lowercase()}_$modules/project_kts/$layerDir/$moduleDir/build").exists()
-                && File("$tempDir/${shape.name.lowercase()}_$modules/project_kts/$layerDir/$moduleDir/build").isDirectory
+            File("$tempDir/android${shape.name.lowercase().capitalize()}${modules}modules/project_kts/$layerDir/$moduleDir/build").exists()
+                && File("$tempDir/android${shape.name.lowercase().capitalize()}${modules}modules/project_kts/$layerDir/$moduleDir/build").isDirectory
         )
 
         assert(resultTest.output.contains("BUILD SUCCESSFUL"))
@@ -89,8 +89,8 @@ class ProjectGeneratorE2ETest {
         val layerDirJvm = NameMappings.layerName(0)
         val moduleDirJvm = NameMappings.moduleName("module_0_1")
         assert(
-            File("$tempDir/${shape.name.lowercase()}_$modules/project_kts/$layerDirJvm/$moduleDirJvm/build").exists()
-                && File("$tempDir/${shape.name.lowercase()}_$modules/project_kts/$layerDirJvm/$moduleDirJvm/build").isDirectory
+            File("$tempDir/jvm${shape.name.lowercase().capitalize()}${modules}modules/project_kts/$layerDirJvm/$moduleDirJvm/build").exists()
+                && File("$tempDir/jvm${shape.name.lowercase().capitalize()}${modules}modules/project_kts/$layerDirJvm/$moduleDirJvm/build").isDirectory
         )
 
         println(result.output)
