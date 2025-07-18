@@ -35,7 +35,11 @@ class ProjectGenerator(
 
         // Generate name mappings for layers and modules
         NameMappings.layerNames = (0..layers).associateWith { index ->
-            layerNames.getOrNull(index) ?: "layer_$index"
+            if (index == layers) {
+                "app"
+            } else {
+                layerNames.getOrNull(index) ?: "layer_$index"
+            }
         }
 
         val distributions = LayerDistribution(modules, layers).get(shape)
@@ -50,7 +54,11 @@ class ProjectGenerator(
         NameMappings.moduleNames = nodes
             .sortedBy { it.id.substringAfterLast("_").toInt() }
             .mapIndexed { index, node ->
-                node.id to generateModuleName(index)
+                if (node.layer == layers) {
+                    node.id to "app"
+                } else {
+                    node.id to generateModuleName(index)
+                }
             }.toMap()
 
         val projectLanguageAttributes =
