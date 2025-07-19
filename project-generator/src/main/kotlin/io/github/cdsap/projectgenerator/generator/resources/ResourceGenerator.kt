@@ -13,6 +13,7 @@ import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.TypeOfStringResources
 import io.github.cdsap.projectgenerator.model.TypeProject
 import java.io.File
+import java.util.concurrent.CopyOnWriteArrayList
 
 class ResourceGenerator() : ResourceGeneratorA<GenerateDictionaryAndroid> {
 
@@ -20,7 +21,7 @@ class ResourceGenerator() : ResourceGeneratorA<GenerateDictionaryAndroid> {
         node: ProjectGraph,
         lang: LanguageAttributes,
         typeOfStringResources: TypeOfStringResources,
-        classesDictionary: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
+        classesDictionary: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ) {
         // Create resource directories
         File("${lang.projectName}/layer_${node.layer}/${node.id}/src/main/res/layout").mkdirs()
@@ -37,7 +38,7 @@ class ResourceGenerator() : ResourceGeneratorA<GenerateDictionaryAndroid> {
     private fun createAndroidAppResources(
         node: ProjectGraph,
         lang: LanguageAttributes,
-        dictionary: MutableMap<String, MutableList<GenerateDictionaryAndroid>>,
+        dictionary: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>,
         typeOfStringResources: TypeOfStringResources
     ) {
         val (layoutDir, valuesDir, manifestDir) = createResources(lang, node)
@@ -49,7 +50,7 @@ class ResourceGenerator() : ResourceGeneratorA<GenerateDictionaryAndroid> {
 
     private fun createAndroidLibResources(
         node: ProjectGraph, lang: LanguageAttributes,
-        dictionary: MutableMap<String, MutableList<GenerateDictionaryAndroid>>,
+        dictionary: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>,
         typeOfStringResources: TypeOfStringResources
     ) {
         val (layoutDir, valuesDir, manifestDir) = createResources(lang, node)

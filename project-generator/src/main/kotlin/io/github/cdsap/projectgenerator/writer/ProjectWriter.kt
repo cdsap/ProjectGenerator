@@ -11,6 +11,7 @@ import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.TypeOfStringResources
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
 import io.github.cdsap.projectgenerator.model.Versions
+import kotlinx.coroutines.runBlocking
 import java.io.File
 
 class ProjectWriter(
@@ -28,7 +29,7 @@ class ProjectWriter(
         println("Creating Convention Plugin files")
         ConventionPluginWriter(languages, versions, typeOfProjectRequested).write()
         println("Creating Modules files")
-
+        runBlocking {
         when (typeOfProjectRequested) {
             TypeProjectRequested.ANDROID -> AndroidModulesWriter(
                 nodes,
@@ -39,6 +40,7 @@ class ProjectWriter(
             ).write()
 
             TypeProjectRequested.JVM -> JvmModulesWriter(nodes, languages, generateUnitTest, versions).write()
+        }
         }
 
         println("Creating Project files")

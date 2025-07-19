@@ -4,6 +4,7 @@ import io.github.cdsap.projectgenerator.generator.classes.GenerateDictionaryAndr
 import io.github.cdsap.projectgenerator.model.ClassTypeAndroid
 import io.github.cdsap.projectgenerator.model.TypeProject
 import java.io.File
+import java.util.concurrent.CopyOnWriteArrayList
 
 class Manifest {
     fun createManifest(
@@ -11,7 +12,7 @@ class Manifest {
         layer: Int,
         module: String,
         moduleType: TypeProject,
-        a: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
+        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ) {
         val manifestFile = File(moduleFolder, "AndroidManifest.xml")
         manifestFile.parentFile.mkdirs()
