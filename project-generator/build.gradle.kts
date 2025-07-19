@@ -9,7 +9,7 @@ group = "io.github.cdsap"
 version = "0.2.1"
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     testImplementation(platform("org.junit:junit-bom:5.11.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation(gradleTestKit())
