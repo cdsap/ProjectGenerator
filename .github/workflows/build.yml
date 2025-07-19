@@ -49,7 +49,7 @@ jobs:
           ./projectGenerator generate-project --shape rhombus --language kts --modules 150 --type
           android --classes-module 10 --classes-module-type random --layers 11
 
-          dot -Tpng projects_generated/androidRhombus150modules/graph.dot > rhombus.png
+          dot -Tpng projects_generated/androidRhombus150modules/project_kts/graph.dot > rhombus.png
 
           ./projectGenerator generate-project --shape middle_bottleneck --language kts --modules 150 --type android --classes-module 10 --classes-module-type random --layers 11
 

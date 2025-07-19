@@ -97,8 +97,6 @@ class ProjectWriter(
         }
         languages.forEach {
             val settingsGradleContent = "${SettingsGradle().get(versions, develocity, projectName)} $settingsModules"
-            println(it.projectName)
-            println(projectName)
             File("${it.projectName}/settings.${it.extension}").projectFile(settingsGradleContent)
         }
     }
