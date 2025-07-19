@@ -8,6 +8,7 @@ import io.github.cdsap.projectgenerator.model.ClassTypeAndroid
 import io.github.cdsap.projectgenerator.model.ModuleClassDefinitionAndroid
 import io.github.cdsap.projectgenerator.NameMappings
 import java.io.File
+import java.util.concurrent.CopyOnWriteArrayList
 
 
 class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, GenerateDictionaryAndroid> {
@@ -16,7 +17,7 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
     override fun generate(
         moduleDefinition: ModuleClassDefinitionAndroid,
         projectName: String,
-        classesDictionary: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
+        classesDictionary: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ) {
         val layerDir = NameMappings.layerName(moduleDefinition.layer)
         val moduleDir = NameMappings.moduleName(moduleDefinition.moduleId)
@@ -35,7 +36,7 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
     private fun generateTestContent(
         moduleDefinition: ModuleClassDefinitionAndroid,
         classDefinition: ClassDefinitionAndroid,
-        classesDictionary: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
+        classesDictionary: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ): String {
 
         val className = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}"
@@ -136,7 +137,7 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
     private fun generateRepositoryTest(
         moduleDefinition: ModuleClassDefinitionAndroid,
         classDefinition: ClassDefinitionAndroid,
-        a: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
+        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ): String {
         val xa = mutableListOf<String>()
 
@@ -187,7 +188,7 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
     private fun generateViewModelTest(
         className: String,
         dependencies: List<ClassDependencyAndroid>,
-        a: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
+        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ): String {
         val xa = mutableListOf<String>()
         val xc = mutableListOf<String>()

@@ -4,6 +4,7 @@ import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.writer.ClassGenerator
 import java.io.File
+import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.text.appendLine
 
 /**
@@ -19,9 +20,9 @@ class ClassGeneratorJvm :
     ClassGenerator<ModuleClassDefinitionJvm, GenerateDictionaryJvm> {
     override fun obtainClassesGenerated(
         moduleDefinition: ModuleClassDefinitionJvm,
-        classesDictionary: MutableMap<String, MutableList<GenerateDictionaryJvm>>
-    ): MutableMap<String, MutableList<GenerateDictionaryJvm>> {
-        val a = mutableListOf<GenerateDictionaryJvm>()
+        classesDictionary: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryJvm>>
+    ): MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryJvm>> {
+        val a = CopyOnWriteArrayList<GenerateDictionaryJvm>()
         moduleDefinition.classes.forEach { classDefinition ->
             val className = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}"
             a.add(GenerateDictionaryJvm(className, classDefinition.type, classDefinition.index))
@@ -34,7 +35,7 @@ class ClassGeneratorJvm :
     override fun generate(
         moduleDefinition: ModuleClassDefinitionJvm,
         projectName: String,
-        a: MutableMap<String, MutableList<GenerateDictionaryJvm>>
+        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryJvm>>
     )  {
         moduleDefinition.classes.forEach { classDefinition ->
             val classContent = generateClassContent(classDefinition, moduleDefinition, a)
@@ -46,7 +47,7 @@ class ClassGeneratorJvm :
     private fun generateClassContent(
         classDefinition: ClassDefinitionJvm,
         moduleDefinition: ModuleClassDefinitionJvm,
-        a: MutableMap<String, MutableList<GenerateDictionaryJvm>>
+        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryJvm>>
     ): String {
         val packageName = "com.awesomeapp.${NameMappings.modulePackageName(moduleDefinition.moduleId)}"
         val className = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}"
@@ -65,7 +66,7 @@ class ClassGeneratorJvm :
         packageName: String,
         className: String,
         dependencies: List<ClassDependencyJvm>,
-        a: MutableMap<String, MutableList<GenerateDictionaryJvm>>
+        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryJvm>>
     ): String {
         val imports = buildString {
             appendLine("import kotlinx.coroutines.Dispatchers")

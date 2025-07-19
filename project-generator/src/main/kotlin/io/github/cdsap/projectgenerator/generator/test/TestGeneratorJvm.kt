@@ -7,6 +7,7 @@ import io.github.cdsap.projectgenerator.model.ClassTypeJvm
 import io.github.cdsap.projectgenerator.model.ModuleClassDefinitionJvm
 import io.github.cdsap.projectgenerator.NameMappings
 import java.io.File
+import java.util.concurrent.CopyOnWriteArrayList
 
 
 class TestGeneratorJvm : TestGenerator<ModuleClassDefinitionJvm, GenerateDictionaryJvm> {
@@ -14,7 +15,7 @@ class TestGeneratorJvm : TestGenerator<ModuleClassDefinitionJvm, GenerateDiction
     override fun generate(
         moduleDefinition: ModuleClassDefinitionJvm,
         projectName: String,
-        classesDictionary: MutableMap<String, MutableList<GenerateDictionaryJvm>>
+        classesDictionary: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryJvm>>
     ) {
         val layerDir = NameMappings.layerName(moduleDefinition.layer)
         val moduleDir = NameMappings.moduleName(moduleDefinition.moduleId)
@@ -33,7 +34,7 @@ class TestGeneratorJvm : TestGenerator<ModuleClassDefinitionJvm, GenerateDiction
     private fun generateTestContent(
         moduleDefinition: ModuleClassDefinitionJvm,
         classDefinition: ClassDefinitionJvm,
-        a: MutableMap<String, MutableList<GenerateDictionaryJvm>>
+        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryJvm>>
     ): String {
         val className = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}"
         val testContent = when (classDefinition.type) {
@@ -100,7 +101,7 @@ class TestGeneratorJvm : TestGenerator<ModuleClassDefinitionJvm, GenerateDiction
     private fun generateRepositoryTest(
         moduleDefinition: ModuleClassDefinitionJvm,
         classDefinition: ClassDefinitionJvm,
-        a: MutableMap<String, MutableList<GenerateDictionaryJvm>>
+        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryJvm>>
     ): String {
         val xa = mutableListOf<String>()
 

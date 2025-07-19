@@ -4,6 +4,7 @@ import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.writer.ClassGenerator
 import java.io.File
+import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.text.appendLine
 
 /**
@@ -22,9 +23,9 @@ class ClassGeneratorAndroid :
 
     override fun obtainClassesGenerated(
         moduleDefinition: ModuleClassDefinitionAndroid,
-        classesDictionary: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
-    ): MutableMap<String, MutableList<GenerateDictionaryAndroid>> {
-        val a = mutableListOf<GenerateDictionaryAndroid>()
+        classesDictionary: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
+    ): MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>> {
+        val a = CopyOnWriteArrayList<GenerateDictionaryAndroid>()
         moduleDefinition.classes.forEach { classDefinition ->
             val className = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}"
             a.add(GenerateDictionaryAndroid(className, classDefinition.type, classDefinition.index, classDefinition.dependencies))
@@ -37,7 +38,7 @@ class ClassGeneratorAndroid :
     override fun generate(
         moduleDefinition: ModuleClassDefinitionAndroid,
         projectName: String,
-        a: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
+        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ) {
 
         // Create DI Module first if needed
@@ -52,7 +53,7 @@ class ClassGeneratorAndroid :
     private fun createDaggerModule(
         moduleDefinition: ModuleClassDefinitionAndroid,
         projectName: String,
-        a: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
+        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ) {
         val packageName = "com.awesomeapp.${NameMappings.modulePackageName(moduleDefinition.moduleId)}"
         val moduleName = "Module_${moduleDefinition.moduleNumber}"
@@ -168,7 +169,7 @@ class ClassGeneratorAndroid :
     private fun generateClassContent(
         classDefinition: ClassDefinitionAndroid,
         moduleDefinition: ModuleClassDefinitionAndroid,
-        a: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
+        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ): String {
         val packageName = "com.awesomeapp.${NameMappings.modulePackageName(moduleDefinition.moduleId)}"
         val className = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}"
@@ -203,7 +204,7 @@ class ClassGeneratorAndroid :
         packageName: String,
         className: String,
         dependencies: List<ClassDependencyAndroid>,
-        a: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
+        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ): String {
 
         val imports = buildString {
@@ -275,7 +276,7 @@ class ClassGeneratorAndroid :
         packageName: String,
         className: String,
         dependencies: List<ClassDependencyAndroid>,
-        a: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
+        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ): String {
         val imports = buildString {
             appendLine("import kotlinx.coroutines.Dispatchers")
