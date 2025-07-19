@@ -37,7 +37,7 @@ jobs:
           150 --type android --classes-module 10 --classes-module-type random
           --layers 11
 
-          dot -Tpng projects_generated/inverse_triangle_150/graph.dot >
+          dot -Tpng projects_generated/androidInverse_triangle150modules/graph.dot >
           inverse_triangle.png
 
           ./projectGenerator generate-project --shape triangle --language kts --modules 150

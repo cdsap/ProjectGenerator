@@ -11,9 +11,9 @@ class GraphWriter(private val nodes: List<ProjectGraph>, val path: String) {
         File("$path/graph.dot").createNewFile()
         var content = "digraph G { \n"
         nodes.forEach { nodeGraph ->
-            val node = NameMappings.moduleName(nodeGraph.id)
+            val node =  "${NameMappings.layerName(nodeGraph.layer)}:${NameMappings.moduleName(nodeGraph.id)}"
             nodeGraph.nodes.forEach { dep ->
-                content += "$node -> ${NameMappings.moduleName(dep.id)};\n"
+                content += "\"$node\" -> \"${NameMappings.layerName(dep.layer)}:${NameMappings.moduleName(dep.id)}\";\n"
 
             }
         }
