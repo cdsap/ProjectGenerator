@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator.generator.test
 
+import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.writer.ProjectWriter
 import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
@@ -29,10 +30,11 @@ class TestGeneratorJvmTest {
             TypeOfStringResources.NORMAL,
             true, // generateUnitTest
             GradleWrapper(Gradle.GRADLE_8_14_3),
-            false
+            false,
+            ""
         )
         projectWriter.write()
-        val testFile = File(tempDir, "layer_1/module_1_1/src/test/kotlin/com/awesomeapp/module_1_1/Usecase1_1Test.kt")
+        val testFile = File(tempDir, "${NameMappings.layerName(1)}/module_1_1/src/test/kotlin/com/awesomeapp/module_1_1/Usecase1_1Test.kt")
         assertTrue(testFile.exists(), "Test file should be generated")
         val content = testFile.readText()
         assertTrue(content.contains("class Usecase1_1Test"), "Test class should be present")

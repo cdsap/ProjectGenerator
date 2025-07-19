@@ -6,6 +6,7 @@ import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.TypeProject
 import io.github.cdsap.projectgenerator.model.Versions
+import io.github.cdsap.projectgenerator.NameMappings
 import java.io.File
 
 class BuildFilesGeneratorAndroid(val versions: Versions) : BuildFilesGenerator {
@@ -15,7 +16,9 @@ class BuildFilesGeneratorAndroid(val versions: Versions) : BuildFilesGenerator {
         generateUnitTests: Boolean
     ) {
 
-        val buildFile = File("${lang.projectName}/layer_${node.layer}/${node.id}/build.${lang.extension}")
+        val layerDir = NameMappings.layerName(node.layer)
+        val moduleDir = NameMappings.moduleName(node.id)
+        val buildFile = File("${lang.projectName}/$layerDir/$moduleDir/build.${lang.extension}")
         val buildContent = when (node.type) {
             TypeProject.ANDROID_APP -> createAndroidAppBuildFile(node, generateUnitTests)
             TypeProject.ANDROID_LIB -> createAndroidLibBuildFile(node, generateUnitTests)
@@ -29,7 +32,7 @@ class BuildFilesGeneratorAndroid(val versions: Versions) : BuildFilesGenerator {
         val testImplementations = mutableSetOf<String>()
         node.nodes.forEach { dependency ->
             if (dependency.layer != node.layer) {
-                val dependencyPath = ":layer_${dependency.layer}:${dependency.id}"
+                val dependencyPath = ":${NameMappings.layerName(dependency.layer)}:${NameMappings.moduleName(dependency.id)}"
                 implementations.add("implementation(project(\"$dependencyPath\"))")
             }
         }
@@ -41,7 +44,7 @@ class BuildFilesGeneratorAndroid(val versions: Versions) : BuildFilesGenerator {
 
             currentNode.nodes.forEach { dependency ->
                 if (dependency.layer != node.layer) {
-                    val dependencyPath = ":layer_${dependency.layer}:${dependency.id}"
+                    val dependencyPath = ":${NameMappings.layerName(dependency.layer)}:${NameMappings.moduleName(dependency.id)}"
                     implementations.add("implementation(project(\"$dependencyPath\"))")
                     collectAllDependencies(dependency, visited)
                 }
@@ -75,7 +78,7 @@ ${testImplementations.joinToString("\n").prependIndent("    ")}
         // Add direct dependencies first (only from different layers)
         node.nodes.forEach { dependency ->
             if (dependency.layer != node.layer) {
-                val dependencyPath = ":layer_${dependency.layer}:${dependency.id}"
+                val dependencyPath = ":${NameMappings.layerName(dependency.layer)}:${NameMappings.moduleName(dependency.id)}"
                 implementations.add("implementation(project(\"$dependencyPath\"))")
                 if (generateUnitTests) {
                     testImplementations.add("testImplementation(project(\"$dependencyPath\"))")
@@ -90,7 +93,7 @@ ${testImplementations.joinToString("\n").prependIndent("    ")}
 
             currentNode.nodes.forEach { dependency ->
                 if (dependency.layer != node.layer) {
-                    val dependencyPath = ":layer_${dependency.layer}:${dependency.id}"
+                val dependencyPath = ":${NameMappings.layerName(dependency.layer)}:${NameMappings.moduleName(dependency.id)}"
                     if (generateUnitTests) {
                         testImplementations.add("testImplementation(project(\"$dependencyPath\"))")
                     }

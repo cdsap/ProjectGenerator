@@ -20,7 +20,7 @@ class CompositeBuildPluginAndroidSimpleLib {
                             apply("kotlin-kapt")
                         }
 
-                     val name = target.name.replace(":","_")
+                     val name = target.name.replace(":","_").replace("-", "")
                      extensions.configure<com.android.build.gradle.LibraryExtension>  {
                         namespace = "com.example.mylibrary.${'$'}name"
                         compileSdk = 33

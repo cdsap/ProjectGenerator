@@ -38,7 +38,8 @@ class ProjectWriterTest {
             TypeOfStringResources.NORMAL,
             false,
             GradleWrapper(Gradle.GRADLE_8_13),
-            true
+            true,
+            "awesomeapp"
         )
 
         projectWriter.write()

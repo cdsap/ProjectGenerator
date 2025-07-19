@@ -7,6 +7,7 @@ import io.github.cdsap.projectgenerator.generator.android.FragmentLayout
 import io.github.cdsap.projectgenerator.generator.android.Manifest
 import io.github.cdsap.projectgenerator.generator.android.ValuesStrings
 import io.github.cdsap.projectgenerator.writer.ResourceGeneratorA
+import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.generator.classes.GenerateDictionaryAndroid
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.model.ProjectGraph
@@ -23,8 +24,10 @@ class ResourceGenerator() : ResourceGeneratorA<GenerateDictionaryAndroid> {
         classesDictionary: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
     ) {
         // Create resource directories
-        File("${lang.projectName}/layer_${node.layer}/${node.id}/src/main/res/layout").mkdirs()
-        File("${lang.projectName}/layer_${node.layer}/${node.id}/src/main/res/values").mkdirs()
+        val layerDir = NameMappings.layerName(node.layer)
+        val moduleDir = NameMappings.moduleName(node.id)
+        File("${lang.projectName}/$layerDir/$moduleDir/src/main/res/layout").mkdirs()
+        File("${lang.projectName}/$layerDir/$moduleDir/src/main/res/values").mkdirs()
         ClassTheme().createThemeFile(node, lang)
 
         when (node.type) {
@@ -41,10 +44,11 @@ class ResourceGenerator() : ResourceGeneratorA<GenerateDictionaryAndroid> {
         typeOfStringResources: TypeOfStringResources
     ) {
         val (layoutDir, valuesDir, manifestDir) = createResources(lang, node)
-        Manifest().createManifest(manifestDir, node.layer, node.id, TypeProject.ANDROID_APP, dictionary)
+        Manifest().createManifest(manifestDir, node.layer, NameMappings.moduleName(node.id), TypeProject.ANDROID_APP, dictionary)
         AndroidApplication().createApplicationClass(node, lang)
-        createLayoutFiles(layoutDir, node.id)
-        createValueFiles(valuesDir, node.id, typeOfStringResources)
+        val moduleDir = NameMappings.moduleName(node.id)
+        createLayoutFiles(layoutDir, moduleDir)
+        createValueFiles(valuesDir, moduleDir, typeOfStringResources)
     }
 
     private fun createAndroidLibResources(
@@ -53,32 +57,35 @@ class ResourceGenerator() : ResourceGeneratorA<GenerateDictionaryAndroid> {
         typeOfStringResources: TypeOfStringResources
     ) {
         val (layoutDir, valuesDir, manifestDir) = createResources(lang, node)
-        Manifest().createManifest(manifestDir, node.layer, node.id, TypeProject.ANDROID_LIB, dictionary)
-        createLayoutFiles(layoutDir, node.id)
-        createValueFiles(valuesDir, node.id, typeOfStringResources)
+        Manifest().createManifest(manifestDir, node.layer, NameMappings.moduleName(node.id), TypeProject.ANDROID_LIB, dictionary)
+        val moduleDirLib = NameMappings.moduleName(node.id)
+        createLayoutFiles(layoutDir, moduleDirLib)
+        createValueFiles(valuesDir, moduleDirLib, typeOfStringResources)
     }
 
     private fun createResources(
         lang: LanguageAttributes,
         node: ProjectGraph
     ): Triple<File, File, File> {
-        val layoutDir = File("${lang.projectName}/layer_${node.layer}/${node.id}/src/main/res/layout")
-        val valuesDir = File("${lang.projectName}/layer_${node.layer}/${node.id}/src/main/res/values")
-        val manifestDir = File("${lang.projectName}/layer_${node.layer}/${node.id}/src/main/")
+        val layerDir = NameMappings.layerName(node.layer)
+        val moduleDir = NameMappings.moduleName(node.id)
+        val layoutDir = File("${lang.projectName}/$layerDir/$moduleDir/src/main/res/layout")
+        val valuesDir = File("${lang.projectName}/$layerDir/$moduleDir/src/main/res/values")
+        val manifestDir = File("${lang.projectName}/$layerDir/$moduleDir/src/main/")
         return Triple(layoutDir, valuesDir, manifestDir)
     }
 
     private fun createLayoutFiles(layoutDir: File, moduleId: String) {
         layoutDir.mkdirs()
         val activityLayout = ActivityLayout().createActivityLayout(moduleId)
-        File(layoutDir, "activity_feature_${moduleId.lowercase()}.xml").writeText(activityLayout)
+        File(layoutDir, "activity_feature_${NameMappings.modulePackageName(moduleId).lowercase()}.xml").writeText(activityLayout)
         val fragmentLayout = FragmentLayout().createFragmentLayout(moduleId)
-        File(layoutDir, "fragment_feature_${moduleId.lowercase()}.xml").writeText(fragmentLayout)
+        File(layoutDir, "fragment_feature_${NameMappings.modulePackageName(moduleId).lowercase()}.xml").writeText(fragmentLayout)
     }
 
     private fun createValueFiles(valuesDir: File, moduleId: String, typeOfStringResources: TypeOfStringResources) {
         valuesDir.mkdirs()
-        val strings = ValuesStrings().createStrings(moduleId.split("_").last(), typeOfStringResources)
+        val strings = ValuesStrings().createStrings(NameMappings.modulePackageName(moduleId), typeOfStringResources)
         File(valuesDir, "strings.xml").writeText(strings)
     }
 

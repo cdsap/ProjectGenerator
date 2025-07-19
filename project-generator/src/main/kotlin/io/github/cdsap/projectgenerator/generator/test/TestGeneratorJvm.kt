@@ -5,6 +5,7 @@ import io.github.cdsap.projectgenerator.generator.classes.GenerateDictionaryJvm
 import io.github.cdsap.projectgenerator.model.ClassDefinitionJvm
 import io.github.cdsap.projectgenerator.model.ClassTypeJvm
 import io.github.cdsap.projectgenerator.model.ModuleClassDefinitionJvm
+import io.github.cdsap.projectgenerator.NameMappings
 import java.io.File
 
 
@@ -15,8 +16,11 @@ class TestGeneratorJvm : TestGenerator<ModuleClassDefinitionJvm, GenerateDiction
         projectName: String,
         classesDictionary: MutableMap<String, MutableList<GenerateDictionaryJvm>>
     ) {
+        val layerDir = NameMappings.layerName(moduleDefinition.layer)
+        val moduleDir = NameMappings.moduleName(moduleDefinition.moduleId)
+        val packageDir = NameMappings.modulePackageName(moduleDefinition.moduleId)
         val testDir =
-            File("$projectName/layer_${moduleDefinition.layer}/${moduleDefinition.moduleId}/src/test/kotlin/com/awesomeapp/${moduleDefinition.moduleId}/")
+            File("$projectName/$layerDir/$moduleDir/src/test/kotlin/com/awesomeapp/$packageDir/")
         testDir.mkdirs()
 
         moduleDefinition.classes.forEach { classDefinition ->
@@ -54,7 +58,7 @@ class TestGeneratorJvm : TestGenerator<ModuleClassDefinitionJvm, GenerateDiction
             appendLine("import kotlin.test.assertNotNull")
             appendLine("import kotlin.test.assertEquals")
             appendLine("import kotlin.test.assertFalse")
-            appendLine("import com.awesomeapp.${moduleDefinition.moduleId}.*")
+            appendLine("import com.awesomeapp.${NameMappings.modulePackageName(moduleDefinition.moduleId)}.*")
 
             // Add specific imports based on class type
             when (classDefinition.type) {
@@ -69,7 +73,7 @@ class TestGeneratorJvm : TestGenerator<ModuleClassDefinitionJvm, GenerateDiction
                             val x = s.values.flatten().first { it.type == ClassTypeJvm.API }
                             if (x != null) {
                                 val repository = x.className
-                                appendLine("import com.awesomeapp.${dep.sourceModuleId}.$repository")
+                                appendLine("import com.awesomeapp.${NameMappings.modulePackageName(dep.sourceModuleId)}.$repository")
                             }
                         }
                     }
@@ -82,7 +86,7 @@ class TestGeneratorJvm : TestGenerator<ModuleClassDefinitionJvm, GenerateDiction
         val classAnnotations = "@OptIn(ExperimentalCoroutinesApi::class)"
 
         return """
-            |package com.awesomeapp.${moduleDefinition.moduleId}
+            |package com.awesomeapp.${NameMappings.modulePackageName(moduleDefinition.moduleId)}
             |
             |$imports
             |

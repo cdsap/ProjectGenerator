@@ -4,6 +4,7 @@ import io.github.cdsap.projectgenerator.writer.BuildFilesGenerator
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.TypeProject
+import io.github.cdsap.projectgenerator.NameMappings
 import java.io.File
 
 class BuildFilesGeneratorJvm : BuildFilesGenerator {
@@ -12,7 +13,9 @@ class BuildFilesGeneratorJvm : BuildFilesGenerator {
         lang: LanguageAttributes,
         generateUnitTests: Boolean
     ) {
-        val buildFile = File("${lang.projectName}/layer_${node.layer}/${node.id}/build.${lang.extension}")
+        val layerDir = NameMappings.layerName(node.layer)
+        val moduleDir = NameMappings.moduleName(node.id)
+        val buildFile = File("${lang.projectName}/$layerDir/$moduleDir/build.${lang.extension}")
         val buildContent = when (node.type) {
             TypeProject.LIB -> createLibBuildFile(node)
             TypeProject.APPLICATION -> createApplicationBuildFile(node)
@@ -29,7 +32,7 @@ class BuildFilesGeneratorJvm : BuildFilesGenerator {
             |}
             |
             |dependencies {
-            |    ${node.nodes.joinToString("\n    ") { "implementation(project(\":layer_${it.layer}:${it.id}\"))" }}
+            |    ${node.nodes.joinToString("\n    ") { "implementation(project(\":${NameMappings.layerName(it.layer)}:${NameMappings.moduleName(it.id)}\"))" }}
             |}
         """.trimMargin()
     }
@@ -41,7 +44,7 @@ class BuildFilesGeneratorJvm : BuildFilesGenerator {
             |}
             |
             |dependencies {
-            |    ${node.nodes.joinToString("\n    ") { "implementation(project(\":layer_${it.layer}:${it.id}\"))" }}
+            |    ${node.nodes.joinToString("\n    ") { "implementation(project(\":${NameMappings.layerName(it.layer)}:${NameMappings.moduleName(it.id)}\"))" }}
             |}
         """.trimMargin()
     }

@@ -18,6 +18,8 @@ class ProjectGenerator(
     private val gradle: GradleWrapper = GradleWrapper(Gradle.GRADLE_8_5),
     private val path: String = "projects_generated",
     private val develocity: Boolean = false,
+    private val layerNames: List<String> = DefaultNames.layerNames,
+    private val moduleNameParts: List<String> = DefaultNames.moduleNames,
 ) {
 
     fun write() {
@@ -29,6 +31,16 @@ class ProjectGenerator(
         }
         println("Creating project $nameProject in $path")
         println("Calculating layer Distribution")
+
+        // Generate name mappings for layers and modules
+        NameMappings.layerNames = (0..layers).associateWith { index ->
+            if (index == layers) {
+                "app"
+            } else {
+                layerNames.getOrNull(index) ?: "layer_$index"
+            }
+        }
+
         val distributions = LayerDistribution(modules, layers).get(shape)
         println("Generating Project Dependency Graph")
         val nodes = ProjectGraphGenerator(
@@ -38,8 +50,18 @@ class ProjectGenerator(
             classesPerModule
         ).generate()
 
+        NameMappings.moduleNames = nodes
+            .sortedBy { it.id.substringAfterLast("_").toInt() }
+            .mapIndexed { index, node ->
+                if (node.layer == layers) {
+                    node.id to "app"
+                } else {
+                    node.id to generateModuleName(index)
+                }
+            }.toMap()
+
         val projectLanguageAttributes =
-            getProjectLanguageAttributes(language, "$path/${shape.name.lowercase()}_$modules")
+            getProjectLanguageAttributes(language, "$path/$nameProject")
         ProjectWriter(
             nodes,
             projectLanguageAttributes,
@@ -51,8 +73,8 @@ class ProjectGenerator(
             develocity,
             nameProject
         ).write()
-        GraphWriter(nodes, "$path/${shape.name.lowercase()}_$modules").write()
-        println("Project created in $path/${shape.name.lowercase()}_$modules")
+        GraphWriter(nodes, projectLanguageAttributes.first().projectName).write()
+        println("Project created in ${projectLanguageAttributes.first().projectName}")
     }
 
     private fun getProjectLanguageAttributes(language: Language, labelProject: String) = when (language) {
@@ -64,5 +86,16 @@ class ProjectGenerator(
             LanguageAttributes("gradle", "$labelProject/project_groovy"),
             LanguageAttributes("gradle.kts", "$labelProject/project_kts")
         )
+    }
+
+    private fun generateModuleName(index: Int): String {
+        var remaining = index
+        val base = moduleNameParts.size
+        val parts = mutableListOf<String>()
+        do {
+            parts.add(moduleNameParts[remaining % base])
+            remaining /= base
+        } while (remaining > 0)
+        return parts.joinToString("-")
     }
 }

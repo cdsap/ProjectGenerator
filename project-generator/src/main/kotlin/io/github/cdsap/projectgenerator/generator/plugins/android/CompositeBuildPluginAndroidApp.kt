@@ -30,10 +30,10 @@ class CompositeBuildPluginAndroidApp {
         |            }
         |
         |            extensions.configure<com.android.build.api.dsl.ApplicationExtension> {
-        |                namespace = "com.awesome." + target.name.replace(":","_")
+        |                namespace = "com.awesome." + target.name.replace(":","_").replace("-", "")
         |                compileSdk = 35
         |                defaultConfig {
-        |                    applicationId = "com.awesome." + target.name.replace(":","_")
+        |                    applicationId = "com.awesome." + target.name.replace(":","_").replace("-", "")
         |                    minSdk = 24
         |                    targetSdk = 35
         |                    versionCode = 1

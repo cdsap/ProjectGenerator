@@ -1,6 +1,7 @@
 package io.github.cdsap.projectgenerator.generator.classes
 
 import io.github.cdsap.projectgenerator.model.*
+import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.writer.ClassGenerator
 import java.io.File
 import kotlin.text.appendLine
@@ -53,7 +54,7 @@ class ClassGeneratorAndroid :
         projectName: String,
         a: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
     ) {
-        val packageName = "com.awesomeapp.${moduleDefinition.moduleId}"
+        val packageName = "com.awesomeapp.${NameMappings.modulePackageName(moduleDefinition.moduleId)}"
         val moduleName = "Module_${moduleDefinition.moduleNumber}"
 
         // Create imports for this module's classes
@@ -84,7 +85,7 @@ class ClassGeneratorAndroid :
                             val xa = mutableListOf<String>()
 
                             classDefinition.dependencies.mapIndexed { index, dep ->
-                                val depModuleId = dep.sourceModuleId
+                                val depModuleId =  NameMappings.modulePackageName(dep.sourceModuleId)
                                 val s = a.filter { it.key == depModuleId }
                                 if (s.isNotEmpty()) {
                                     val x = s.values.flatten().first { it.type == ClassTypeAndroid.API }
@@ -150,8 +151,10 @@ class ClassGeneratorAndroid :
                 |}
             """.trimMargin()
 
+            val layerDir = NameMappings.layerName(moduleDefinition.layer)
+            val moduleDir = NameMappings.moduleName(moduleDefinition.moduleId)
             val diPackagePath =
-                "${projectName}/layer_${moduleDefinition.layer}/${moduleDefinition.moduleId}/src/main/kotlin/${
+                "${projectName}/$layerDir/$moduleDir/src/main/kotlin/${
                     packageName.replace(
                         ".",
                         "/"
@@ -167,7 +170,7 @@ class ClassGeneratorAndroid :
         moduleDefinition: ModuleClassDefinitionAndroid,
         a: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
     ): String {
-        val packageName = "com.awesomeapp.${moduleDefinition.moduleId}"
+        val packageName = "com.awesomeapp.${NameMappings.modulePackageName(moduleDefinition.moduleId)}"
         val className = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}"
 
         return when (classDefinition.type) {
@@ -181,7 +184,7 @@ class ClassGeneratorAndroid :
             ClassTypeAndroid.REPOSITORY -> generateRepository(packageName, className, classDefinition.dependencies, a)
             ClassTypeAndroid.API -> generateApi(packageName, className)
             ClassTypeAndroid.WORKER -> generateWorker(packageName, className)
-            ClassTypeAndroid.ACTIVITY -> generateComposeActivity(packageName, className)
+            ClassTypeAndroid.ACTIVITY -> generateComposeActivity(packageName, className,moduleDefinition.moduleNumber)
             ClassTypeAndroid.FRAGMENT -> generateFragment(packageName, className)
             ClassTypeAndroid.SERVICE -> generateService(packageName, className)
             ClassTypeAndroid.STATE -> generateState(packageName, className)
@@ -220,7 +223,7 @@ class ClassGeneratorAndroid :
                     val x = s.values.flatten().first { it.type == ClassTypeAndroid.REPOSITORY }
                     if (x != null) {
                         val repoClassName = x.className
-                        appendLine("import com.awesomeapp.$depModuleId.$repoClassName")
+                        appendLine("import com.awesomeapp.${NameMappings.modulePackageName(dep.sourceModuleId)}.$repoClassName")
                     }
                 }
 
@@ -286,7 +289,7 @@ class ClassGeneratorAndroid :
                     val x = s.values.flatten().first { it.type == ClassTypeAndroid.API }
                     if (x != null) {
                         val apiClassName = x.className
-                        appendLine("import com.awesomeapp.$depModuleId.$apiClassName")
+                        appendLine("import com.awesomeapp.${NameMappings.modulePackageName(dep.sourceModuleId)}.$apiClassName")
                     }
                 }
 
@@ -356,7 +359,6 @@ class ClassGeneratorAndroid :
             appendLine("import androidx.fragment.app.Fragment")
             appendLine("import androidx.fragment.app.viewModels")
             appendLine("import dagger.hilt.android.AndroidEntryPoint")
-            appendLine("//import com.awesomeapp.$moduleId.R")
         }
 
         val viewModelClass = "Feature${moduleNumber}_1"
@@ -429,9 +431,8 @@ class ClassGeneratorAndroid :
         """.trimMargin()
     }
 
-    private fun generateComposeActivity(packageName: String, className: String): String {
+    private fun generateComposeActivity(packageName: String, className: String, moduleNumber: Int): String {
         val moduleId = packageName.split(".").last()
-        val moduleNumber = moduleId.split("_").last()
         val viewModelClass = "Viewmodel${moduleNumber}_1"
 
         val imports = buildString {
@@ -447,7 +448,7 @@ class ClassGeneratorAndroid :
             appendLine("import androidx.compose.runtime.getValue")
             appendLine("import androidx.compose.ui.Alignment")
             appendLine("import androidx.compose.ui.Modifier")
-            appendLine("import com.awesomeapp.$moduleId.ui.theme.FeatureTheme")
+            appendLine("import com.awesomeapp.${NameMappings.modulePackageName(moduleId)}.ui.theme.FeatureTheme")
             appendLine("import dagger.hilt.android.AndroidEntryPoint")
         }
 
@@ -570,8 +571,11 @@ class ClassGeneratorAndroid :
         moduleDefinition: ModuleClassDefinitionAndroid,
         projectName: String
     ) {
+        val layerDir = NameMappings.layerName(moduleDefinition.layer)
+        val moduleDir = NameMappings.moduleName(moduleDefinition.moduleId)
+        val packageDir = NameMappings.modulePackageName(moduleDefinition.moduleId)
         val directory =
-            File("$projectName/layer_${moduleDefinition.layer}/${moduleDefinition.moduleId}/src/main/kotlin/com/awesomeapp/${moduleDefinition.moduleId}/")
+            File("$projectName/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$packageDir/")
         directory.mkdirs()
 
         val fileName = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}.kt"
@@ -579,7 +583,7 @@ class ClassGeneratorAndroid :
     }
 
     private fun createApplicationClass(moduleDefinition: ModuleClassDefinitionAndroid, projectName: String) {
-        val packageName = "com.awesomeapp.${moduleDefinition.moduleId}"
+        val packageName = "com.awesomeapp.${NameMappings.modulePackageName(moduleDefinition.moduleId)}"
         val content = """
             |package $packageName
             |
@@ -601,8 +605,10 @@ class ClassGeneratorAndroid :
             |}
         """.trimMargin()
 
+        val layerDirApp = NameMappings.layerName(moduleDefinition.layer)
+        val moduleDirApp = NameMappings.moduleName(moduleDefinition.moduleId)
         val directory = File(
-            "$projectName/layer_${moduleDefinition.layer}/${moduleDefinition.moduleId}/src/main/kotlin/${
+            "$projectName/$layerDirApp/$moduleDirApp/src/main/kotlin/${
                 packageName.replace(
                     ".",
                     "/"

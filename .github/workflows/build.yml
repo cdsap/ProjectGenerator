@@ -37,32 +37,32 @@ jobs:
           150 --type android --classes-module 10 --classes-module-type random
           --layers 11
 
-          dot -Tpng projects_generated/inverse_triangle_150/graph.dot >
+          dot -Tpng projects_generated/androidInverse_triangle150modules/project_kts/graph.dot >
           inverse_triangle.png
 
           ./projectGenerator generate-project --shape triangle --language kts --modules 150
           --type android --classes-module 10 --classes-module-type random
           --layers 11
 
-          dot -Tpng projects_generated/triangle_150/graph.dot > triangle.png
+          dot -Tpng projects_generated/androidTriangle150modules/project_kts/graph.dot > triangle.png
 
           ./projectGenerator generate-project --shape rhombus --language kts --modules 150 --type
           android --classes-module 10 --classes-module-type random --layers 11
 
-          dot -Tpng projects_generated/rhombus_150/graph.dot > rhombus.png
+          dot -Tpng projects_generated/androidRhombus150modules/project_kts/graph.dot > rhombus.png
 
           ./projectGenerator generate-project --shape middle_bottleneck --language kts --modules 150 --type android --classes-module 10 --classes-module-type random --layers 11
 
-          dot -Tpng projects_generated/middle_bottleneck_150/graph.dot >
+          dot -Tpng projects_generated/androidMiddle_bottleneck150modules/project_kts/graph.dot >
           middle_bottleneck.png
 
           ./projectGenerator generate-project --shape rectangle --language kts --modules 150 --type android --classes-module 10 --classes-module-type random --layers 11
 
-          dot -Tpng projects_generated/rectangle_150/graph.dot > rectangle.png
+          dot -Tpng projects_generated/androidRectangle150modules/project_kts/graph.dot > rectangle.png
 
           ./projectGenerator generate-project --shape flat --language kts --modules 150 --type android --classes-module 10 --classes-module-type random --layers 11
 
-          dot -Tpng projects_generated/flat_150/graph.dot > flat.png
+          dot -Tpng projects_generated/androidFlat150modules/project_kts/graph.dot > flat.png
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:

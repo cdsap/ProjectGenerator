@@ -70,6 +70,12 @@ ProjectGenerator(
     path = file.path
 ).write()
 
+// Layer and module names are generated from internal dictionaries.
+// You can provide your own lists via the `layerNames` and `moduleNameParts`
+// parameters of `ProjectGenerator` if you want specific naming.
+// The last layer of the project is always named `app` and contains a single
+// module also called `app`.
+
 ```
 ### Dependency
 ```

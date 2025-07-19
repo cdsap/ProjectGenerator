@@ -6,6 +6,7 @@ import io.github.cdsap.projectgenerator.model.ClassDefinitionAndroid
 import io.github.cdsap.projectgenerator.model.ClassDependencyAndroid
 import io.github.cdsap.projectgenerator.model.ClassTypeAndroid
 import io.github.cdsap.projectgenerator.model.ModuleClassDefinitionAndroid
+import io.github.cdsap.projectgenerator.NameMappings
 import java.io.File
 
 
@@ -17,8 +18,11 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
         projectName: String,
         classesDictionary: MutableMap<String, MutableList<GenerateDictionaryAndroid>>
     ) {
+        val layerDir = NameMappings.layerName(moduleDefinition.layer)
+        val moduleDir = NameMappings.moduleName(moduleDefinition.moduleId)
+        val packageDir = NameMappings.modulePackageName(moduleDefinition.moduleId)
         val testDir =
-            File("$projectName/layer_${moduleDefinition.layer}/${moduleDefinition.moduleId}/src/test/kotlin/com/awesomeapp/${moduleDefinition.moduleId}/")
+            File("$projectName/$layerDir/$moduleDir/src/test/kotlin/com/awesomeapp/$packageDir/")
         testDir.mkdirs()
 
         moduleDefinition.classes.forEach { classDefinition ->
@@ -67,7 +71,7 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
             appendLine("import kotlin.test.assertNotNull")
             appendLine("import kotlin.test.assertEquals")
             appendLine("import kotlin.test.assertFalse")
-            appendLine("import com.awesomeapp.${moduleDefinition.moduleId}.*")
+            appendLine("import com.awesomeapp.${NameMappings.modulePackageName(moduleDefinition.moduleId)}.*")
 
             // Add specific imports based on class type
             when (classDefinition.type) {
@@ -92,7 +96,7 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
                             val x = s.values.flatten().first { it.type == ClassTypeAndroid.REPOSITORY }
                             if (x != null) {
                                 val repository = x.className
-                                appendLine("import com.awesomeapp.${dep.sourceModuleId}.$repository")
+                                appendLine("import com.awesomeapp.${NameMappings.modulePackageName(dep.sourceModuleId)}.$repository")
                             }
                         }
                     }
@@ -105,7 +109,7 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
                             val x = s.values.flatten().first { it.type == ClassTypeAndroid.API }
                             if (x != null) {
                                 val repository = x.className
-                                appendLine("import com.awesomeapp.${dep.sourceModuleId}.$repository")
+                                appendLine("import com.awesomeapp.${NameMappings.modulePackageName(dep.sourceModuleId)}.$repository")
                             }
                         }
                     }
@@ -118,7 +122,7 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
         val classAnnotations = "@OptIn(ExperimentalCoroutinesApi::class)"
 
         return """
-            |package com.awesomeapp.${moduleDefinition.moduleId}
+            |package com.awesomeapp.${NameMappings.modulePackageName(moduleDefinition.moduleId)}
             |
             |$imports
             |
@@ -227,7 +231,7 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
                                 if (innerS.isNotEmpty()) {
                                     val innerX = innerS.values.flatten().first { it.type == ClassTypeAndroid.API }
                                     if (innerX != null) {
-                                        "com.awesomeapp.${innerDep.sourceModuleId}.${innerX.className}()"
+                                        "com.awesomeapp.${NameMappings.modulePackageName(innerDep.sourceModuleId)}.${innerX.className}()"
                                     } else ""
                                 } else ""
                             }.joinToString(", ")

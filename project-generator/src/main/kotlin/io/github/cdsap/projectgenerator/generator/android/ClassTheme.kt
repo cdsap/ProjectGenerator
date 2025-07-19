@@ -2,16 +2,20 @@ package io.github.cdsap.projectgenerator.generator.android
 
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.model.ProjectGraph
+import io.github.cdsap.projectgenerator.NameMappings
 import java.io.File
 
 class ClassTheme {
     fun createThemeFile(node: ProjectGraph, lang: LanguageAttributes) {
+        val layerDir = NameMappings.layerName(node.layer)
+        val moduleDir = NameMappings.moduleName(node.id)
+        val packageDir = NameMappings.modulePackageName(node.id)
         val themeDir =
-            File("${lang.projectName}/layer_${node.layer}/${node.id}/src/main/kotlin/com/awesomeapp/${node.id}/ui/theme")
+            File("${lang.projectName}/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$packageDir/ui/theme")
         themeDir.mkdirs()
         val themeFile = File(themeDir, "Theme.kt")
         val themeContent = """
-            |package com.awesomeapp.${node.id}.ui.theme
+            |package com.awesomeapp.$packageDir.ui.theme
             |
             |import androidx.compose.material3.MaterialTheme
             |import androidx.compose.material3.lightColorScheme // Or darkColorScheme
