@@ -1,0 +1,14 @@
+{
+    "name": "project-generator-backend",
+    "version": "1.0.0",
+    "main": "server.cjs",
+    "scripts": {
+        "start": "node server.cjs"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "multer": "^1.4.4",
+        "node-fetch": "^2.6.7",
+        "uuid": "^9.0.0"
+    }
+}
