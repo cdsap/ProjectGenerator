@@ -38,9 +38,10 @@ class SingleE2EValidationTest {
             layers = 5,
             generateUnitTest = true,
             gradle = GradleWrapper(Gradle.GRADLE_8_14_3),
-            path = tempDir.toFile().path
+            path = tempDir.toFile().path,
+            projectName = "${shape.name.lowercase().capitalize()}_$modules"
         ).write()
-        val filePath = File("$tempDir/android${shape.name.lowercase().capitalize()}${modules}modules/project_kts")
+        val filePath = File("$tempDir/${shape.name.lowercase().capitalize()}_${modules}/project_kts")
         val result = GradleRunner.create()
             .withProjectDir(filePath)
             .withArguments("assembleDebug")
@@ -55,8 +56,8 @@ class SingleE2EValidationTest {
         val layerDir = NameMappings.layerName(0)
         val moduleDir = NameMappings.moduleName("module_0_1")
         assert(
-            File("$tempDir/android${shape.name.lowercase().capitalize()}${modules}modules/project_kts/$layerDir/$moduleDir/build").exists()
-                && File("$tempDir/android${shape.name.lowercase().capitalize()}${modules}modules/project_kts/$layerDir/$moduleDir/build").isDirectory
+            File("$tempDir/${shape.name.lowercase().capitalize()}_${modules}/project_kts/$layerDir/$moduleDir/build").exists()
+                && File("$tempDir/${shape.name.lowercase().capitalize()}_${modules}/project_kts/$layerDir/$moduleDir/build").isDirectory
         )
 
         assert(resultTest.output.contains("BUILD SUCCESSFUL"))
