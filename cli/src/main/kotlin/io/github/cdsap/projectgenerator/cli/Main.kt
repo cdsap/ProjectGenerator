@@ -52,39 +52,64 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
         .default("gradle_8_14_3")
     private val develocity by option().flag(default = false)
     private val versionsFile by option().file()
-    private val projectName by  option()
+    private val projectName by option()
+    private val develocityUrl by option()
 
 
     override fun run() {
         val typeOfProjectRequested = TypeProjectRequested.valueOf(type.uppercase())
         val shape = Shape.valueOf(shape.uppercase())
+        val versions = getVersions(versionsFile, develocityUrl)
+        val develocityEnabled = getDevelocityEnabled(develocity, develocityUrl)
         ProjectGenerator(
             modules,
             shape,
             Language.valueOf(language.uppercase()),
             typeOfProjectRequested,
             ClassesPerModule(ClassesPerModuleType.valueOf(classesModuleType.uppercase()), classesModule),
-            versions = if (versionsFile != null) parseYaml(versionsFile!!) else Versions(),
+            versions = versions,
             TypeOfStringResources.valueOf(typeOfStringResources.uppercase()),
             layers,
             generateUnitTest,
             GradleWrapper(Gradle.valueOf(gradle.uppercase())),
-            develocity = develocity,
+            develocity = develocityEnabled,
             projectName = projectName ?: buildString {
                 append(typeOfProjectRequested.name.lowercase())
                 append(shape.name.lowercase().replaceFirstChar { it.uppercase() })
                 append(modules)
                 append("modules")
             }
-
         ).write()
     }
+
     private fun parseYaml(rules: File): Versions {
         val mapper = ObjectMapper(YAMLFactory()).apply {
             registerModule(KotlinModule())
             configOverride(List::class.java).setterInfo = JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY)
         }
         return mapper.readValue(rules)
+    }
+
+    private fun getDevelocityEnabled(develocity: Boolean, develocityUrl: String?): Boolean {
+        return if (develocity) {
+            return true
+        } else {
+            develocityUrl != null
+        }
+    }
+
+    private fun getVersions(fileVersions: File?, develocityUrl: String?): Versions {
+        val versions = if (fileVersions != null) {
+            parseYaml(fileVersions)
+        } else {
+            Versions()
+        }
+        return if (develocityUrl != null) {
+            versions.copy(project = versions.project.copy(develocityUrl = develocityUrl))
+        } else {
+            versions
+        }
+
     }
 }
 
