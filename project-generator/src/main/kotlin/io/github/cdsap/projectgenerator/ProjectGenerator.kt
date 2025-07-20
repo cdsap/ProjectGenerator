@@ -57,7 +57,7 @@ class ProjectGenerator(
             }.toMap()
 
         val projectLanguageAttributes =
-            getProjectLanguageAttributes(language, "$path/$nameProject")
+            getProjectLanguageAttributes(language, "$path/$projectName")
         ProjectWriter(
             nodes,
             projectLanguageAttributes,

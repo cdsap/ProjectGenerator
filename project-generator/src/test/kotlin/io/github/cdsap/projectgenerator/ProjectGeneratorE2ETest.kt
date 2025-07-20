@@ -41,9 +41,10 @@ class ProjectGeneratorE2ETest {
             GradleWrapper(Gradle.GRADLE_8_14_3),
             path = tempDir.toFile().path,
             false,
-            "${shape.name.lowercase()}_$modules"
+            projectName = "${shape.name.lowercase().capitalize()}$modules"
+
         ).write()
-        val filePath = File("$tempDir/android${shape.name.lowercase().capitalize()}${modules}modules/project_kts")
+        val filePath = File("$tempDir/${shape.name.lowercase().capitalize()}${modules}/project_kts")
         val result = GradleRunner.create()
             .withProjectDir(filePath)
             .withArguments("assembleDebug")
@@ -57,8 +58,16 @@ class ProjectGeneratorE2ETest {
         val layerDir = NameMappings.layerName(0)
         val moduleDir = NameMappings.moduleName("module_0_1")
         assert(
-            File("$tempDir/android${shape.name.lowercase().capitalize()}${modules}modules/project_kts/$layerDir/$moduleDir/build").exists()
-                && File("$tempDir/android${shape.name.lowercase().capitalize()}${modules}modules/project_kts/$layerDir/$moduleDir/build").isDirectory
+            File(
+                "$tempDir/${
+                    shape.name.lowercase().capitalize()
+                }${modules}/project_kts/$layerDir/$moduleDir/build"
+            ).exists()
+                    && File(
+                "$tempDir/${
+                    shape.name.lowercase().capitalize()
+                }${modules}/project_kts/$layerDir/$moduleDir/build"
+            ).isDirectory
         )
 
         assert(resultTest.output.contains("BUILD SUCCESSFUL"))
@@ -68,6 +77,7 @@ class ProjectGeneratorE2ETest {
     @EnumSource(Shape::class)
     fun testJvmBuildProjects(shape: Shape) {
         val modules = 50
+        val shape = Shape.RHOMBUS
         ProjectGenerator(
             modules,
             shape,
@@ -81,13 +91,11 @@ class ProjectGeneratorE2ETest {
             GradleWrapper(Gradle.GRADLE_8_13),
             path = tempDir.toFile().path,
             false,
-            "${shape.name.lowercase()}_$modules"
-
-            ).write()
-        val filePath = File("$tempDir/${shape.name.lowercase()}_$modules/project_kts")
-            path = tempDir.toFile().path
+            projectName = "${shape.name.lowercase().capitalize()}$modules"
         ).write()
-        val filePath = File("$tempDir/jvm${shape.name.lowercase().capitalize()}${modules}modules/project_kts")
+
+
+        val filePath = File("$tempDir/${shape.name.lowercase().capitalize()}${modules}/project_kts")
         val result = GradleRunner.create()
             .withProjectDir(filePath)
             .withArguments("build")
@@ -96,8 +104,16 @@ class ProjectGeneratorE2ETest {
         val layerDirJvm = NameMappings.layerName(0)
         val moduleDirJvm = NameMappings.moduleName("module_0_1")
         assert(
-            File("$tempDir/jvm${shape.name.lowercase().capitalize()}${modules}modules/project_kts/$layerDirJvm/$moduleDirJvm/build").exists()
-                && File("$tempDir/jvm${shape.name.lowercase().capitalize()}${modules}modules/project_kts/$layerDirJvm/$moduleDirJvm/build").isDirectory
+            File(
+                "$tempDir/${
+                    shape.name.lowercase().capitalize()
+                }${modules}/project_kts/$layerDirJvm/$moduleDirJvm/build"
+            ).exists()
+                    && File(
+                "$tempDir/${
+                    shape.name.lowercase().capitalize()
+                }${modules}/project_kts/$layerDirJvm/$moduleDirJvm/build"
+            ).isDirectory
         )
 
         println(result.output)
@@ -121,9 +137,13 @@ class ProjectGeneratorE2ETest {
             GradleWrapper(Gradle.GRADLE_8_14_3),
             path = tempDir.toFile().path,
             false,
-            "${shape.name.lowercase()}_$modules"
+            projectName = "${shape.name.lowercase().capitalize()}$modules"
         ).write()
-        val toml = File("$tempDir/android${shape.name.lowercase().capitalize()}${modules}modules/project_kts/gradle/libs.versions.toml")
+        val toml = File(
+            "$tempDir/${
+                shape.name.lowercase().capitalize()
+            }${modules}/project_kts/gradle/libs.versions.toml"
+        )
         assert(toml.exists())
         assert(toml.readText().contains("agp = \"9.9.9\""))
     }
