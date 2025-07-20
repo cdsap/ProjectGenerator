@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .captcha-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LdN7IgrAAAAAJjgAM29sSfdfgbPyhUKjkzaLkPs"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Project Generator</h1>
+        
+        <form id="projectForm">
+            <div class="form-group">
+                <label for="modules">Number of Modules:</label>
+                <input type="number" id="modules" name="modules" value="5" min="1" max="20" required>
+            </div>
+
+            <div class="form-group">
+                <label for="shape">Project Shape:</label>
+                <select id="shape" name="shape">
+                    <option value="rectangle">Rectangle</option>
+                    <option value="rhombus">Rhombus</option>
+                    <option value="triangle">Triangle</option>
+                    <option value="flat">Flat</option>
+                    <option value="middle_bottleneck">Middle Bottleneck</option>
+                    <option value="inverse_triangle">Inverse Triangle</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="layers">Number of Layers:</label>
+                <input type="number" id="layers" name="layers" value="3" min="1" max="10" required>
+            </div>
+
+            <div class="form-group">
+                <label for="language">Language:</label>
+                <select id="language" name="language">
+                    <option value="kts">Kotlin DSL (kts)</option>
+                    <option value="groovy">Groovy</option>
+                    <option value="both">Both</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="type">Project Type:</label>
+                <select id="type" name="type">
+                    <option value="android">Android</option>
+                    <option value="jvm">JVM</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="classes-module">Classes per Module:</label>
+                <input type="number" id="classes-module" name="classes-module" value="5" min="1" max="50">
+            </div>
+
+            <div class="form-group">
+                <label for="classes-module-type">Classes Module Type:</label>
+                <select id="classes-module-type" name="classes-module-type">
+                    <option value="fixed">Fixed</option>
+                    <option value="random">Random</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="type-of-string-resources">String Resources Type:</label>
+                <select id="type-of-string-resources" name="type-of-string-resources">
+                    <option value="normal">Normal</option>
+                    <option value="large">Large</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="gradle">Gradle Version:</label>
+                <select id="gradle" name="gradle">
+                    <option value="gradle_8_14_2">Gradle 8.14.2</option>
+                    <option value="gradle_8_13">Gradle 8.13</option>
+                    <option value="gradle_8_9">Gradle 8.9</option>
+                    <option value="gradle_8_5">Gradle 8.5</option>
+                    <option value="gradle_8_2">Gradle 8.2</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="generate-unit-test" name="generate-unit-test">
+                    <label for="generate-unit-test">Generate Unit Tests</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="develocity" name="develocity">
+                    <label for="develocity">Enable Develocity</label>
+                </div>
+            </div>
+
+            <div class="captcha-container">
+                <p>reCAPTCHA v3 is enabled - no checkbox needed!</p>
+            </div>
+
+            <button type="submit" id="generateBtn">Generate Project</button>
+        </form>
+
+        <div class="loading" id="loading">
+            <p>🔄 Generating your project... This may take a few moments.</p>
+        </div>
+
+        <div class="status" id="status"></div>
+    </div>
+
+    <script>
+        document.getElementById('projectForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const generateBtn = document.getElementById('generateBtn');
+            const loading = document.getElementById('loading');
+            const status = document.getElementById('status');
+            
+            // Get CAPTCHA token using reCAPTCHA v3
+            let captchaToken;
+            try {
+                captchaToken = await grecaptcha.execute('6LdN7IgrAAAAAJjgAM29sSfdfgbPyhUKjkzaLkPs', {action: 'generate_project'});
+            } catch (error) {
+                showStatus('CAPTCHA error: ' + error.message, 'error');
+                return;
+            }
+            
+            // Disable button and show loading
+            generateBtn.disabled = true;
+            loading.style.display = 'block';
+            status.style.display = 'none';
+            
+            try {
+                // Build form data
+                const formData = new FormData();
+                formData.append('captchaToken', captchaToken);
+                
+                // Add all form fields
+                const formFields = ['modules', 'shape', 'layers', 'language', 'type', 'classes-module', 'classes-module-type', 'type-of-string-resources', 'gradle'];
+                formFields.forEach(field => {
+                    const value = document.getElementById(field).value;
+                    if (value) {
+                        formData.append(field, value);
+                    }
+                });
+                
+                // Add checkboxes
+                if (document.getElementById('generate-unit-test').checked) {
+                    formData.append('generate-unit-test', 'true');
+                }
+                if (document.getElementById('develocity').checked) {
+                    formData.append('develocity', 'true');
+                }
+                
+                // Make API call
+                const response = await fetch('https://project-generator-185083159740.us-central1.run.app/api/generate', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    // Download the zip file
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `project-${Date.now()}.zip`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    
+                    showStatus('✅ Project generated successfully! The zip file should download automatically.', 'success');
+                } else {
+                    const errorText = await response.text();
+                    showStatus(`❌ Error: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`❌ Network error: ${error.message}`, 'error');
+            } finally {
+                // Re-enable button and hide loading
+                generateBtn.disabled = false;
+                loading.style.display = 'none';
+                // No need to reset for v3
+            }
+        });
+        
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
