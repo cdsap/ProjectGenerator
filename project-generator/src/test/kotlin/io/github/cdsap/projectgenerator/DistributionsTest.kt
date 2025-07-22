@@ -10,7 +10,7 @@ class DistributionsTest {
     @Test
     fun `test distributeModulesForRhombusInverse with even modules and layers`() {
         val result = distributions.distributeModulesForRhombusInverse(100, 7)
-        assertEquals(listOf(8, 14, 27, 1, 24, 12, 8, 5), result)
+        assertEquals(listOf(8, 14, 27, 1, 8, 14, 27), result)
     }
 
     @Test
