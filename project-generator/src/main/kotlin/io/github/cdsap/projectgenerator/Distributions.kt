@@ -4,17 +4,18 @@ class Distributions {
 
     fun distributeModulesForRhombusInverse(numberOfModules: Int, numberOfLayers: Int): List<Int> {
         val center = 1
-        val halfN = (numberOfLayers - center) / 2
+        val remainingLayers = numberOfLayers - center
+        val halfN1 = remainingLayers / 2
+        val halfN2 = remainingLayers - halfN1  // This handles odd numberOfLayers correctly
 
         return if (numberOfModules % 2 == 0) {
-            val halfDistributionUp = distributeModulesHarmonically((numberOfModules - center) / 2, halfN).reversed()
-            val halfDistributionDown =
-                distributeModulesHarmonically((numberOfModules - center) / 2, halfN + 1).reversed()
+            val halfDistributionUp = distributeModulesHarmonically((numberOfModules - center) / 2, halfN1).reversed()
+            val halfDistributionDown = distributeModulesHarmonically((numberOfModules - center) / 2, halfN2)
             halfDistributionUp + center + halfDistributionDown.reversed()
-
         } else {
-            val halfDistribution = distributeModulesHarmonically((numberOfModules - center) / 2, halfN)
-            halfDistribution + center + halfDistribution.reversed()
+            val halfDistribution1 = distributeModulesHarmonically((numberOfModules - center) / 2, halfN1)
+            val halfDistribution2 = distributeModulesHarmonically((numberOfModules - center) / 2, halfN2)
+            halfDistribution1 + center + halfDistribution2.reversed()
         }
     }
 
