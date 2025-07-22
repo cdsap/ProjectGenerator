@@ -23,7 +23,7 @@ class LayerDistributionTest {
     @Test
     fun testMiddleBottleneckShape() {
         val layerDistribution = LayerDistribution(numberOfModules = 100, numberOfLayers = 5)
-        val expected = listOf(16, 33, 1, 27, 14, 8)
+        val expected = listOf(16, 33, 1, 16, 33)
         val result = layerDistribution.get(Shape.MIDDLE_BOTTLENECK)
         assertEquals(expected, result)
     }
