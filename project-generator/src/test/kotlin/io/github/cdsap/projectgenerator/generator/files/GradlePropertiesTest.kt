@@ -25,7 +25,7 @@ class GradlePropertiesTest {
         val gradleProperties = GradleProperties().get(versions)
         Assertions.assertTrue(gradleProperties.contains("org.gradle.jvmargs"))
         Assertions.assertTrue(gradleProperties.contains("android.useAndroidX=true"))
-        Assertions.assertTrue(gradleProperties.contains("org.gradle.cache=true"))
+        Assertions.assertTrue(gradleProperties.contains("org.gradle.caching=true"))
         Assertions.assertTrue(gradleProperties.contains("ksp.useKSP2=false"))
     }
 
@@ -43,7 +43,7 @@ class GradlePropertiesTest {
         val gradleProperties = GradleProperties().get(versions)
         Assertions.assertTrue(gradleProperties.contains("org.gradle.jvmargs"))
         Assertions.assertTrue(gradleProperties.contains("android.useAndroidX=true"))
-        Assertions.assertTrue(gradleProperties.contains("org.gradle.cache=true"))
+        Assertions.assertTrue(gradleProperties.contains("org.gradle.caching=true"))
         Assertions.assertTrue(!gradleProperties.contains("ksp.useKSP2=false"))
     }
 
