@@ -7,7 +7,7 @@ class GradleProperties {
     fun get(versions: Versions) = """
         org.gradle.jvmargs=-Xmx5g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:+UseParallelGC -XX:MaxMetaspaceSize=1g
         android.useAndroidX=true
-        org.gradle.cache=true
+        org.gradle.caching=true
         ${k2usage(versions)}
     """.trimIndent()
 
