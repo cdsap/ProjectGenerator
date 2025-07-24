@@ -27,8 +27,16 @@ class ClassGeneratorAndroid :
     ): MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>> {
         val a = CopyOnWriteArrayList<GenerateDictionaryAndroid>()
         moduleDefinition.classes.forEach { classDefinition ->
-            val className = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}"
-            a.add(GenerateDictionaryAndroid(className, classDefinition.type, classDefinition.index, classDefinition.dependencies))
+            val className =
+                "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}"
+            a.add(
+                GenerateDictionaryAndroid(
+                    className,
+                    classDefinition.type,
+                    classDefinition.index,
+                    classDefinition.dependencies
+                )
+            )
         }
         classesDictionary[moduleDefinition.moduleId] = a
         return classesDictionary
@@ -41,13 +49,13 @@ class ClassGeneratorAndroid :
         a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ) {
 
-        // Create DI Module first if needed
-        createDaggerModule(moduleDefinition, projectName, a)
-
         moduleDefinition.classes.forEach { classDefinition ->
             val classContent = generateClassContent(classDefinition, moduleDefinition, a)
             writeClassFile(classContent, classDefinition, moduleDefinition, projectName)
         }
+
+        createDaggerModule(moduleDefinition, projectName, a)
+
     }
 
     private fun createDaggerModule(
@@ -57,14 +65,14 @@ class ClassGeneratorAndroid :
     ) {
         val packageName = "com.awesomeapp.${NameMappings.modulePackageName(moduleDefinition.moduleId)}"
         val moduleName = "Module_${moduleDefinition.moduleNumber}"
-
         // Create imports for this module's classes
         val classImports = StringBuilder()
         val provideMethods = mutableListOf<String>()
 
         moduleDefinition.classes.forEach { classDefinition ->
             if (classDefinition.type != ClassTypeAndroid.STATE) { // Skip STATE type classes
-                val className = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}"
+                val className =
+                    "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}"
                 classImports.appendLine("import $packageName.$className")
 
                 when (classDefinition.type) {
@@ -84,17 +92,23 @@ class ClassGeneratorAndroid :
                         // For repositories, we need to provide their API dependencies
                         if (classDefinition.dependencies.isNotEmpty()) {
                             val xa = mutableListOf<String>()
-
                             classDefinition.dependencies.mapIndexed { index, dep ->
-                                val depModuleId =  NameMappings.modulePackageName(dep.sourceModuleId)
+                                val depModuleId = dep.sourceModuleId
                                 val s = a.filter { it.key == depModuleId }
                                 if (s.isNotEmpty()) {
                                     val x = s.values.flatten().first { it.type == ClassTypeAndroid.API }
                                     if (x != null) {
 
                                         val apiClassName = x.className
-                                        classImports.appendLine("import com.awesomeapp.$depModuleId.$apiClassName")
+                                        classImports.appendLine(
+                                            "import com.awesomeapp.${
+                                                NameMappings.modulePackageName(
+                                                    dep.sourceModuleId
+                                                )
+                                            }.$apiClassName"
+                                        )
                                         xa.add("api$index: $apiClassName = $apiClassName()")
+
                                     }
                                 }
                             }
@@ -185,7 +199,7 @@ class ClassGeneratorAndroid :
             ClassTypeAndroid.REPOSITORY -> generateRepository(packageName, className, classDefinition.dependencies, a)
             ClassTypeAndroid.API -> generateApi(packageName, className)
             ClassTypeAndroid.WORKER -> generateWorker(packageName, className)
-            ClassTypeAndroid.ACTIVITY -> generateComposeActivity(packageName, className,moduleDefinition.moduleNumber)
+            ClassTypeAndroid.ACTIVITY -> generateComposeActivity(packageName, className, moduleDefinition.moduleNumber)
             ClassTypeAndroid.FRAGMENT -> generateFragment(packageName, className)
             ClassTypeAndroid.SERVICE -> generateService(packageName, className)
             ClassTypeAndroid.STATE -> generateState(packageName, className)
@@ -212,6 +226,9 @@ class ClassGeneratorAndroid :
             appendLine("import androidx.lifecycle.viewModelScope")
             appendLine("import dagger.hilt.android.lifecycle.HiltViewModel")
             appendLine("import kotlinx.coroutines.launch")
+            appendLine("import kotlinx.coroutines.coroutineScope")
+            appendLine("import kotlinx.coroutines.async")
+            appendLine("import kotlinx.coroutines.awaitAll")
             appendLine("import kotlinx.coroutines.flow.MutableStateFlow")
             appendLine("import kotlinx.coroutines.flow.StateFlow")
             appendLine("import kotlinx.coroutines.flow.asStateFlow")
@@ -221,55 +238,68 @@ class ClassGeneratorAndroid :
                 val depModuleId = dep.sourceModuleId
                 val s = a.filter { it.key == depModuleId }
                 if (s.isNotEmpty()) {
-                    val x = s.values.flatten().first { it.type == ClassTypeAndroid.REPOSITORY }
+                    val x = s.values.flatten().firstOrNull { it.type == ClassTypeAndroid.REPOSITORY }
                     if (x != null) {
                         val repoClassName = x.className
                         appendLine("import com.awesomeapp.${NameMappings.modulePackageName(dep.sourceModuleId)}.$repoClassName")
                     }
                 }
-
-
             }
         }
 
         val constructorParams = dependencies.mapIndexed { index, dep ->
             val s = a.filter { it.key == dep.sourceModuleId }.values.flatten()
                 .first { it.type == ClassTypeAndroid.REPOSITORY }
-
             val repoClassName = s.className
             "private val repository$index: $repoClassName"
         }.joinToString(",\n    ")
 
-        val dataFetchLogic = if (dependencies.isEmpty()) {
-            "\"Default data from $className\""
+        // Step 1: Generate the data fetching logic as a clean, un-indented block using trimIndent().
+        val dataAssignmentBlock = if (dependencies.isEmpty()) {
+            """
+        val data = "Data from $className"
+        """.trimIndent()
         } else {
-            dependencies.mapIndexed { index, _ -> "repository$index.getData()" }.joinToString(" + ")
+            val lambdaList = dependencies.indices.joinToString(",\n                    ") {
+                "{ repository$it.getData() }"
+            }
+            """
+        val data = coroutineScope {
+            val fetchers = listOf<suspend () -> String>(
+                $lambdaList
+            )
+            val results = fetchers.map { fetcher ->
+                async { fetcher() }
+            }.awaitAll()
+            results.joinToString("")
+        }
+        """.trimIndent()
         }
 
         return """
-            |package $packageName
-            |
-            |$imports
-            |
-            |@HiltViewModel
-            |class $className @Inject constructor(
-            |    $constructorParams
-            |) : ViewModel() {
-            |    private val _state = MutableStateFlow<String>("")
-            |    val state: StateFlow<String> = _state.asStateFlow()
-            |
-            |    init {
-            |        viewModelScope.launch(Dispatchers.IO) {
-            |            try {
-            |                val data = $dataFetchLogic
-            |                _state.emit(data)
-            |            } catch (e: Exception) {
-            |                _state.emit("Error: " + e.message)
-            |            }
-            |        }
-            |    }
-            |}
-        """.trimMargin()
+    |package $packageName
+    |
+    |$imports
+    |
+    |@HiltViewModel
+    |class $className @Inject constructor(
+    |    $constructorParams
+    |) : ViewModel() {
+    |    private val _state = MutableStateFlow<String>("")
+    |    val state: StateFlow<String> = _state.asStateFlow()
+    |
+    |    init {
+    |        viewModelScope.launch(Dispatchers.IO) {
+    |            try {
+    |${dataAssignmentBlock.prependIndent("                ")}
+    |                _state.emit(data)
+    |            } catch (e: Exception) {
+    |                _state.emit("Error: ${'$'}{e.message}")
+    |            }
+    |        }
+    |    }
+    |}
+    """.trimMargin()
     }
 
     private fun generateRepository(
@@ -281,62 +311,60 @@ class ClassGeneratorAndroid :
         val imports = buildString {
             appendLine("import kotlinx.coroutines.Dispatchers")
             appendLine("import kotlinx.coroutines.withContext")
+            appendLine("import kotlinx.coroutines.coroutineScope")
+            appendLine("import kotlinx.coroutines.async")
+            appendLine("import kotlinx.coroutines.awaitAll")
             appendLine("import javax.inject.Inject")
             appendLine("import javax.inject.Singleton")
             dependencies.forEach { dep ->
                 val depModuleId = dep.sourceModuleId
-                val s = a.filter { it.key == depModuleId }
-                if (s.isNotEmpty()) {
-                    val x = s.values.flatten().first { it.type == ClassTypeAndroid.API }
-                    if (x != null) {
-                        val apiClassName = x.className
-                        appendLine("import com.awesomeapp.${NameMappings.modulePackageName(dep.sourceModuleId)}.$apiClassName")
+                val matches = a.filter { it.key == depModuleId }
+                if (matches.isNotEmpty()) {
+                    val apiClass = matches.values.flatten().firstOrNull { it.type == ClassTypeAndroid.API }
+                    if (apiClass != null) {
+                        appendLine("import com.awesomeapp.${NameMappings.modulePackageName(depModuleId)}.${apiClass.className}")
                     }
                 }
-
             }
         }
-        val xa = mutableListOf<String>()
 
-        dependencies.mapIndexed { index, dep ->
+        val constructorParams = dependencies.mapIndexedNotNull { index, dep ->
             val depModuleId = dep.sourceModuleId
-            val s = a.filter { it.key == depModuleId }
-            if (s.isNotEmpty()) {
-                val x = s.values.flatten().first { it.type == ClassTypeAndroid.API }
-                if (x != null) {
-                    val apiClassName = x.className
-                    xa.add("private val api$index: $apiClassName")
-                    //  "private val api$index: $apiClassName = $apiClassName()"
-
-                }
-            }
-        }
-        val constructorParams = xa.joinToString(",\n    ")
+            val apiClass = a[depModuleId]?.firstOrNull { it.type == ClassTypeAndroid.API }
+            apiClass?.let { "private val api$index: ${it.className}" }
+        }.joinToString(",\n    ")
 
         val dataFetchLogic = if (dependencies.isEmpty()) {
             "\"Data from $className Repository\""
         } else {
-            dependencies.mapIndexed { index, _ ->
-
-                "api$index.fetchData()"
-            }.joinToString(" + ")
+            val lambdaList = dependencies.indices.joinToString(",\n                    ") { "{ api$it.fetchData() }" }
+            """
+        coroutineScope {
+            val apis = listOf<suspend () -> String>(
+                $lambdaList
+            )
+            val results = apis.map { fetcher ->
+                async { fetcher() }
+            }.awaitAll()
+            results.joinToString("")
+        }
+        """.trimIndent()
         }
 
-
         return """
-            |package $packageName
-            |
-            |$imports
-            |
-            |@Singleton
-            |class $className @Inject constructor(
-            |    $constructorParams
-            |) {
-            |    suspend fun getData(): String = withContext(Dispatchers.IO) {
-            |        $dataFetchLogic
-            |    }
-            |}
-        """.trimMargin()
+    |package $packageName
+    |
+    |$imports
+    |
+    |@Singleton
+    |class $className @Inject constructor(
+    |    $constructorParams
+    |) {
+    |    suspend fun getData(): String = withContext(Dispatchers.IO) {
+    |${dataFetchLogic.prependIndent("            ")}
+    |    }
+    |}
+    """.trimMargin()
     }
 
     private fun generateFragment(packageName: String, className: String): String {
