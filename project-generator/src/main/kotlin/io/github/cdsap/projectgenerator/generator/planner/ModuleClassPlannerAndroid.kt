@@ -1,8 +1,8 @@
 package io.github.cdsap.projectgenerator.generator.planner
 
-import io.github.cdsap.projectgenerator.writer.ModuleClassPlanner
 import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.NameMappings
+import io.github.cdsap.projectgenerator.writer.ModuleClassPlanner
 
 /**
  * Plans what classes each module should have and their dependencies
