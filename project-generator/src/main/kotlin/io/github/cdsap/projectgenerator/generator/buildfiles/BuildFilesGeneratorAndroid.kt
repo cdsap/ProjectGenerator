@@ -37,25 +37,6 @@ class BuildFilesGeneratorAndroid(val versions: Versions) : BuildFilesGenerator {
             }
         }
 
-        // Recursively collect all dependencies (only from different layers)
-        fun collectAllDependencies(currentNode: ProjectGraph, visited: MutableSet<String> = mutableSetOf()) {
-            if (currentNode.id in visited) return
-            visited.add(currentNode.id)
-
-            currentNode.nodes.forEach { dependency ->
-                if (dependency.layer != node.layer) {
-                    val dependencyPath = ":${NameMappings.layerName(dependency.layer)}:${NameMappings.moduleName(dependency.id)}"
-                    implementations.add("implementation(project(\"$dependencyPath\"))")
-                    collectAllDependencies(dependency, visited)
-                }
-            }
-        }
-
-        // Start collecting from the current node's dependencies
-        node.nodes.forEach { dependency ->
-            collectAllDependencies(dependency)
-        }
-
         val deps = AndroidToml().tomlImplementations(versions)
         return """
             |plugins {

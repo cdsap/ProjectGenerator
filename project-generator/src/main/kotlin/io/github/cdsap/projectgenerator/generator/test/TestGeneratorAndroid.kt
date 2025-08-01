@@ -43,11 +43,12 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
         val testContent = when (classDefinition.type) {
             ClassTypeAndroid.REPOSITORY -> generateRepositoryTest(moduleDefinition, classDefinition, classesDictionary)
             ClassTypeAndroid.API -> generateApiTest(className)
-            ClassTypeAndroid.VIEWMODEL -> generateViewModelTest(
-                className,
-                classDefinition.dependencies,
-                classesDictionary
-            )
+            // todo generate correct tests for viewModel
+//            ClassTypeAndroid.VIEWMODEL -> generateViewModelTest(
+//                className,
+//                classDefinition.dependencies,
+//                classesDictionary
+//            )
 
             ClassTypeAndroid.WORKER -> generateWorkerTest(className)
             ClassTypeAndroid.ACTIVITY -> generateActivityTest(className)
@@ -90,18 +91,19 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
                     appendLine("import kotlinx.coroutines.flow.first")
                 }
 
-                ClassTypeAndroid.VIEWMODEL -> {
-                    classDefinition.dependencies.forEach { dep ->
-                        val s = classesDictionary.filter { it.key == dep.sourceModuleId }
-                        if (s.isNotEmpty()) {
-                            val x = s.values.flatten().first { it.type == ClassTypeAndroid.REPOSITORY }
-                            if (x != null) {
-                                val repository = x.className
-                                appendLine("import com.awesomeapp.${NameMappings.modulePackageName(dep.sourceModuleId)}.$repository")
-                            }
-                        }
-                    }
-                }
+               // ClassTypeAndroid.VIEWMODEL -> {
+                    // todo generate correct tests for viewModel
+//                    classDefinition.dependencies.forEach { dep ->
+//                        val s = classesDictionary.filter { it.key == dep.sourceModuleId }
+//                        if (s.isNotEmpty()) {
+//                            val x = s.values.flatten().first { it.type == ClassTypeAndroid.REPOSITORY }
+//                            if (x != null) {
+//                                val repository = x.className
+//                                appendLine("import com.awesomeapp.${NameMappings.modulePackageName(dep.sourceModuleId)}.$repository")
+//                            }
+//                        }
+//                    }
+             //   }
 
                 ClassTypeAndroid.REPOSITORY -> {
                     classDefinition.dependencies.forEach { dep ->

@@ -29,36 +29,41 @@ abstract class ModulesWrite<MODULE_DEF, DICT>(
     suspend fun write() = coroutineScope {
         val classesDictionary = ConcurrentHashMap<String, CopyOnWriteArrayList<DICT>>()
 
-        // Launch setup jobs concurrently
-        val setupJobs = nodes.map { module ->
-            async(Dispatchers.Default) {
-                val moduleDefinition = classPlanner.planModuleClasses(module)
-                classGenerator.obtainClassesGenerated(moduleDefinition, classesDictionary)
+        val groupedByLayer = nodes.groupBy { it.layer }.toSortedMap()
 
-                val plan = classPlanner.planModuleClasses(module)
-
-                languages.forEach { lang ->
-                    createModuleStructure(module, lang)
-                    classGenerator.generate(plan, lang.projectName, classesDictionary)
-                    buildFilesGenerator.generateBuildFiles(module, lang, generateUnitTest)
-                    resourceGeneratorA?.generate(module, lang, resources!!, classesDictionary)
-                }
-            }
-        }
-
-        setupJobs.awaitAll()
-
-        // Launch test generation jobs if needed
-        if (generateUnitTest) {
-            val testJobs = nodes.map { module ->
+        // Process setup jobs layer by layer
+        for ((_, layerNodes) in groupedByLayer) {
+            val setupJobs = layerNodes.map { module ->
                 async(Dispatchers.Default) {
+                    val moduleDefinition = classPlanner.planModuleClasses(module)
+                    classGenerator.obtainClassesGenerated(moduleDefinition, classesDictionary)
+
                     val plan = classPlanner.planModuleClasses(module)
+
                     languages.forEach { lang ->
-                        testGenerator.generate(plan, lang.projectName, classesDictionary)
+                        createModuleStructure(module, lang)
+                        classGenerator.generate(plan, lang.projectName, classesDictionary)
+                        buildFilesGenerator.generateBuildFiles(module, lang, generateUnitTest)
+                        resourceGeneratorA?.generate(module, lang, resources!!, classesDictionary)
                     }
                 }
             }
-            testJobs.awaitAll()
+            setupJobs.awaitAll()
+        }
+
+        // Process test generation layer by layer if needed
+        if (generateUnitTest) {
+            for ((_, layerNodes) in groupedByLayer) {
+                val testJobs = layerNodes.map { module ->
+                    async(Dispatchers.Default) {
+                        val plan = classPlanner.planModuleClasses(module)
+                        languages.forEach { lang ->
+                            testGenerator.generate(plan, lang.projectName, classesDictionary)
+                        }
+                    }
+                }
+                testJobs.awaitAll()
+            }
         }
     }
 

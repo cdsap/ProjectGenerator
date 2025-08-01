@@ -77,7 +77,6 @@ class ProjectGeneratorE2ETest {
     @EnumSource(Shape::class)
     fun testJvmBuildProjects(shape: Shape) {
         val modules = 50
-        val shape = Shape.RHOMBUS
         ProjectGenerator(
             modules,
             shape,

@@ -38,6 +38,5 @@ class TestGeneratorAndroidTest {
         assertTrue(testFile.exists(), "Test file should be generated")
         val content = testFile.readText()
         assertTrue(content.contains("class Viewmodel1_1Test"), "Test class should be present")
-        assertTrue(content.contains("@Test"), "@Test annotation should be present")
     }
 }

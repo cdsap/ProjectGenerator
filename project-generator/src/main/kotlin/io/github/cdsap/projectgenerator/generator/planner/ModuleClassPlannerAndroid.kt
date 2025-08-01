@@ -1,13 +1,15 @@
 package io.github.cdsap.projectgenerator.generator.planner
 
-import io.github.cdsap.projectgenerator.writer.ModuleClassPlanner
 import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.NameMappings
+import io.github.cdsap.projectgenerator.writer.ModuleClassPlanner
 
 /**
  * Plans what classes each module should have and their dependencies
  */
-class ModuleClassPlannerAndroid : ModuleClassPlanner<ModuleClassDefinitionAndroid> {
+class ModuleClassPlannerAndroid(
+    private val maxLimitToCreateApiAndRepositories: Int = 1000
+) : ModuleClassPlanner<ModuleClassDefinitionAndroid> {
     override fun planModuleClasses(projectGraph: ProjectGraph): ModuleClassDefinitionAndroid {
         val moduleId = NameMappings.moduleName(projectGraph.id)
         val layer = projectGraph.layer
@@ -61,20 +63,33 @@ class ModuleClassPlannerAndroid : ModuleClassPlanner<ModuleClassDefinitionAndroi
         }
 
         // If we have more than 4 classes and it's a multiple of 4, add Repository and API
+        // But limit based on concurrentLimit to avoid long Dagger compilation times
         if (projectGraph.classes > 4 && moduleNumber % 4 == 0) {
-            coreClasses.add(
-                ClassDefinitionAndroid(
-                    type = ClassTypeAndroid.REPOSITORY,
-                    index = currentIndex++,
-                    dependencies = findDependenciesForClass(ClassTypeAndroid.REPOSITORY, projectGraph).toMutableList()
+            if(  moduleNumber <= maxLimitToCreateApiAndRepositories) {
+                coreClasses.add(
+                    ClassDefinitionAndroid(
+                        type = ClassTypeAndroid.REPOSITORY,
+                        index = currentIndex++,
+                        dependencies = findDependenciesForClass(
+                            ClassTypeAndroid.REPOSITORY,
+                            projectGraph
+                        ).toMutableList()
+                    )
                 )
-            )
-            coreClasses.add(
-                ClassDefinitionAndroid(
-                    type = ClassTypeAndroid.API,
-                    index = currentIndex++
+                coreClasses.add(
+                    ClassDefinitionAndroid(
+                        type = ClassTypeAndroid.API,
+                        index = currentIndex++
+                    )
                 )
-            )
+            } else {
+                coreClasses.add(
+                    ClassDefinitionAndroid(
+                        type = ClassTypeAndroid.MODEL,
+                        index = currentIndex++
+                    )
+                )
+            }
         }
 
         // If we have more than 6 classes and it's a multiple of 5, add Service and Worker
@@ -210,8 +225,8 @@ class ModuleClassPlannerAndroid : ModuleClassPlanner<ModuleClassDefinitionAndroi
         val moduleNumber = module.id.split("_").last().toInt()
 
         return when (classType) {
-            ClassTypeAndroid.REPOSITORY -> moduleNumber % 4 == 0 && moduleNumber > 0
-            ClassTypeAndroid.API -> moduleNumber % 4 == 0 && moduleNumber > 0
+            ClassTypeAndroid.REPOSITORY -> moduleNumber % 4 == 0 && moduleNumber > 0 && moduleNumber <= maxLimitToCreateApiAndRepositories
+            ClassTypeAndroid.API -> moduleNumber % 4 == 0 && moduleNumber > 0 && moduleNumber <= maxLimitToCreateApiAndRepositories
             ClassTypeAndroid.WORKER -> moduleNumber % 5 == 0 && moduleNumber > 0
             ClassTypeAndroid.VIEWMODEL -> true // All modules have ViewModels
             ClassTypeAndroid.SERVICE -> moduleNumber % 5 == 0 && moduleNumber > 0
