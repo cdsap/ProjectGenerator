@@ -39,7 +39,7 @@ class BuildFilesGeneratorJvmTest {
             TypeProjectRequested.JVM,
             TypeOfStringResources.NORMAL,
             false,
-            GradleWrapper(Gradle.GRADLE_8_14_3),
+            GradleWrapper(Gradle.GRADLE_9_0_0),
             false,
             ""
         )
@@ -71,7 +71,7 @@ class BuildFilesGeneratorJvmTest {
             TypeProjectRequested.JVM,
             TypeOfStringResources.NORMAL,
             false,
-            GradleWrapper(Gradle.GRADLE_8_14_3),
+            GradleWrapper(Gradle.GRADLE_9_0_0),
             false,
             ""
         )
