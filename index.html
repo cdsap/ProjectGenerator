@@ -21,7 +21,35 @@
         h1 {
             color: #333;
             text-align: center;
+            margin-bottom: 20px;
+        }
+        .description {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px 20px;
             margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        .description p {
+            margin: 0;
+            color: #555;
+            line-height: 1.5;
+        }
+        .description strong {
+            color: #333;
+        }
+        .description .github-link {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        .description .github-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .description .github-link a:hover {
+            text-decoration: underline;
         }
         .form-group {
             margin-bottom: 20px;
@@ -38,6 +66,38 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 16px;
+        }
+        .form-help {
+            display: block;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+        .shape-preview {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        .shape-preview h4 {
+            margin: 0 0 15px 0;
+            color: #495057;
+            font-size: 16px;
+        }
+        .shape-diagram {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+        .shape-diagram svg {
+            max-width: 100%;
+            max-height: 180px;
         }
         .checkbox-group {
             display: flex;
@@ -90,6 +150,15 @@
             text-align: center;
             margin-top: 20px;
         }
+        
+        .warning-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 10px;
+            color: #856404;
+        }
     </style>
     <script src="https://www.google.com/recaptcha/api.js?render=6LdN7IgrAAAAAJjgAM29sSfdfgbPyhUKjkzaLkPs"></script>
 </head>
@@ -97,10 +166,18 @@
     <div class="container">
         <h1>🚀 Project Generator</h1>
         
+        <div class="description">
+            <p>This project generates <strong>"Buildable" Android projects</strong> to analyze configurations of test plugins in large projects. Use this tool to create synthetic Android projects with various module configurations, build shapes, and testing setups for research and analysis purposes.</p>
+            <p class="github-link">📦 Based on <a href="https://github.com/cdsap/ProjectGenerator" target="_blank" rel="noopener noreferrer">cdsap/ProjectGenerator</a> v0.2.1 - CLI for generating modularized Gradle projects in different logic layers</p>
+        </div>
+        
         <form id="projectForm">
             <div class="form-group">
                 <label for="modules">Number of Modules:</label>
-                <input type="number" id="modules" name="modules" value="5" min="1" max="2000" required>
+                <input type="number" id="modules" name="modules" value="100" min="20" max="2000" required onchange="checkLargeProject()">
+                <div id="largeProjectWarning" class="warning-box" style="display: none;">
+                    <p><strong>⚠️ Large Project Warning:</strong> If you plan to generate a large project (more than 1000 modules), consider increasing the number of layers.</p>
+                </div>
             </div>
 
             <div class="form-group">
@@ -113,11 +190,17 @@
                     <option value="middle_bottleneck">Middle Bottleneck</option>
                     <option value="inverse_triangle">Inverse Triangle</option>
                 </select>
+                <div class="shape-preview">
+                    <h4>Project Structure Preview (Example with 50 modules)</h4>
+                    <div id="shapeDiagram" class="shape-diagram">
+                        <!-- SVG diagrams will be inserted here -->
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
                 <label for="layers">Number of Layers:</label>
-                <input type="number" id="layers" name="layers" value="3" min="1" max="10" required>
+                <input type="number" id="layers" name="layers" value="5" min="5" max="20" required>
             </div>
 
             <div class="form-group">
@@ -139,7 +222,8 @@
 
             <div class="form-group">
                 <label for="classes-module">Classes per Module:</label>
-                <input type="number" id="classes-module" name="classes-module" value="5" min="1" max="50">
+                <input type="number" id="classes-module" name="classes-module" value="5" min="5" max="250">
+                <small class="form-help">When using "Random" type, this value becomes the maximum number of classes per module</small>
             </div>
 
             <div class="form-group">
@@ -148,6 +232,7 @@
                     <option value="fixed">Fixed</option>
                     <option value="random">Random</option>
                 </select>
+                <small class="form-help">Fixed: Each module gets exactly the specified number of classes. Random: Each module gets a random number of classes (2 to the specified maximum)</small>
             </div>
 
             <div class="form-group">
@@ -161,11 +246,11 @@
             <div class="form-group">
                 <label for="gradle">Gradle Version:</label>
                 <select id="gradle" name="gradle">
+                    <option value="gradle_9_0_0">Gradle 9.0.0</option>
                     <option value="gradle_8_14_2">Gradle 8.14.2</option>
                     <option value="gradle_8_13">Gradle 8.13</option>
                     <option value="gradle_8_9">Gradle 8.9</option>
                     <option value="gradle_8_5">Gradle 8.5</option>
-                    <option value="gradle_8_2">Gradle 8.2</option>
                 </select>
             </div>
 
@@ -198,6 +283,52 @@
     </div>
 
     <script>
+        // Function to update shape diagram
+        function updateShapeDiagram() {
+            const selectedShape = document.getElementById('shape').value;
+            const diagramContainer = document.getElementById('shapeDiagram');
+            
+            // Clear the container first
+            diagramContainer.innerHTML = '';
+            
+            // Map shape names to their SVG files
+            const shapeFiles = {
+                'triangle': 'triangle.svg',
+                'rectangle': 'rectangle.svg',
+                'rhombus': 'rhombus.svg',
+                'flat': 'flat.svg',
+                'middle_bottleneck': 'middle_bottleneck.svg',
+                'inverse_triangle': 'inverse_triangle.svg'
+            };
+            
+            const svgFile = shapeFiles[selectedShape];
+            if (svgFile) {
+                // Load the SVG file using object tag
+                diagramContainer.innerHTML = `<object data="${svgFile}" type="image/svg+xml" width="100%" height="200"></object>`;
+            } else {
+                diagramContainer.innerHTML = '<p>No diagram available for this shape</p>';
+            }
+        }
+
+        // Function to check for large projects and show warning
+        function checkLargeProject() {
+            const modulesInput = document.getElementById('modules');
+            const warningBox = document.getElementById('largeProjectWarning');
+            const moduleCount = parseInt(modulesInput.value);
+            
+            if (moduleCount > 1000) {
+                warningBox.style.display = 'block';
+            } else {
+                warningBox.style.display = 'none';
+            }
+        }
+
+        // Initialize shape diagram and add event listener
+        document.addEventListener('DOMContentLoaded', function() {
+            updateShapeDiagram();
+            document.getElementById('shape').addEventListener('change', updateShapeDiagram);
+        });
+
         document.getElementById('projectForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -225,7 +356,7 @@
                 formData.append('captchaToken', captchaToken);
                 
                 // Add all form fields
-                const formFields = ['modules', 'shape', 'layers', 'language', 'type', 'classes-module', 'classes-module-type', 'type-of-string-resources', 'gradle'];
+                const formFields = ['modules', 'shape', 'layers', 'language', 'type', 'classes-module', 'classes-module-type', 'gradle'];
                 formFields.forEach(field => {
                     const value = document.getElementById(field).value;
                     if (value) {
