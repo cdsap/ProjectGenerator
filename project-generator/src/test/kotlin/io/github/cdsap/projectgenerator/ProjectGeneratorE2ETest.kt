@@ -38,7 +38,7 @@ class ProjectGeneratorE2ETest {
             TypeOfStringResources.LARGE,
             5,
             true,
-            GradleWrapper(Gradle.GRADLE_8_14_3),
+            GradleWrapper(Gradle.GRADLE_9_0_0),
             path = tempDir.toFile().path,
             false,
             projectName = "${shape.name.lowercase().capitalize()}$modules"
@@ -133,7 +133,7 @@ class ProjectGeneratorE2ETest {
             TypeOfStringResources.LARGE,
             5,
             true,
-            GradleWrapper(Gradle.GRADLE_8_14_3),
+            GradleWrapper(Gradle.GRADLE_9_0_0),
             path = tempDir.toFile().path,
             false,
             projectName = "${shape.name.lowercase().capitalize()}$modules"
