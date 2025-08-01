@@ -13,6 +13,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.11.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation(gradleTestKit())
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.test {
