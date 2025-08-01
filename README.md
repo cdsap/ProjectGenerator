@@ -10,7 +10,7 @@ CLI generating modularized Gradle projects based on different shapes
 ## CLI
 ### Install
 ```
-curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.2.1/projectGenerator  --output projectGenerator
+curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.3.0/projectGenerator  --output projectGenerator
 chmod 0757 projectGenerator
 ```
 
@@ -79,7 +79,7 @@ ProjectGenerator(
 ```
 ### Dependency
 ```
-  implementation("io.github.cdsap:projectgenerator:0.2.1")
+  implementation("io.github.cdsap:projectgenerator:0.3.0")
 ```
 
 # Options
@@ -182,41 +182,40 @@ Gradle used, versions supported:
 Example output versions.yaml:
 ```yaml
 project:
-  develocity: 4.0.1
-  jdk: 23
+    develocity: 4.1
+    jdk: 23
 kotlin:
-  kgp: 2.1.20
-  ksp: 2.1.20-2.0.0
-  coroutines: 1.7.3
-  kotlinProcessor:
-    processor: KSP
+    kgp: 2.2.0
+    ksp: 2.2.0-2.0.2
+    coroutines: 1.10.2
+    kotlinProcessor:
+        processor: KSP
 android:
-  agp: 8.9.1
-  androidxCore: 1.9.0
-  appcompat: 1.7.0
-  material: 1.8.0
-  lifecycle: 2.7.0
-  fragment: 1.6.2
-  activity: 1.8.2
-  constraintlayout: 2.1.4
-  work: 2.10.1
-  hilt: 2.56.1
-  hiltAandroidx: 1.2.0
-  composeBom: 2025.05.00
+    agp: 8.12.0
+    androidxCore: 1.16.0
+    appcompat: 1.7.1
+    material: 1.12.0
+    lifecycle: 2.9.2
+    fragment: 1.8.8
+    activity: 1.10.1
+    constraintlayout: 2.2.1
+    work: 2.10.3
+    hilt: 2.56.2
+    hiltAandroidx: 1.2.0
+    composeBom: 2025.07.00
 testing:
-  junit4: 4.13.2
-  junit5: 5.10.1
-  truth: 1.1.5
-  mockk: 1.13.9
-  coreTesting: 2.2.0
-  junitExt: 1.1.5
+    junit4: 4.13.2
+    junit5: 5.13.2
+    truth: 1.4.4
+    mockk: 1.14.5
+    coreTesting: 2.2.0
+    junitExt: 1.3.0
 additionalSettingsPlugins:
 
 additionalBuildGradleRootPlugins:
     - id: com.autonomousapps.dependency-analysis
-      version: 2.18.999
+      version: 2.19.0
       apply: true
-
 ```
 
 

@@ -56,7 +56,7 @@ app.post('/api/generate', upload.single('versions-file'), async (req, res) => {
             `--classes-module ${body['classes-module'] || 5}`,
             `--classes-module-type ${body['classes-module-type'] || 'fixed'}`,
             `--type-of-string-resources ${body['type-of-string-resources'] || 'normal'}`,
-            `--gradle ${body.gradle || 'gradle_8_14_2'}`
+            `--gradle ${body.gradle || 'gradle_9_0_0'}`
         ];
 
         if (body['generate-unit-test'] === 'true' || body['generate-unit-test'] === true) {
@@ -91,7 +91,7 @@ async function verifyCaptcha(token) {
     const secret = process.env.RECAPTCHA_SECRET_KEY;
     console.log('Verifying CAPTCHA with token:', token.substring(0, 20) + '...');
     console.log('Using secret key:', secret.substring(0, 20) + '...');
-    
+
     const response = await fetch(`https://www.google.com/recaptcha/api/siteverify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
