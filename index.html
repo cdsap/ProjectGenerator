@@ -399,6 +399,34 @@
             color: #764ba2;
             text-decoration: underline;
         }
+        
+        .gcp-limitation-notice {
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .gcp-limitation-notice .warning-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 1px solid #ffc107;
+            border-radius: 12px;
+            padding: 20px;
+            color: #856404;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.1);
+        }
+        
+        .gcp-limitation-notice .warning-box p {
+            margin: 0;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+        
+        .gcp-limitation-notice .warning-box code {
+            background: rgba(255, 193, 7, 0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
     </style>
     <script src="https://www.google.com/recaptcha/api.js?render=6LdN7IgrAAAAAJjgAM29sSfdfgbPyhUKjkzaLkPs"></script>
 </head>
@@ -407,9 +435,6 @@
         <h1>🚀 Project Generator</h1>
         
         <div class="description">
-            <div class="warning-box" style="margin-bottom: 20px;">
-                <p><strong>⚠️ GCP Account Limitation:</strong> The number of modules is limited to 300 due to GCP account constraints. For larger projects, use the CLI directly with: <code>./projectGenerator generate-project --modules 1500 --layers 40</code></p>
-            </div>
             <p>Generate <strong>Gradle Android modularized projects</strong> designed specifically for <strong>building purposes</strong>. Create customizable module architectures with build configurations and testing frameworks. Perfect for research, performance analysis, and testing build systems at scale.</p>
             <p class="github-link">📦 Based on <a href="https://github.com/cdsap/ProjectGenerator" target="_blank" rel="noopener noreferrer">cdsap/ProjectGenerator</a> v0.3.1 - CLI for generating modularized Gradle projects in different logic layers</p>
             <p class="github-link">🔧 <a href="https://github.com/cdsap/ProjectGenerator/blob/v0.3.1/project-generator/src/main/kotlin/io/github/cdsap/projectgenerator/model/Versions.kt" target="_blank" rel="noopener noreferrer">View supported versions</a> - Check the available Gradle, Kotlin, and plugin versions for your generated projects</p>
@@ -532,6 +557,12 @@
         </div>
 
         <div class="status" id="status"></div>
+        
+        <div class="gcp-limitation-notice">
+            <div class="warning-box">
+                <p><strong>⚠️ GCP Account Limitation:</strong> The number of modules is limited to 300 due to GCP account constraints. For larger projects, use the CLI directly with: <code>./projectGenerator generate-project --modules 1500 --layers 40</code></p>
+            </div>
+        </div>
         
         <div class="footer-section">
             <div class="github-issues">
