@@ -1,10 +1,7 @@
 # Project Generator
 CLI generating modularized Gradle projects based on different shapes
-<p float="left">
-  <img src="resources/example_readme.png" width="500" height="200"/>
-  <img src="resources/project2.png" height="200" />
-</p>
 
+![Demo](resources/demo.gif)
 
 # Usage
 ## CLI
