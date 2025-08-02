@@ -327,7 +327,50 @@
         document.addEventListener('DOMContentLoaded', function() {
             updateShapeDiagram();
             document.getElementById('shape').addEventListener('change', updateShapeDiagram);
+            
+            // Test API connectivity on page load
+            testAPIConnectivity();
         });
+
+        // Function to test API connectivity
+        async function testAPIConnectivity() {
+            const testEndpoints = [
+                'https://project-generator-7p5znugvfq-uc.a.run.app/api/health',
+                'https://project-generator-7p5znugvfq-uc.a.run.app/',
+                'https://httpbin.org/get' // External test endpoint
+            ];
+            
+            console.log('🔍 Testing API connectivity...');
+            
+            for (let endpoint of testEndpoints) {
+                try {
+                    console.log(`Testing: ${endpoint}`);
+                    const response = await fetch(endpoint, {
+                        method: 'GET',
+                        mode: 'cors',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    console.log(`✅ ${endpoint} - Status: ${response.status}`);
+                } catch (error) {
+                    console.error(`❌ ${endpoint} - Error: ${error.message}`);
+                    if (error.message.includes('CORS')) {
+                        console.log('   → This is likely a CORS issue');
+                    } else if (error.message.includes('fetch')) {
+                        console.log('   → This is likely a network connectivity issue');
+                    }
+                }
+            }
+            
+            // Test if we can reach any external service
+            try {
+                const testResponse = await fetch('https://httpbin.org/get');
+                console.log('✅ External connectivity test passed');
+            } catch (error) {
+                console.error('❌ External connectivity test failed - this might be a network issue');
+            }
+        }
 
         document.getElementById('projectForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -340,7 +383,9 @@
             let captchaToken;
             try {
                 captchaToken = await grecaptcha.execute('6LdN7IgrAAAAAJjgAM29sSfdfgbPyhUKjkzaLkPs', {action: 'generate_project'});
+                console.log('CAPTCHA token generated successfully');
             } catch (error) {
+                console.error('CAPTCHA error:', error);
                 showStatus('CAPTCHA error: ' + error.message, 'error');
                 return;
             }
@@ -372,11 +417,21 @@
                     formData.append('develocity', 'true');
                 }
                 
+                // Log the request details for debugging
+                console.log('Making API request to:', 'https://project-generator-185083159740.us-central1.run.app/api/generate');
+                console.log('Form data entries:');
+                for (let [key, value] of formData.entries()) {
+                    console.log(`${key}: ${value}`);
+                }
+                
                 // Make API call
-                const response = await fetch('https://project-generator-185083159740.us-central1.run.app/api/generate', {
+                const response = await fetch('https://project-generator-7p5znugvfq-uc.a.run.app/api/generate', {
                     method: 'POST',
                     body: formData
                 });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
                 
                 if (response.ok) {
                     // Download the zip file
@@ -393,10 +448,26 @@
                     showStatus('✅ Project generated successfully! The zip file should download automatically.', 'success');
                 } else {
                     const errorText = await response.text();
-                    showStatus(`❌ Error: ${errorText}`, 'error');
+                    console.error('API Error Response:', errorText);
+                    showStatus(`❌ Server Error (${response.status}): ${errorText}`, 'error');
                 }
             } catch (error) {
-                showStatus(`❌ Network error: ${error.message}`, 'error');
+                console.error('Network error details:', error);
+                console.error('Error name:', error.name);
+                console.error('Error message:', error.message);
+                
+                let errorMessage = `❌ Network error: ${error.message}`;
+                
+                // Provide more specific error messages
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    errorMessage = '❌ Network error: Unable to reach the server. Please check your internet connection.';
+                } else if (error.name === 'TypeError' && error.message.includes('CORS')) {
+                    errorMessage = '❌ CORS error: The server is not allowing requests from this domain.';
+                } else if (error.message.includes('timeout')) {
+                    errorMessage = '❌ Request timeout: The server took too long to respond.';
+                }
+                
+                showStatus(errorMessage, 'error');
             } finally {
                 // Re-enable button and hide loading
                 generateBtn.disabled = false;
