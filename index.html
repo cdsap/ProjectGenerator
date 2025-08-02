@@ -373,7 +373,7 @@
         <h1>🚀 Project Generator</h1>
         
         <div class="description">
-            <p>Generate <strong>fully functional Android projects</strong> with customizable module architectures, build configurations, and testing frameworks. Perfect for research, performance analysis, and testing build systems at scale.</p>
+            <p>Generate <strong>Gradle Android modularized projects</strong> designed specifically for <strong>building purposes</strong>. Create customizable module architectures with build configurations and testing frameworks. Perfect for research, performance analysis, and testing build systems at scale.</p>
             <p class="github-link">📦 Based on <a href="https://github.com/cdsap/ProjectGenerator" target="_blank" rel="noopener noreferrer">cdsap/ProjectGenerator</a> v0.3.1 - CLI for generating modularized Gradle projects in different logic layers</p>
             <p class="github-link">🔧 <a href="https://github.com/cdsap/ProjectGenerator/blob/v0.3.1/project-generator/src/main/kotlin/io/github/cdsap/projectgenerator/model/Versions.kt" target="_blank" rel="noopener noreferrer">View supported versions</a> - Check the available Gradle, Kotlin, and plugin versions for your generated projects</p>
         </div>
@@ -394,6 +394,12 @@
             </div>
 
             <div class="form-group">
+                <label for="layers">Number of Layers:</label>
+                <input type="number" id="layers" name="layers" value="5" min="5" max="20" required>
+            </div>
+
+
+            <div class="form-group">
                 <label for="shape">Project Shape:</label>
                 <select id="shape" name="shape">
                     <option value="rectangle">Rectangle</option>
@@ -409,11 +415,6 @@
                         <!-- SVG diagrams will be inserted here -->
                     </div>
                 </div>
-            </div>
-
-            <div class="form-group">
-                <label for="layers">Number of Layers:</label>
-                <input type="number" id="layers" name="layers" value="5" min="5" max="20" required>
             </div>
 
             <div class="form-group">
