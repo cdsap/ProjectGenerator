@@ -33,7 +33,7 @@ data class Project(
     val jdk: String = "23",
     val develocity: String = "4.1",
     val ccud: String = "2.2",
-    val develocityUrl: String = "https://ge.solutions-team.gradle.com/"
+    val develocityUrl: String = ""
 )
 
 data class KotlinProcessor(
