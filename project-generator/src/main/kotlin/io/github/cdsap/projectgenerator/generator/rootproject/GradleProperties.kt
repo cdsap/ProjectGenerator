@@ -5,9 +5,10 @@ import io.github.cdsap.projectgenerator.model.Versions
 
 class GradleProperties {
     fun get(versions: Versions) = """
-        org.gradle.jvmargs=-Xmx5g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:+UseParallelGC -XX:MaxMetaspaceSize=1g
+        org.gradle.jvmargs=-Xmx5g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
         android.useAndroidX=true
         org.gradle.caching=true
+        dependency.analysis.compatibility=NONE
         ${k2usage(versions)}
     """.trimIndent()
 
