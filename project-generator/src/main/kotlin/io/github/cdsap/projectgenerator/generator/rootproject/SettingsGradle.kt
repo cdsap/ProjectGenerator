@@ -13,13 +13,7 @@ class SettingsGradle {
                 |    ${additionalSettingsPlugins(versions)}
                 |}
                 |
-                |develocity {
-                |    server = "${versions.project.develocityUrl}"
-                |    allowUntrustedServer = true
-                |    buildScan {
-                |        uploadInBackground.set(false)
-                |    }
-                |}
+                |${develocityBlock(versions.project.develocityUrl)}
             """.trimMargin()
         } else ""
 
@@ -50,5 +44,26 @@ class SettingsGradle {
             additionalPlugins += "id(\"${it.id}\") version \"${it.version}\"\n"
         }
         return additionalPlugins
+    }
+
+    fun develocityBlock(develocityUrl: String): String {
+        if (develocityUrl.isEmpty()) {
+            return """develocity {
+                |    buildScan {
+                |       termsOfUseUrl = "https://gradle.com/terms-of-service"
+                |       termsOfUseAgree = "yes"
+                |       uploadInBackground.set(false)
+                |     }
+                |}""".trimMargin()
+        } else {
+            return """develocity {
+                |    server = "${develocityUrl}"
+                |    allowUntrustedServer = true
+                |    buildScan {
+                |        uploadInBackground.set(false)
+                |    }
+                |}
+              """.trimMargin()
+        }
     }
 }
