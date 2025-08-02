@@ -5,159 +5,330 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Generator</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        h1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             color: #333;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            color: #2c3e50;
             text-align: center;
-            margin-bottom: 20px;
-        }
-        .description {
-            background-color: #f8f9fa;
-            border-left: 4px solid #007bff;
-            padding: 15px 20px;
             margin-bottom: 30px;
-            border-radius: 5px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
+        
+        .description {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin-bottom: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
         .description p {
             margin: 0;
-            color: #555;
-            line-height: 1.5;
+            color: #495057;
+            line-height: 1.7;
+            font-size: 1.1rem;
         }
+        
         .description strong {
-            color: #333;
+            color: #2c3e50;
+            font-weight: 600;
         }
+        
         .description .github-link {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #666;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #6c757d;
         }
+        
         .description .github-link a {
-            color: #007bff;
+            color: #667eea;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
+            transition: color 0.3s ease;
         }
+        
         .description .github-link a:hover {
+            color: #764ba2;
             text-decoration: underline;
         }
+        
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
+        
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1rem;
         }
+        
         input, select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
             font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
         }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+        
         .form-help {
             display: block;
-            margin-top: 5px;
-            font-size: 12px;
-            color: #666;
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: #6c757d;
             font-style: italic;
         }
+        
         .shape-preview {
-            margin-top: 15px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
+            margin-top: 20px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
+        
         .shape-preview h4 {
-            margin: 0 0 15px 0;
-            color: #495057;
-            font-size: 16px;
+            margin: 0 0 20px 0;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            font-weight: 600;
         }
+        
         .shape-diagram {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 200px;
+            min-height: 220px;
             background: white;
-            border-radius: 5px;
+            border-radius: 12px;
             border: 1px solid #dee2e6;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
+        
         .shape-diagram svg {
             max-width: 100%;
-            max-height: 180px;
+            max-height: 200px;
         }
+        
         .checkbox-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            padding: 15px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            border: 1px solid #dee2e6;
         }
+        
         .checkbox-group input[type="checkbox"] {
             width: auto;
+            transform: scale(1.2);
+            accent-color: #667eea;
         }
+        
+        .checkbox-group label {
+            margin: 0;
+            font-weight: 500;
+        }
+        
         button {
-            background-color: #007bff;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 12px 30px;
+            padding: 18px 40px;
             border: none;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
             width: 100%;
-            margin-top: 20px;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
         }
+        
         button:hover {
-            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
         }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
         button:disabled {
-            background-color: #ccc;
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
+        
         .captcha-container {
-            margin: 20px 0;
+            margin: 25px 0;
             text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 12px;
+            border: 1px solid #90caf9;
         }
+        
+        .captcha-container p {
+            margin: 0;
+            color: #1976d2;
+            font-weight: 500;
+        }
+        
         .status {
-            margin-top: 20px;
-            padding: 10px;
-            border-radius: 5px;
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
             display: none;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
+        
         .status.success {
-            background-color: #d4edda;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
             color: #155724;
             border: 1px solid #c3e6cb;
         }
+        
         .status.error {
-            background-color: #f8d7da;
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+        
         .loading {
             display: none;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 25px;
+            padding: 30px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 15px;
+            border: 1px solid #90caf9;
+        }
+        
+        .loading p {
+            margin: 0;
+            color: #1976d2;
+            font-weight: 500;
+            font-size: 1.1rem;
         }
         
         .warning-box {
-            background-color: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 4px;
-            padding: 10px;
-            margin-top: 10px;
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 1px solid #ffc107;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
             color: #856404;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.1);
+        }
+        
+        .warning-box p {
+            margin: 0;
+            font-weight: 500;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .description p {
+                font-size: 1rem;
+            }
+            
+            input, select {
+                padding: 12px;
+            }
+            
+            button {
+                padding: 15px 30px;
+                font-size: 1rem;
+            }
+        }
+        
+        /* Smooth animations */
+        .form-group {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #5a6fd8, #6a4190);
         }
     </style>
     <script src="https://www.google.com/recaptcha/api.js?render=6LdN7IgrAAAAAJjgAM29sSfdfgbPyhUKjkzaLkPs"></script>
@@ -168,10 +339,16 @@
         
         <div class="description">
             <p>This project generates <strong>"Buildable" Android projects</strong> to analyze configurations of test plugins in large projects. Use this tool to create synthetic Android projects with various module configurations, build shapes, and testing setups for research and analysis purposes.</p>
-            <p class="github-link">📦 Based on <a href="https://github.com/cdsap/ProjectGenerator" target="_blank" rel="noopener noreferrer">cdsap/ProjectGenerator</a> v0.2.1 - CLI for generating modularized Gradle projects in different logic layers</p>
+            <p class="github-link">📦 Based on <a href="https://github.com/cdsap/ProjectGenerator" target="_blank" rel="noopener noreferrer">cdsap/ProjectGenerator</a> v0.3.0 - CLI for generating modularized Gradle projects in different logic layers</p>
         </div>
         
         <form id="projectForm">
+            <div class="form-group">
+                <label for="project-name">Project Name:</label>
+                <input type="text" id="project-name" name="project-name" value="MyProject" placeholder="Enter project name" required>
+                <small class="form-help">This will be used as the name for your generated project</small>
+            </div>
+
             <div class="form-group">
                 <label for="modules">Number of Modules:</label>
                 <input type="number" id="modules" name="modules" value="100" min="20" max="2000" required onchange="checkLargeProject()">
@@ -266,10 +443,6 @@
                     <input type="checkbox" id="develocity" name="develocity">
                     <label for="develocity">Enable Develocity</label>
                 </div>
-            </div>
-
-            <div class="captcha-container">
-                <p>reCAPTCHA v3 is enabled - no checkbox needed!</p>
             </div>
 
             <button type="submit" id="generateBtn">Generate Project</button>
@@ -401,7 +574,7 @@
                 formData.append('captchaToken', captchaToken);
                 
                 // Add all form fields
-                const formFields = ['modules', 'shape', 'layers', 'language', 'type', 'classes-module', 'classes-module-type', 'gradle'];
+                const formFields = ['project-name', 'modules', 'shape', 'layers', 'language', 'type', 'classes-module', 'classes-module-type', 'gradle'];
                 formFields.forEach(field => {
                     const value = document.getElementById(field).value;
                     if (value) {
