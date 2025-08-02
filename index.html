@@ -169,6 +169,41 @@
             font-weight: 500;
         }
         
+        .develocity-url-container {
+            margin-top: 15px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+            border-radius: 12px;
+            border: 1px solid #b3d9ff;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        .develocity-url-container label {
+            color: #0056b3;
+            font-weight: 600;
+        }
+        
+        .optional-input {
+            border-color: #b3d9ff;
+        }
+        
+        .optional-input:focus {
+            border-color: #0056b3;
+            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -338,8 +373,9 @@
         <h1>🚀 Project Generator</h1>
         
         <div class="description">
-            <p>This project generates <strong>"Buildable" Android projects</strong> to analyze configurations of test plugins in large projects. Use this tool to create synthetic Android projects with various module configurations, build shapes, and testing setups for research and analysis purposes.</p>
-            <p class="github-link">📦 Based on <a href="https://github.com/cdsap/ProjectGenerator" target="_blank" rel="noopener noreferrer">cdsap/ProjectGenerator</a> v0.3.0 - CLI for generating modularized Gradle projects in different logic layers</p>
+            <p>Generate <strong>fully functional Android projects</strong> with customizable module architectures, build configurations, and testing frameworks. Perfect for research, performance analysis, and testing build systems at scale.</p>
+            <p class="github-link">📦 Based on <a href="https://github.com/cdsap/ProjectGenerator" target="_blank" rel="noopener noreferrer">cdsap/ProjectGenerator</a> v0.3.1 - CLI for generating modularized Gradle projects in different logic layers</p>
+            <p class="github-link">🔧 <a href="https://github.com/cdsap/ProjectGenerator/blob/v0.3.1/project-generator/src/main/kotlin/io/github/cdsap/projectgenerator/model/Versions.kt" target="_blank" rel="noopener noreferrer">View supported versions</a> - Check the available Gradle, Kotlin, and plugin versions for your generated projects</p>
         </div>
         
         <form id="projectForm">
@@ -443,6 +479,11 @@
                     <input type="checkbox" id="develocity" name="develocity">
                     <label for="develocity">Enable Develocity</label>
                 </div>
+                <div id="develocity-url-container" class="develocity-url-container" style="display: none;">
+                    <label for="develocity-url">Develocity URL (Optional):</label>
+                    <input type="url" id="develocity-url" name="develocity-url" placeholder="https://your-develocity-instance.com" class="optional-input">
+                    <small class="form-help">Leave empty to use default Develocity behavior</small>
+                </div>
             </div>
 
             <button type="submit" id="generateBtn">Generate Project</button>
@@ -501,49 +542,20 @@
             updateShapeDiagram();
             document.getElementById('shape').addEventListener('change', updateShapeDiagram);
             
-            // Test API connectivity on page load
-            testAPIConnectivity();
+            // Add Develocity checkbox event listener
+            document.getElementById('develocity').addEventListener('change', function() {
+                const urlContainer = document.getElementById('develocity-url-container');
+                if (this.checked) {
+                    urlContainer.style.display = 'block';
+                } else {
+                    urlContainer.style.display = 'none';
+                    // Clear the URL input when unchecked
+                    document.getElementById('develocity-url').value = '';
+                }
+            });
         });
 
-        // Function to test API connectivity
-        async function testAPIConnectivity() {
-            const testEndpoints = [
-                'https://project-generator-185083159740.us-central1.run.app/api/health',
-                'https://project-generator-185083159740.us-central1.run.app/',
-                'https://httpbin.org/get' // External test endpoint
-            ];
-            
-            console.log('🔍 Testing API connectivity...');
-            
-            for (let endpoint of testEndpoints) {
-                try {
-                    console.log(`Testing: ${endpoint}`);
-                    const response = await fetch(endpoint, {
-                        method: 'GET',
-                        mode: 'cors',
-                        headers: {
-                            'Accept': 'application/json'
-                        }
-                    });
-                    console.log(`✅ ${endpoint} - Status: ${response.status}`);
-                } catch (error) {
-                    console.error(`❌ ${endpoint} - Error: ${error.message}`);
-                    if (error.message.includes('CORS')) {
-                        console.log('   → This is likely a CORS issue');
-                    } else if (error.message.includes('fetch')) {
-                        console.log('   → This is likely a network connectivity issue');
-                    }
-                }
-            }
-            
-            // Test if we can reach any external service
-            try {
-                const testResponse = await fetch('https://httpbin.org/get');
-                console.log('✅ External connectivity test passed');
-            } catch (error) {
-                console.error('❌ External connectivity test failed - this might be a network issue');
-            }
-        }
+
 
         document.getElementById('projectForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -588,6 +600,11 @@
                 }
                 if (document.getElementById('develocity').checked) {
                     formData.append('develocity', 'true');
+                    // Add Develocity URL if provided
+                    const develocityUrl = document.getElementById('develocity-url').value.trim();
+                    if (develocityUrl) {
+                        formData.append('develocity-url', develocityUrl);
+                    }
                 }
                 
                 // Log the request details for debugging
