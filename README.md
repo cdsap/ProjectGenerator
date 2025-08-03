@@ -3,6 +3,9 @@ CLI generating modularized Gradle projects based on different shapes
 
 ![Demo](resources/demo.gif)
 
+If you need to create small or medium projects (<300 modules), you can use the web generator: https://cdsap.github.io/ProjectGenerator/
+
+
 # Usage
 ## CLI
 ### Install
@@ -10,6 +13,7 @@ CLI generating modularized Gradle projects based on different shapes
 curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.3.1/projectGenerator  --output projectGenerator
 chmod 0757 projectGenerator
 ```
+
 
 ### Modes
 
