@@ -7,7 +7,7 @@ CLI generating modularized Gradle projects based on different shapes
 ## CLI
 ### Install
 ```
-curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.3.0/projectGenerator  --output projectGenerator
+curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.3.1/projectGenerator  --output projectGenerator
 chmod 0757 projectGenerator
 ```
 
@@ -41,8 +41,10 @@ Then, you can use the versions.yaml in the `generate-project` command:
 - `--type-of-string-resources`: normal (default), large
 - `--generate-unit-test`: Generate unit tests (default: false)
 - `--gradle`: gradle_8_2, gradle_8_5, gradle_8_9, gradle_8_13, gradle_8_14_3, gradle_9_0_0 (default: gradle_9_0_0)
-- `--develocity`: Enable Develocity build scan plugin (default: false)
+- `--develocity`: Enables the Develocity build scan plugin (default: false). If --develocity-url is not specified, the build scan will be published to Gradle Scans.
+- `--develocity-url`: Specify Develocity URL
 - `--versions-file`: Path to a custom YAML file with dependency versions
+- `--project-name`: Name of the project
 
 #### Example: Generate a project with custom options
 ```bash
@@ -67,16 +69,10 @@ ProjectGenerator(
     path = file.path
 ).write()
 
-// Layer and module names are generated from internal dictionaries.
-// You can provide your own lists via the `layerNames` and `moduleNameParts`
-// parameters of `ProjectGenerator` if you want specific naming.
-// The last layer of the project is always named `app` and contains a single
-// module also called `app`.
-
 ```
 ### Dependency
 ```
-  implementation("io.github.cdsap:projectgenerator:0.3.0")
+  implementation("io.github.cdsap:projectgenerator:0.3.1")
 ```
 
 # Options
