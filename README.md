@@ -10,7 +10,7 @@ If you need to create small or medium projects (<300 modules), you can use the w
 ## CLI
 ### Install
 ```
-curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.3.1/projectGenerator  --output projectGenerator
+curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.3.2/projectGenerator  --output projectGenerator
 chmod 0757 projectGenerator
 ```
 
@@ -76,7 +76,7 @@ ProjectGenerator(
 ```
 ### Dependency
 ```
-  implementation("io.github.cdsap:projectgenerator:0.3.1")
+  implementation("io.github.cdsap:projectgenerator:0.3.2")
 ```
 
 # Options
