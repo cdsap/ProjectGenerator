@@ -13,7 +13,12 @@ data class Versions(
             "2.19.0"
         )
     ),
-    val additionalSettingsPlugins: List<AdditionalPlugin> = listOf(),
+    val additionalSettingsPlugins: List<AdditionalPlugin> = listOf(
+        AdditionalPlugin(
+            "com.fueledbycaffeine.spotlight",
+            "1.3.3"
+        )
+    )
 )
 
 enum class Processor {
