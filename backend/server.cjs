@@ -4,8 +4,9 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-const fetch = require('node-fetch');
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const { v4: uuidv4 } = require('uuid');
+const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -15,7 +16,12 @@ console.log('Starting server...');
 console.log('Port:', port);
 console.log('Environment:', process.env.NODE_ENV || 'development');
 
-// CORS handling removed - relying on Cloud Run configuration
+// ✅ Enable CORS for your GitHub Pages frontend only
+app.use(cors({
+    origin: 'https://cdsap.github.io',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -43,37 +49,29 @@ app.post('/api/generate', upload.single('versions-file'), async (req, res) => {
         if (!isCaptchaValid) return res.status(403).send('Invalid CAPTCHA');
 
         // Limit modules to maximum of 1500
-        const modules = Math.min(parseInt(body.modules) || 0, 1500);
+        const modules = Math.min(parseInt(body.modules) || 0, 300);
         console.log(`Modules requested: ${body.modules}, limited to: ${modules}`);
 
-        // Construct CLI arguments
+        // ✅ Build CLI args safely
         const args = [
-            `--shape ${body.shape || 'rectangle'}`,
-            `--modules ${modules}`,
-            `--layers ${body.layers || 5}`,
-            `--language ${body.language || 'kts'}`,
-            `--type ${body.type || 'android'}`,
-            `--classes-module ${body['classes-module'] || 5}`,
-            `--classes-module-type ${body['classes-module-type'] || 'fixed'}`,
-            `--type-of-string-resources ${body['type-of-string-resources'] || 'normal'}`,
-            `--gradle ${body.gradle || 'gradle_9_0_0'}`
+            `--shape`, body.shape || 'rectangle',
+            `--modules`, modules,
+            `--layers`, body.layers || 5,
+            `--language`, body.language || 'kts',
+            `--type`, body.type || 'android',
+            `--classes-module`, Math.min(parseInt(body['classes-module']) || 15, 15),
+            `--classes-module-type`, body['classes-module-type'] || 'fixed',
+            `--type-of-string-resources`, body['type-of-string-resources'] || 'normal',
+            `--gradle`, body.gradle || 'gradle_9_0_0'
         ];
 
-        if (body['generate-unit-test'] === 'true' || body['generate-unit-test'] === true) {
-            args.push('--generate-unit-test');
-        }
-
-        if (body.develocity === 'true' || body.develocity === true) {
-            args.push('--develocity');
-        }
-
-        if (body.type === 'android' && body.processor) {
-            args.push(`--processor ${body.processor}`);
-        }
-
-        if (req.file) {
-            args.push(`--versions-file ${req.file.path}`);
-        }
+        // Add project name if provided
+        if (body['project-name']) { args.push('--project-name', body['project-name']);}
+        if (body['generate-unit-test'] === 'true' || body['generate-unit-test'] === true) args.push('--generate-unit-test');
+        if (body.develocity === 'true' || body.develocity === true) args.push('--develocity');
+        if (body['develocity-url']) args.push('--develocity-url', body['develocity-url']);
+        if (body.type === 'android' && body.processor) args.push('--processor', body.processor);
+        if (req.file) args.push('--versions-file', req.file.path);
 
         const command = `/usr/local/bin/projectGenerator generate-project ${args.join(' ')}`;
         console.log('Executing:', command);
