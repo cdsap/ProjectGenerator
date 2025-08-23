@@ -31,7 +31,7 @@ data class AdditionalPlugin(
 
 data class Project(
     val jdk: String = "23",
-    val develocity: String = "4.1",
+    val develocity: String = "4.1.1",
     val ccud: String = "2.2",
     val develocityUrl: String = ""
 )
