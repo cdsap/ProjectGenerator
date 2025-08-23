@@ -683,14 +683,14 @@
                 }
 
                 // Log the request details for debugging
-                console.log('Making API request to:', 'https://project-generator-185083159740.us-central1.run.app/api/generate');
+                console.log('Making API request to:', 'https://project-generator-backend-7p5znugvfq-uc.a.run.app/api/generate');
                 console.log('Form data entries:');
                 for (let [key, value] of formData.entries()) {
                     console.log(`${key}: ${value}`);
                 }
 
                 // Make API call
-                const response = await fetch('https://project-generator-185083159740.us-central1.run.app/api/generate', {
+                const response = await fetch('https://project-generator-backend-7p5znugvfq-uc.a.run.app/api/generate', {
                     method: 'POST',
                     body: formData
                 });
