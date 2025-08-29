@@ -63,7 +63,7 @@ data class Kotlin(
 )
 
 data class Android(
-    val agp: String = "8.12.1",
+    val agp: String = "8.12.2",
     val androidxCore: String = "1.16.0",
     val appcompat: String = "1.7.1",
     val material: String = "1.12.0",
