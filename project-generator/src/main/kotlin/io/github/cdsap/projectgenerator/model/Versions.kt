@@ -56,7 +56,7 @@ data class Testing(
 
 data class Kotlin(
     val kgp: String = "2.2.20",
-    val ksp: String = "2.2.10-2.0.2",
+    val ksp: String = "2.2.20-2.0.2",
     val coroutines: String = "1.10.2",
     val kotlinTest: String = "2.2.20",
     val kotlinProcessor: KotlinProcessor = KotlinProcessor(),
@@ -73,7 +73,7 @@ data class Android(
     val constraintlayout: String = "2.2.1",
     val work: String = "2.10.3",
     val hilt: String = "2.57.1",
-    val hiltAandroidx: String = "1.2.0",
+    val hiltAandroidx: String = "1.3.0",
     val composeBom: String = "2025.08.01",
     val robolectric: String = "4.15.1",
     val espresso: String = "3.7.0",
