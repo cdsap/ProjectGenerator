@@ -28,6 +28,8 @@ EXPOSE 8080
 
 # Add debugging
 RUN ls -la && pwd
+RUN which node
+RUN node --version
 
 # Start the server with explicit node command
-CMD ["/usr/local/bin/node", "server.cjs"]
+CMD ["node", "server.cjs"]
