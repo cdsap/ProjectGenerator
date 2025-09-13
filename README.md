@@ -86,7 +86,8 @@ Number of modules to create in the project
 ## `layers`
 Number of layers where the modules will be distributed.
 ## `shape`
-Defines the shape of the project dependency graph based on the distribution of modules by layer.
+Defines the shape of the project dependency graph based on the distribution of modules by layer. When generating a new
+project, a `graph.dot` file is created in the root project folder containing the project dependency graph.
 Current shapes supported:
 ### `triangle`
 ![Triangle](resources/triangle.png)
@@ -163,11 +164,11 @@ If enabled, each module will generate n unit tests, where n is the argument `cla
 ```
 ## Gradle
 Gradle used, versions supported:
-* Gradle 8.2
 * Gradle 8.5
 * Gradle 8.9
 * Gradle 8.13
-* Gradle 8.14_2 **default**
+* Gradle 8.14_2
+* Gradle 9.0.0 **default**
 
 ##### Example
 ```kotlin
