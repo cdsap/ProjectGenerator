@@ -37,7 +37,7 @@ class SingleE2EValidationTest {
             typeOfStringResources = TypeOfStringResources.LARGE,
             layers = 5,
             generateUnitTest = true,
-            gradle = GradleWrapper(Gradle.GRADLE_9_0_0),
+            gradle = GradleWrapper(Gradle.GRADLE_9_1_0),
             path = tempDir.toFile().path,
             projectName = "${shape.name.lowercase().capitalize()}_$modules"
         ).write()
