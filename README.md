@@ -10,7 +10,7 @@ If you need to create small or medium projects (<300 modules), you can use the w
 ## CLI
 ### Install
 ```
-curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.3.3/projectGenerator  --output projectGenerator
+curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.3.4/projectGenerator  --output projectGenerator
 chmod 0757 projectGenerator
 ```
 
@@ -44,7 +44,7 @@ Then, you can use the versions.yaml in the `generate-project` command:
 - `--classes-module-type`: fixed (default), random
 - `--type-of-string-resources`: normal (default), large
 - `--generate-unit-test`: Generate unit tests (default: false)
-- `--gradle`: gradle_8_2, gradle_8_5, gradle_8_9, gradle_8_13, gradle_8_14_3, gradle_9_0_0 (default: gradle_9_0_0)
+- `--gradle`: gradle_8_9, gradle_8_13, gradle_8_14_3, GRADLE_9_1_0, gradle_9_1_0 (default: gradle_9_1_0)
 - `--develocity`: Enables the Develocity build scan plugin (default: false). If --develocity-url is not specified, the build scan will be published to Gradle Scans.
 - `--develocity-url`: Specify Develocity URL
 - `--versions-file`: Path to a custom YAML file with dependency versions
@@ -69,14 +69,14 @@ ProjectGenerator(
     typeOfStringResources = TypeOfStringResources.LARGE,
     layers = 5,
     generateUnitTest = true,
-    gradle = GradleWrapper(Gradle.GRADLE_9_0_0),
+    gradle = GradleWrapper(Gradle.GRADLE_9_1_0),
     path = file.path
 ).write()
 
 ```
 ### Dependency
 ```
-  implementation("io.github.cdsap:projectgenerator:0.3.3")
+  implementation("io.github.cdsap:projectgenerator:0.3.4")
 ```
 
 # Options

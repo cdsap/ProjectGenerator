@@ -29,7 +29,7 @@ class TestGeneratorAndroidTest {
             TypeProjectRequested.ANDROID,
             TypeOfStringResources.NORMAL,
             true, // generateUnitTest
-            GradleWrapper(Gradle.GRADLE_9_0_0),
+            GradleWrapper(Gradle.GRADLE_9_1_0),
             false,
             ""
         )
