@@ -47,7 +47,7 @@ data class KotlinProcessor(
 
 data class Testing(
     val junit4: String = "4.13.2",
-    val junit5: String = "5.13.4",
+    val junit5: String = "6.0.0",
     val truth: String = "1.4.5",
     val mockk: String = "1.14.5",
     val coreTesting: String = "2.2.0",
