@@ -28,7 +28,7 @@ class CompositeBuildPluginAndroidLib {
         |
         |            extensions.configure<com.android.build.gradle.LibraryExtension>  {
         |                namespace = "com.awesome." + target.name.replace(":","_").replace("-", "")
-        |                compileSdk = 35
+        |                compileSdk = 36
         |                defaultConfig {
         |                    minSdk = 24
         |                    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
