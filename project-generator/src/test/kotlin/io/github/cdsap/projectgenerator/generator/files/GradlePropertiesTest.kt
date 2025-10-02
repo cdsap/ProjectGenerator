@@ -35,7 +35,7 @@ class GradlePropertiesTest {
             kotlin = Kotlin(
                 kgp = "2.1.20",
                 ksp = "1.9.0",
-                kotlinProcessor = KotlinProcessor(processor = Processor.KSP_K2)
+                kotlinProcessor = KotlinProcessor(processor = Processor.KSP2)
             ),
             android = Android(agp = "8.0.0", hilt = "2.44"),
             project = Project(jdk = "17")
