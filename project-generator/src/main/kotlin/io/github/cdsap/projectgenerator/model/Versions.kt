@@ -23,7 +23,7 @@ data class Versions(
 
 enum class Processor {
     KSP,
-    KSP_K2,
+    KSP2,
     KAPT,
 }
 
@@ -42,7 +42,7 @@ data class Project(
 )
 
 data class KotlinProcessor(
-    val processor: Processor = Processor.KSP
+    val processor: Processor = Processor.KSP2
 )
 
 data class Testing(
