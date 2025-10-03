@@ -23,7 +23,7 @@ tasks.test {
 mavenPublishing {
     publishToMavenCentral()
     signAllPublications()
-    coordinates("io.github.cdsap", "projectgenerator", "0.3.4")
+    coordinates("io.github.cdsap", "projectgenerator", "0.3.5")
 
     pom {
         scm {
