@@ -1,19 +1,19 @@
 plugins {
-    kotlin("jvm") version "2.2.20"
+    alias(libs.plugins.kotlin.jvm)
     `maven-publish`
     `signing`
-    id("com.vanniktech.maven.publish") version "0.34.0"
+    alias(libs.plugins.maven.publish)
 }
 
 group = "io.github.cdsap"
 version = "0.3.5"
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-    testImplementation(platform("org.junit:junit-bom:6.0.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    implementation(libs.kotlinx.coroutines.core)
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
     testImplementation(gradleTestKit())
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks.test {
