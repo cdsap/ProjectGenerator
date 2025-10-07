@@ -1,19 +1,19 @@
 plugins {
-    kotlin("jvm") version "2.2.20"
+    alias(libs.plugins.kotlin.jvm)
     application
-    id("io.github.cdsap.fatbinary") version "1.0"
+    alias(libs.plugins.fatbinary)
 }
 
 group = "org.example"
 version = "1.0-SNAPSHOT"
 
 dependencies {
-    implementation("com.github.ajalt.clikt:clikt:5.0.3")
+    implementation(libs.clikt)
     implementation(project(":project-generator"))
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.3")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.3")
-    testImplementation(platform("org.junit:junit-bom:6.0.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    implementation(libs.jackson.module.kotlin)
+    implementation(libs.jackson.dataformat.yaml)
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
 }
 
 tasks.test {
