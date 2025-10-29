@@ -44,12 +44,13 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
     private val layers by option().int().default(5)
     private val generateUnitTest by option().flag(default = false)
     private val gradle: String by option().choice(
-        "gradle_8_9",
         "gradle_8_13",
+        "gradle_8_14_3",
         "gradle_9_0_0",
-        "gradle_9_1_0"
+        "gradle_9_1_0",
+        "gradle_9_2_0",
     )
-        .default("gradle_9_1_0")
+        .default("gradle_9_2_0")
     private val develocity by option().flag(default = false)
     private val versionsFile by option().file()
     private val projectName by option()
