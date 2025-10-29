@@ -76,7 +76,7 @@ ProjectGenerator(
 ```
 ### Dependency
 ```
-  implementation("io.github.cdsap:projectgenerator:0.3.5")
+  implementation("io.github.cdsap:projectgenerator:0.3.6")
 ```
 
 # Options
