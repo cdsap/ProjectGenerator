@@ -62,7 +62,7 @@ app.post('/api/generate', upload.single('versions-file'), async (req, res) => {
             `--classes-module`, Math.min(parseInt(body['classes-module']) || 15, 15),
             `--classes-module-type`, body['classes-module-type'] || 'fixed',
             `--type-of-string-resources`, body['type-of-string-resources'] || 'normal',
-            `--gradle`, body.gradle || 'GRADLE_9_1_0'
+            `--gradle`, body.gradle || 'GRADLE_9_2_0'
         ];
 
         // Add project name if provided
