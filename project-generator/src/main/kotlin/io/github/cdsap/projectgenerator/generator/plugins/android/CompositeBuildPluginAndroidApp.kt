@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator.generator.plugins.android
 
+import io.github.cdsap.projectgenerator.generator.extension.isAgp9
 import io.github.cdsap.projectgenerator.model.Processor
 import io.github.cdsap.projectgenerator.model.Versions
 
@@ -23,7 +24,7 @@ class CompositeBuildPluginAndroidApp {
         |        with(target) {
         |            with(pluginManager) {
         |                apply("com.android.application")
-        |                apply("org.jetbrains.kotlin.android")
+        |                ${provideKgpBasedOnAgp(versions)}
         |                ${provideKotlinProcessor(versions)}
         |                apply("dagger.hilt.android.plugin")
         |                apply("org.jetbrains.kotlin.plugin.compose")
@@ -81,4 +82,8 @@ class CompositeBuildPluginAndroidApp {
     else
         """apply("com.google.devtools.ksp")"""
 
+    fun provideKgpBasedOnAgp(versions: Versions) = if (!versions.android.agp.isAgp9())
+        """apply("org.jetbrains.kotlin.android")"""
+    else
+        """"""
 }

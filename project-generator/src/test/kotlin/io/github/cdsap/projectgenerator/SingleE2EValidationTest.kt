@@ -11,6 +11,7 @@ import io.github.cdsap.projectgenerator.model.TypeProjectRequested
 import io.github.cdsap.projectgenerator.model.Versions
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
 import io.github.cdsap.projectgenerator.NameMappings
+import io.github.cdsap.projectgenerator.model.Android
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -24,16 +25,16 @@ class SingleE2EValidationTest {
 
 
     @Test
-    fun sanityTest(){
+    fun sanityTestAgp9() {
         val modules = 50
         val shape = Shape.RHOMBUS
         ProjectGenerator(
             modules = 50,
-            shape =shape,
+            shape = shape,
             language = Language.KTS,
             typeOfProjectRequested = TypeProjectRequested.ANDROID,
             classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 20),
-            versions = Versions(project = Project(jdk = "17")),
+            versions = Versions(project = Project(jdk = "17"), android = Android(agp = "9.0.0-alpha14")),
             typeOfStringResources = TypeOfStringResources.LARGE,
             layers = 5,
             generateUnitTest = true,
@@ -56,11 +57,20 @@ class SingleE2EValidationTest {
         val layerDir = NameMappings.layerName(0)
         val moduleDir = NameMappings.moduleName("module_0_1")
         assert(
-            File("$tempDir/${shape.name.lowercase().capitalize()}_${modules}/project_kts/$layerDir/$moduleDir/build").exists()
-                && File("$tempDir/${shape.name.lowercase().capitalize()}_${modules}/project_kts/$layerDir/$moduleDir/build").isDirectory
+            File(
+                "$tempDir/${
+                    shape.name.lowercase().capitalize()
+                }_${modules}/project_kts/$layerDir/$moduleDir/build"
+            ).exists()
+                && File(
+                "$tempDir/${
+                    shape.name.lowercase().capitalize()
+                }_${modules}/project_kts/$layerDir/$moduleDir/build"
+            ).isDirectory
         )
 
         assert(resultTest.output.contains("BUILD SUCCESSFUL"))
 
     }
+
 }

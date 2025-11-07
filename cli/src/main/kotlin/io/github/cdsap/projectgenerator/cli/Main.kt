@@ -55,12 +55,13 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
     private val versionsFile by option().file()
     private val projectName by option()
     private val develocityUrl by option()
+    private val agp9 by option().flag(default = false)
 
 
     override fun run() {
         val typeOfProjectRequested = TypeProjectRequested.valueOf(type.uppercase())
         val shape = Shape.valueOf(shape.uppercase())
-        val versions = getVersions(versionsFile, develocityUrl)
+        val versions = getVersions(versionsFile, develocityUrl, agp9)
         val develocityEnabled = getDevelocityEnabled(develocity, develocityUrl)
         ProjectGenerator(
             modules,
@@ -99,11 +100,18 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
         }
     }
 
-    private fun getVersions(fileVersions: File?, develocityUrl: String?): Versions {
+    private fun getVersions(fileVersions: File?, develocityUrl: String?, agp9: Boolean): Versions {
         val versions = if (fileVersions != null) {
             parseYaml(fileVersions)
         } else {
-            Versions()
+            // We only support the injection of AGP 9 version via CLI with the `agp9` option
+            // if the version is provided by file this logic is not executed
+            if (agp9) {
+                val versions = Versions()
+                versions.copy(android = Android(agp = versions.android.agp9))
+            } else {
+                Versions()
+            }
         }
         return if (develocityUrl != null) {
             versions.copy(project = versions.project.copy(develocityUrl = develocityUrl))

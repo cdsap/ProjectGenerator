@@ -20,6 +20,13 @@
         },
         {
             "fileMatch": ["^.*Versions\\.kt$"],
+            "matchStrings": ["val agp9: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""],
+            "depNameTemplate": "com.android.tools.build:gradle",
+            "datasourceTemplate": "maven"
+        },
+
+        {
+            "fileMatch": ["^.*Versions\\.kt$"],
             "matchStrings": ["val androidxCore: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""],
             "depNameTemplate": "androidx.core:core",
             "datasourceTemplate": "maven"

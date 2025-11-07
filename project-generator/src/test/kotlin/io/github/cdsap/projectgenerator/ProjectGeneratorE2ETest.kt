@@ -75,6 +75,105 @@ class ProjectGeneratorE2ETest {
 
     @ParameterizedTest
     @EnumSource(Shape::class)
+    fun testBuildAndroidProjectsJava21(shape: Shape) {
+        val modules = 50
+        ProjectGenerator(
+            modules,
+            shape,
+            Language.KTS,
+            TypeProjectRequested.ANDROID,
+            ClassesPerModule(ClassesPerModuleType.FIXED, 20),
+            Versions(project = Project(jdk = "21")),
+            TypeOfStringResources.LARGE,
+            5,
+            true,
+            GradleWrapper(Gradle.GRADLE_9_2_0),
+            path = tempDir.toFile().path,
+            false,
+            projectName = "${shape.name.lowercase().capitalize()}$modules"
+
+        ).write()
+        val filePath = File("$tempDir/${shape.name.lowercase().capitalize()}${modules}/project_kts")
+        val result = GradleRunner.create()
+            .withProjectDir(filePath)
+            .withArguments("assembleDebug")
+            .build();
+        assert(result.output.contains("BUILD SUCCESSFUL"))
+        val resultTest = GradleRunner.create()
+            .withProjectDir(filePath)
+            .withArguments("testDebugUnitTest")
+            .build()
+
+        val layerDir = NameMappings.layerName(0)
+        val moduleDir = NameMappings.moduleName("module_0_1")
+        assert(
+            File(
+                "$tempDir/${
+                    shape.name.lowercase().capitalize()
+                }${modules}/project_kts/$layerDir/$moduleDir/build"
+            ).exists()
+                && File(
+                "$tempDir/${
+                    shape.name.lowercase().capitalize()
+                }${modules}/project_kts/$layerDir/$moduleDir/build"
+            ).isDirectory
+        )
+
+        assert(resultTest.output.contains("BUILD SUCCESSFUL"))
+    }
+
+    @ParameterizedTest
+    @EnumSource(Shape::class)
+    fun testBuildAndroidProjectsWithGradle9(shape: Shape) {
+        val modules = 50
+        ProjectGenerator(
+            modules,
+            shape,
+            Language.KTS,
+            TypeProjectRequested.ANDROID,
+            ClassesPerModule(ClassesPerModuleType.FIXED, 20),
+            Versions(project = Project(jdk = "17"), android = Android(agp = "9.0.0-alpha14")),
+            TypeOfStringResources.LARGE,
+            5,
+            true,
+            GradleWrapper(Gradle.GRADLE_9_2_0),
+            path = tempDir.toFile().path,
+            false,
+            projectName = "${shape.name.lowercase().capitalize()}$modules"
+
+        ).write()
+        val filePath = File("$tempDir/${shape.name.lowercase().capitalize()}${modules}/project_kts")
+        val result = GradleRunner.create()
+            .withProjectDir(filePath)
+            .withArguments("assembleDebug")
+            .build();
+        assert(result.output.contains("BUILD SUCCESSFUL"))
+        val resultTest = GradleRunner.create()
+            .withProjectDir(filePath)
+            .withArguments("testDebugUnitTest")
+            .build()
+
+        val layerDir = NameMappings.layerName(0)
+        val moduleDir = NameMappings.moduleName("module_0_1")
+        assert(
+            File(
+                "$tempDir/${
+                    shape.name.lowercase().capitalize()
+                }${modules}/project_kts/$layerDir/$moduleDir/build"
+            ).exists()
+                && File(
+                "$tempDir/${
+                    shape.name.lowercase().capitalize()
+                }${modules}/project_kts/$layerDir/$moduleDir/build"
+            ).isDirectory
+        )
+
+        assert(resultTest.output.contains("BUILD SUCCESSFUL"))
+    }
+
+
+    @ParameterizedTest
+    @EnumSource(Shape::class)
     fun testJvmBuildProjects(shape: Shape) {
         val modules = 50
         ProjectGenerator(
