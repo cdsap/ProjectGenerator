@@ -27,7 +27,11 @@ tasks.register<Test>("unitTest") {
     useJUnitPlatform()
     testClassesDirs = sourceSets.test.get().output.classesDirs
     classpath = sourceSets.test.get().runtimeClasspath
-    excludeTestsMatching("*E2E*")
+    filter {
+        excludeTestsMatching("*E2E*")
+    }
+
+
 }
 
 mavenPublishing {
