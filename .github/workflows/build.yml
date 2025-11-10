@@ -25,8 +25,7 @@ jobs:
           java-version: '${{ matrix.java }}'
       - name: Run unit tests (excluding E2E tests)
         run: >
-          ./gradlew :project-generator:test
-          --tests "!*E2E*"
+          ./gradlew :project-generator:unitTest
 
   e2e-tests:
     strategy:
