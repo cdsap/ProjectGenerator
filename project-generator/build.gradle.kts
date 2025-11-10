@@ -20,6 +20,20 @@ tasks.test {
     useJUnitPlatform()
 }
 
+// Separate task for unit tests (excluding E2E tests)
+tasks.register<Test>("unitTest") {
+    group = "verification"
+    description = "Runs unit tests excluding E2E tests"
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    filter {
+        excludeTestsMatching("*E2E*")
+    }
+
+
+}
+
 mavenPublishing {
     publishToMavenCentral()
     signAllPublications()
