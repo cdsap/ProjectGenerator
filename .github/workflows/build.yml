@@ -8,13 +8,39 @@ concurrency:
   group: 'build-${{ github.ref }}'
   cancel-in-progress: true
 jobs:
-  build:
+  unit-tests:
     strategy:
       matrix:
         java:
           - 17
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: 'Set up JDK ${{ matrix.java }}'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '${{ matrix.java }}'
+      - name: Run unit tests (excluding E2E tests)
+        run: >
+          ./gradlew :project-generator:test
+          --tests "!*E2E*"
+
+  e2e-tests:
+    strategy:
+      matrix:
+        java:
+          - 17
+        test-class:
+          - 'io.github.cdsap.projectgenerator.ProjectGeneratorE2ETest'
+          - 'io.github.cdsap.projectgenerator.ProjectGeneratorE2EAgp9Test'
+          - 'io.github.cdsap.projectgenerator.ProjectGeneratorE2EJdk21Test'
+          - 'io.github.cdsap.projectgenerator.SingleE2EValidationTest'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: unit-tests
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -25,10 +51,31 @@ jobs:
         with:
           distribution: temurin
           java-version: '${{ matrix.java }}'
-      - name: Execute test binary and cli
+      - name: Run E2E test ${{ matrix.test-class }}
         run: >
           ./gradlew :project-generator:test
+          --tests "${{ matrix.test-class }}"
 
+  generate-projects:
+    strategy:
+      matrix:
+        java:
+          - 17
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: unit-tests
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Graphviz
+        uses: ts-graphviz/setup-graphviz@v2
+      - name: 'Set up JDK ${{ matrix.java }}'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '${{ matrix.java }}'
+      - name: Build CLI and generate projects
+        run: >
           ./gradlew :cli:fatBinary
 
           mv cli/projectGenerator projectGenerator
