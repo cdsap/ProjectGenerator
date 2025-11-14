@@ -68,6 +68,7 @@ app.post('/api/generate', upload.single('versions-file'), async (req, res) => {
         // Add project name if provided
         if (body['project-name']) { args.push('--project-name', body['project-name']);}
         if (body['generate-unit-test'] === 'true' || body['generate-unit-test'] === true) args.push('--generate-unit-test');
+        if (body['agp9'] === 'true' || body['agp9'] === true) args.push('--agp9');
         if (body.develocity === 'true' || body.develocity === true) args.push('--develocity');
         if (body['develocity-url']) args.push('--develocity-url', body['develocity-url']);
         if (body.type === 'android' && body.processor) args.push('--processor', body.processor);
