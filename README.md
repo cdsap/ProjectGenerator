@@ -10,7 +10,7 @@ If you need to create small or medium projects (<300 modules), you can use the w
 ## CLI
 ### Install
 ```
-curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.3.6/projectGenerator  --output projectGenerator
+curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.3.7/projectGenerator  --output projectGenerator
 chmod 0757 projectGenerator
 ```
 
@@ -49,6 +49,7 @@ Then, you can use the versions.yaml in the `generate-project` command:
 - `--develocity-url`: Specify Develocity URL
 - `--versions-file`: Path to a custom YAML file with dependency versions
 - `--project-name`: Name of the project
+- `--agp9`: Use AGP 9.x (default: false). Only for Android projects.
 
 #### Example: Generate a project with custom options
 ```bash
@@ -76,7 +77,7 @@ ProjectGenerator(
 ```
 ### Dependency
 ```
-  implementation("io.github.cdsap:projectgenerator:0.3.6")
+  implementation("io.github.cdsap:projectgenerator:0.3.7")
 ```
 
 # Options
