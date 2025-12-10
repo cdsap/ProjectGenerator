@@ -16,7 +16,7 @@ data class Versions(
     val additionalSettingsPlugins: List<AdditionalPlugin> = listOf(
         AdditionalPlugin(
             "com.fueledbycaffeine.spotlight",
-            "1.3.3"
+            "1.4.1"
         )
     )
 )
@@ -36,7 +36,7 @@ data class AdditionalPlugin(
 
 data class Project(
     val jdk: String = "23",
-    val develocity: String = "4.2.2",
+    val develocity: String = "4.3",
     val ccud: String = "2.2",
     val develocityUrl: String = ""
 )
