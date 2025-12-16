@@ -52,6 +52,7 @@ class AndroidToml {
         hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
         hilt-compiler-androidx = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hilt-androidx" }
         hilt-compiler-android-androidx = { group = "androidx.hilt", name = "hilt-android", version.ref = "hilt-androidx" }
+        kotlin-jvm-metadata = { group = "org.jetbrains.kotlin", name = "kotlin-metadata-jvm", version.ref = "kotlin"}
 
         compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
         compose-ui = { group = "androidx.compose.ui", name = "ui" }
@@ -112,6 +113,7 @@ class AndroidToml {
 
     |${kotlinProcessor(version)}(libs.hilt.compiler.androidx)
     |${kotlinProcessor(version)}(libs.hilt.compiler)
+    |${kotlinProcessor(version)}(libs.kotlin.jvm.metadata)
     |${kotlinProcessor(version)}Test(libs.hilt.compiler)
     |${kotlinProcessor(version)}AndroidTest(libs.hilt.compiler)
     |testImplementation(libs.hilt.android.testing)
