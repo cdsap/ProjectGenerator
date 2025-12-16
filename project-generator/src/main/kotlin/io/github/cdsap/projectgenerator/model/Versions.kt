@@ -56,7 +56,7 @@ data class Testing(
 
 data class Kotlin(
     val kgp: String = "2.3.0",
-    val ksp: String = "2.3.3",
+    val ksp: String = "2.3.4",
     val coroutines: String = "1.10.2",
     val kotlinTest: String = "2.3.0",
     val kotlinProcessor: KotlinProcessor = KotlinProcessor(),
