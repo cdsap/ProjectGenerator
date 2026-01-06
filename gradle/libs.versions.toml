@@ -4,7 +4,7 @@ ktlint = "14.0.1"
 mavenPublish = "0.35.0"
 fatbinary = "1.0"
 coroutines = "1.10.2"
-junit = "6.0.1"
+junit = "6.0.2"
 clikt = "5.0.3"
 jackson = "2.12.3"
 
