@@ -29,7 +29,7 @@ class TestGeneratorJvmTest {
             TypeProjectRequested.JVM,
             TypeOfStringResources.NORMAL,
             true, // generateUnitTest
-            GradleWrapper(Gradle.GRADLE_9_2_0),
+            GradleWrapper(Gradle.GRADLE_9_3_0),
             false,
             ""
         )
