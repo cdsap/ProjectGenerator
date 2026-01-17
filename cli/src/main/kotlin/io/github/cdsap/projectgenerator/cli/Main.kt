@@ -49,8 +49,9 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
         "gradle_9_0_0",
         "gradle_9_1_0",
         "gradle_9_2_0",
+        "gradle_9_3_0",
     )
-        .default("gradle_9_2_0")
+        .default("gradle_9_3_0")
     private val develocity by option().flag(default = false)
     private val versionsFile by option().file()
     private val projectName by option()
