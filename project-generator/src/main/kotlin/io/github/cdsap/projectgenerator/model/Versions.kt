@@ -72,7 +72,7 @@ data class Android(
     val fragment: String = "1.8.9",
     val activity: String = "1.12.2",
     val constraintlayout: String = "2.2.1",
-    val work: String = "2.11.0",
+    val work: String = "2.11.1",
     val hilt: String = "2.57.2",
     val hiltAandroidx: String = "1.3.0",
     val composeBom: String = "2026.01.00",
