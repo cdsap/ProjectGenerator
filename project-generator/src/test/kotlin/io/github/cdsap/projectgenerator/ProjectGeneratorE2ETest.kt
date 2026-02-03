@@ -9,6 +9,7 @@ import io.github.cdsap.projectgenerator.model.Project
 import io.github.cdsap.projectgenerator.model.Shape
 import io.github.cdsap.projectgenerator.model.TypeOfStringResources
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
+import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Versions
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
 import io.github.cdsap.projectgenerator.NameMappings
@@ -33,6 +34,7 @@ class ProjectGeneratorE2ETest {
             shape,
             Language.KTS,
             TypeProjectRequested.ANDROID,
+            DependencyInjection.HILT,
             ClassesPerModule(ClassesPerModuleType.FIXED, 20),
             Versions(project = Project(jdk = "17")),
             TypeOfStringResources.LARGE,
@@ -82,6 +84,7 @@ class ProjectGeneratorE2ETest {
             shape,
             Language.KTS,
             TypeProjectRequested.JVM,
+            DependencyInjection.HILT,
             ClassesPerModule(ClassesPerModuleType.FIXED, 20),
             Versions(project = Project(jdk = "17")),
             TypeOfStringResources.LARGE,
@@ -128,6 +131,7 @@ class ProjectGeneratorE2ETest {
             shape,
             Language.KTS,
             TypeProjectRequested.ANDROID,
+            DependencyInjection.HILT,
             ClassesPerModule(ClassesPerModuleType.FIXED, 20),
             Versions(project = Project(jdk = "17"), android = Android(agp = "9.9.9")),
             TypeOfStringResources.LARGE,
@@ -147,4 +151,3 @@ class ProjectGeneratorE2ETest {
         assert(toml.readText().contains("agp = \"9.9.9\""))
     }
 }
-

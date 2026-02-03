@@ -8,6 +8,7 @@ import io.github.cdsap.projectgenerator.model.Project
 import io.github.cdsap.projectgenerator.model.Shape
 import io.github.cdsap.projectgenerator.model.TypeOfStringResources
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
+import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Versions
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
 import org.gradle.testkit.runner.GradleRunner
@@ -30,6 +31,7 @@ class ProjectGeneratorE2EJdk21Test {
             shape,
             Language.KTS,
             TypeProjectRequested.ANDROID,
+            DependencyInjection.HILT,
             ClassesPerModule(ClassesPerModuleType.FIXED, 20),
             Versions(project = Project(jdk = "21")),
             TypeOfStringResources.LARGE,
@@ -71,4 +73,3 @@ class ProjectGeneratorE2EJdk21Test {
     }
 
 }
-

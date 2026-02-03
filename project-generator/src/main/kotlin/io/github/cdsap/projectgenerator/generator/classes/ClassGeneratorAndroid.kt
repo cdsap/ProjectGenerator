@@ -17,7 +17,9 @@ data class GenerateDictionaryAndroid(
     val dependencies: List<ClassDependencyAndroid>
 )
 
-class ClassGeneratorAndroid :
+class ClassGeneratorAndroid(
+    private val di: DependencyInjection
+) :
     ClassGenerator<ModuleClassDefinitionAndroid, GenerateDictionaryAndroid> {
 
 
@@ -54,7 +56,9 @@ class ClassGeneratorAndroid :
             writeClassFile(classContent, classDefinition, moduleDefinition, projectName)
         }
 
-        createDaggerModule(moduleDefinition, projectName, a)
+        if (di == DependencyInjection.HILT) {
+            createDaggerModule(moduleDefinition, projectName, a)
+        }
 
     }
 
@@ -224,7 +228,6 @@ class ClassGeneratorAndroid :
         val imports = buildString {
             appendLine("import androidx.lifecycle.ViewModel")
             appendLine("import androidx.lifecycle.viewModelScope")
-            appendLine("import dagger.hilt.android.lifecycle.HiltViewModel")
             appendLine("import kotlinx.coroutines.launch")
             appendLine("import kotlinx.coroutines.coroutineScope")
             appendLine("import kotlinx.coroutines.async")
@@ -233,7 +236,16 @@ class ClassGeneratorAndroid :
             appendLine("import kotlinx.coroutines.flow.StateFlow")
             appendLine("import kotlinx.coroutines.flow.asStateFlow")
             appendLine("import kotlinx.coroutines.Dispatchers")
-            appendLine("import javax.inject.Inject")
+            when (di) {
+                DependencyInjection.HILT -> {
+                    appendLine("import dagger.hilt.android.lifecycle.HiltViewModel")
+                    appendLine("import javax.inject.Inject")
+                }
+                DependencyInjection.METRO -> {
+                    appendLine("import dev.zacsweers.metro.Inject")
+                }
+                DependencyInjection.NONE -> {}
+            }
             dependencies.forEach { dep ->
                 val depModuleId = dep.sourceModuleId
                 val s = a.filter { it.key == depModuleId }
@@ -276,13 +288,22 @@ class ClassGeneratorAndroid :
         """.trimIndent()
         }
 
+        val diAnnotation = when (di) {
+            DependencyInjection.HILT -> "@HiltViewModel"
+            DependencyInjection.METRO, DependencyInjection.NONE -> ""
+        }
+        val injectAnnotation = when (di) {
+            DependencyInjection.HILT, DependencyInjection.METRO -> "@Inject "
+            DependencyInjection.NONE -> ""
+        }
+
         return """
     |package $packageName
     |
     |$imports
     |
-    |@HiltViewModel
-    |class $className @Inject constructor(
+    |$diAnnotation
+    |class $className ${injectAnnotation}constructor(
     |    $constructorParams
     |) : ViewModel() {
     |    private val _state = MutableStateFlow<String>("")
@@ -314,8 +335,16 @@ class ClassGeneratorAndroid :
             appendLine("import kotlinx.coroutines.coroutineScope")
             appendLine("import kotlinx.coroutines.async")
             appendLine("import kotlinx.coroutines.awaitAll")
-            appendLine("import javax.inject.Inject")
-            appendLine("import javax.inject.Singleton")
+            when (di) {
+                DependencyInjection.HILT -> {
+                    appendLine("import javax.inject.Inject")
+                    appendLine("import javax.inject.Singleton")
+                }
+                DependencyInjection.METRO -> {
+                    appendLine("import dev.zacsweers.metro.Inject")
+                }
+                DependencyInjection.NONE -> {}
+            }
             dependencies.forEach { dep ->
                 val depModuleId = dep.sourceModuleId
                 val matches = a.filter { it.key == depModuleId }
@@ -351,13 +380,19 @@ class ClassGeneratorAndroid :
         """.trimIndent()
         }
 
+        val singletonAnnotation = if (di == DependencyInjection.HILT) "@Singleton" else ""
+        val injectAnnotation = when (di) {
+            DependencyInjection.HILT, DependencyInjection.METRO -> "@Inject "
+            DependencyInjection.NONE -> ""
+        }
+
         return """
     |package $packageName
     |
     |$imports
     |
-    |@Singleton
-    |class $className @Inject constructor(
+    |$singletonAnnotation
+    |class $className ${injectAnnotation}constructor(
     |    $constructorParams
     |) {
     |    suspend fun getData(): String = withContext(Dispatchers.IO) {
@@ -387,9 +422,12 @@ class ClassGeneratorAndroid :
             appendLine("import androidx.compose.ui.platform.ComposeView")
             appendLine("import androidx.fragment.app.Fragment")
             appendLine("import androidx.fragment.app.viewModels")
-            appendLine("import dagger.hilt.android.AndroidEntryPoint")
+            if (di == DependencyInjection.HILT) {
+                appendLine("import dagger.hilt.android.AndroidEntryPoint")
+            }
         }
 
+        val entryPointAnnotation = if (di == DependencyInjection.HILT) "@AndroidEntryPoint" else ""
         val viewModelClass = "Feature${moduleNumber}_1"
 
         return """
@@ -397,7 +435,7 @@ class ClassGeneratorAndroid :
             |
             |$imports
             |
-            |@AndroidEntryPoint
+            |$entryPointAnnotation
             |class $className : Fragment() {
             |
             |    override fun onCreateView(
@@ -416,14 +454,24 @@ class ClassGeneratorAndroid :
     }
 
     private fun generateApi(packageName: String, className: String): String {
+        val injectImport = when (di) {
+            DependencyInjection.HILT -> "import javax.inject.Inject"
+            DependencyInjection.METRO -> "import dev.zacsweers.metro.Inject"
+            DependencyInjection.NONE -> ""
+        }
+        val injectAnnotation = when (di) {
+            DependencyInjection.HILT, DependencyInjection.METRO -> "@Inject "
+            DependencyInjection.NONE -> ""
+        }
+
         return """
             |package $packageName
             |
             |import kotlinx.coroutines.Dispatchers
             |import kotlinx.coroutines.withContext
-            |import javax.inject.Inject
+            |$injectImport
             |
-            |class $className @Inject constructor() {
+            |class $className ${injectAnnotation}constructor() {
             |    suspend fun fetchData(): String = withContext(Dispatchers.IO) {
             |        "Data from $className API"
             |    }
@@ -432,6 +480,29 @@ class ClassGeneratorAndroid :
     }
 
     private fun generateWorker(packageName: String, className: String): String {
+        if (di != DependencyInjection.HILT) {
+            return """
+            |package $packageName
+            |
+            |import android.content.Context
+            |import androidx.work.CoroutineWorker
+            |import androidx.work.WorkerParameters
+            |
+            |class $className(
+            |    context: Context,
+            |    params: WorkerParameters
+            |) : CoroutineWorker(context, params) {
+            |    override suspend fun doWork(): Result {
+            |        return try {
+            |            Thread.sleep(100)
+            |            Result.success()
+            |        } catch (e: Exception) {
+            |            Result.failure()
+            |        }
+            |    }
+            |}
+        """.trimMargin()
+        }
         return """
             |package $packageName
             |
@@ -478,15 +549,19 @@ class ClassGeneratorAndroid :
             appendLine("import androidx.compose.ui.Alignment")
             appendLine("import androidx.compose.ui.Modifier")
             appendLine("import com.awesomeapp.${NameMappings.modulePackageName(moduleId)}.ui.theme.FeatureTheme")
-            appendLine("import dagger.hilt.android.AndroidEntryPoint")
+            if (di == DependencyInjection.HILT) {
+                appendLine("import dagger.hilt.android.AndroidEntryPoint")
+            }
         }
+
+        val entryPointAnnotation = if (di == DependencyInjection.HILT) "@AndroidEntryPoint" else ""
 
         return """
             |package $packageName
             |
             |$imports
             |
-            |@AndroidEntryPoint
+            |$entryPointAnnotation
             |class $className : ComponentActivity() {
             |    private val viewModel: $viewModelClass by viewModels()
             |
@@ -516,17 +591,20 @@ class ClassGeneratorAndroid :
             appendLine("import android.app.Service")
             appendLine("import android.content.Intent")
             appendLine("import android.os.IBinder")
-            appendLine("import dagger.hilt.android.AndroidEntryPoint")
+            if (di == DependencyInjection.HILT) {
+                appendLine("import dagger.hilt.android.AndroidEntryPoint")
+            }
             appendLine("import kotlinx.coroutines.*")
-            appendLine("import javax.inject.Inject")
         }
+
+        val entryPointAnnotation = if (di == DependencyInjection.HILT) "@AndroidEntryPoint" else ""
 
         return """
             |package $packageName
             |
             |$imports
             |
-            |@AndroidEntryPoint
+            |$entryPointAnnotation
             |class $className : Service() {
             |    private val serviceJob = Job()
             |    private val serviceScope = CoroutineScope(Dispatchers.Default + serviceJob)
@@ -579,14 +657,23 @@ class ClassGeneratorAndroid :
     }
 
     private fun generateUseCase(packageName: String, className: String, moduleNumber: String): String {
+        val injectImport = when (di) {
+            DependencyInjection.HILT -> "import javax.inject.Inject"
+            DependencyInjection.METRO -> "import dev.zacsweers.metro.Inject"
+            DependencyInjection.NONE -> ""
+        }
+        val injectAnnotation = when (di) {
+            DependencyInjection.HILT, DependencyInjection.METRO -> "@Inject "
+            DependencyInjection.NONE -> ""
+        }
         return """
             |package $packageName
             |
             |import kotlinx.coroutines.flow.Flow
             |import kotlinx.coroutines.flow.flow
-            |import javax.inject.Inject
+            |$injectImport
             |
-            |class $className @Inject constructor() {
+            |class $className ${injectAnnotation}constructor() {
             |    operator fun invoke(): Flow<String> = flow {
             |        emit("Data from $className UseCase")
             |    }

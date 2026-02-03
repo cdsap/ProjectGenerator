@@ -1,11 +1,12 @@
 package io.github.cdsap.projectgenerator.generator.toml
 
+import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Processor
 import io.github.cdsap.projectgenerator.model.Versions
 
 class AndroidToml {
 
-    fun toml(version: Versions) = """
+    fun toml(version: Versions, di: DependencyInjection) = """
         [versions]
         agp = "${version.android.agp}"
         kotlin = "${version.kotlin.kgp}"
@@ -20,8 +21,8 @@ class AndroidToml {
         activity = "${version.android.activity}"
         constraintlayout = "${version.android.constraintlayout}"
         work = "${version.android.work}"
-        hilt = "${version.android.hilt}"
-        hilt-androidx = "${version.android.hiltAandroidx}"
+        ${hiltVersions(version, di)}
+        ${metroVersions(version, di)}
         compose-bom = "${version.android.composeBom}"
         junit4 = "${version.testing.junit4}"
         junit5 = "${version.testing.junit5}"
@@ -46,12 +47,8 @@ class AndroidToml {
         activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
         constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
         work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
-        hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
-        hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hilt-androidx" }
-        hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
-        hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
-        hilt-compiler-androidx = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hilt-androidx" }
-        hilt-compiler-android-androidx = { group = "androidx.hilt", name = "hilt-android", version.ref = "hilt-androidx" }
+        ${hiltLibraries(di)}
+        ${metroLibraries(di)}
         kotlin-jvm-metadata = { group = "org.jetbrains.kotlin", name = "kotlin-metadata-jvm", version.ref = "kotlin"}
 
         compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
@@ -82,20 +79,22 @@ class AndroidToml {
         # Dependencies of the included build-logic
         android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
         kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
-        hilt-plugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }
+        ${hiltBuildLogicLibrary(di)}
+        ${metroBuildLogicLibrary(di)}
         kotlin-compose-plugin = { group = "org.jetbrains.kotlin.plugin.compose", name = "org.jetbrains.kotlin.plugin.compose.gradle.plugin", version.ref="kotlin" }
 
         [plugins]
         android-application = { id = "com.android.application", version.ref = "agp" }
         android-library = { id = "com.android.library", version.ref = "agp" }
-        hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+        ${hiltPlugin(di)}
+        ${metroPlugin(di)}
         kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
         kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
         kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
         kotlin-ksp = { id ="com.google.devtools.ksp", version.ref = "ksp" }
     """.trimIndent()
 
-    fun tomlImplementations(version: Versions) = """
+    fun tomlImplementations(version: Versions, di: DependencyInjection) = """
     |implementation(libs.androidx.core.ktx)
     |implementation(libs.appcompat)
     |implementation(libs.material)
@@ -108,15 +107,8 @@ class AndroidToml {
     |implementation(libs.activity.ktx)
     |implementation(libs.constraintlayout)
     |implementation(libs.work.runtime.ktx)
-    |implementation(libs.hilt.work)
-    |implementation(libs.hilt.android)
-
-    |${kotlinProcessor(version)}(libs.hilt.compiler.androidx)
-    |${kotlinProcessor(version)}(libs.hilt.compiler)
-    |${kotlinProcessor(version)}(libs.kotlin.jvm.metadata)
-    |${kotlinProcessor(version)}Test(libs.hilt.compiler)
-    |${kotlinProcessor(version)}AndroidTest(libs.hilt.compiler)
-    |testImplementation(libs.hilt.android.testing)
+    |${hiltDependencies(version, di)}
+    |${metroDependencies(di)}
 
     |implementation(platform(libs.compose.bom))
     |implementation(libs.compose.ui)
@@ -149,6 +141,111 @@ class AndroidToml {
             return "kapt"
         } else {
             return "ksp"
+        }
+    }
+
+    private fun hiltVersions(version: Versions, di: DependencyInjection): String {
+        return if (di == DependencyInjection.HILT) {
+            """
+            hilt = "${version.android.hilt}"
+            hilt-androidx = "${version.android.hiltAandroidx}"
+            """.trimIndent()
+        } else {
+            ""
+        }
+    }
+
+    private fun metroVersions(version: Versions, di: DependencyInjection): String {
+        return if (di == DependencyInjection.METRO) {
+            """
+            metro = "${version.android.metro}"
+            metro-plugin = "${version.android.metroPlugin}"
+            """.trimIndent()
+        } else {
+            ""
+        }
+    }
+
+    private fun hiltLibraries(di: DependencyInjection): String {
+        return if (di == DependencyInjection.HILT) {
+            """
+            hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+            hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hilt-androidx" }
+            hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+            hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
+            hilt-compiler-androidx = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hilt-androidx" }
+            hilt-compiler-android-androidx = { group = "androidx.hilt", name = "hilt-android", version.ref = "hilt-androidx" }
+            """.trimIndent()
+        } else {
+            ""
+        }
+    }
+
+    private fun metroLibraries(di: DependencyInjection): String {
+        return if (di == DependencyInjection.METRO) {
+            """
+            metro-runtime = { group = "dev.zacsweers.metro", name = "runtime", version.ref = "metro" }
+            """.trimIndent()
+        } else {
+            ""
+        }
+    }
+
+    private fun hiltBuildLogicLibrary(di: DependencyInjection): String {
+        return if (di == DependencyInjection.HILT) {
+            """hilt-plugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }"""
+        } else {
+            ""
+        }
+    }
+
+    private fun metroBuildLogicLibrary(di: DependencyInjection): String {
+        return if (di == DependencyInjection.METRO) {
+            """metro-gradle-plugin = { group = "dev.zacsweers.metro", name = "dev.zacsweers.metro.gradle.plugin", version.ref = "metro-plugin" }"""
+        } else {
+            ""
+        }
+    }
+
+    private fun hiltPlugin(di: DependencyInjection): String {
+        return if (di == DependencyInjection.HILT) {
+            """hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }"""
+        } else {
+            ""
+        }
+    }
+
+    private fun metroPlugin(di: DependencyInjection): String {
+        return if (di == DependencyInjection.METRO) {
+            """metro = { id = "dev.zacsweers.metro", version.ref = "metro-plugin" }"""
+        } else {
+            ""
+        }
+    }
+
+    private fun hiltDependencies(version: Versions, di: DependencyInjection): String {
+        return if (di == DependencyInjection.HILT) {
+            """
+            implementation(libs.hilt.work)
+            implementation(libs.hilt.android)
+
+            ${kotlinProcessor(version)}(libs.hilt.compiler.androidx)
+            ${kotlinProcessor(version)}(libs.hilt.compiler)
+            ${kotlinProcessor(version)}(libs.kotlin.jvm.metadata)
+            ${kotlinProcessor(version)}Test(libs.hilt.compiler)
+            ${kotlinProcessor(version)}AndroidTest(libs.hilt.compiler)
+            testImplementation(libs.hilt.android.testing)
+            """.trimIndent()
+        } else {
+            ""
+        }
+    }
+
+    private fun metroDependencies(di: DependencyInjection): String {
+        return if (di == DependencyInjection.METRO) {
+            "implementation(libs.metro.runtime)"
+        } else {
+            ""
         }
     }
 }

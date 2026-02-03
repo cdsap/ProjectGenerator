@@ -6,6 +6,7 @@ import io.github.cdsap.projectgenerator.generator.includedbuild.CompositeBuildSe
 import io.github.cdsap.projectgenerator.generator.plugins.android.CompositeBuildPluginAndroidApp
 import io.github.cdsap.projectgenerator.generator.plugins.android.CompositeBuildPluginAndroidLib
 import io.github.cdsap.projectgenerator.generator.plugins.jvm.CompositeBuildJvmLib
+import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
 import io.github.cdsap.projectgenerator.model.Versions
@@ -14,7 +15,8 @@ import java.io.File
 class ConventionPluginWriter(
     private val languages: List<LanguageAttributes>,
     private val versions: Versions,
-    private val requested: TypeProjectRequested
+    private val requested: TypeProjectRequested,
+    private val di: DependencyInjection
 ) {
 
     fun write() {
@@ -35,7 +37,8 @@ class ConventionPluginWriter(
             File("${it.projectName}/build-logic/convention/build.gradle.kts").projectFile(
                 CompositeBuildBuildGradle().get(
                     versions,
-                    requested
+                    requested,
+                    di
                 )
             )
         }
@@ -59,8 +62,8 @@ class ConventionPluginWriter(
     }
 
     private fun createPluginAndroid(languages: List<LanguageAttributes>) {
-        val pluginAndroidLib = CompositeBuildPluginAndroidLib().get(versions)
-        val pluginAndroidApp = CompositeBuildPluginAndroidApp().get(versions)
+        val pluginAndroidLib = CompositeBuildPluginAndroidLib().get(versions, di)
+        val pluginAndroidApp = CompositeBuildPluginAndroidApp().get(versions, di)
         languages.forEach {
             File("${it.projectName}/build-logic/convention/src/main/kotlin/com/logic/CompositeBuildPluginAndroidApp.kt").projectFile(
                 pluginAndroidApp
@@ -80,4 +83,3 @@ class ConventionPluginWriter(
         }
     }
 }
-

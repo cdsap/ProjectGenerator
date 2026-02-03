@@ -38,6 +38,7 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
     private val modules by option().int().required()
         .check("max number of projects 4000") { it in (layers + 1)..4000 }
     private val type by option().choice("android", "jvm").default("android")
+    private val di: String by option().choice("hilt", "metro", "none").default("hilt")
     private val classesModule by option().int().default(5)
     private val classesModuleType: String by option().choice("fixed", "random").default("fixed")
     private val typeOfStringResources: String by option().choice("large", "normal").default("normal")
@@ -62,6 +63,7 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
     override fun run() {
         val typeOfProjectRequested = TypeProjectRequested.valueOf(type.uppercase())
         val shape = Shape.valueOf(shape.uppercase())
+        val dependencyInjection = DependencyInjection.valueOf(di.uppercase())
         val versions = getVersions(versionsFile, develocityUrl, agp9)
         val develocityEnabled = getDevelocityEnabled(develocity, develocityUrl)
         ProjectGenerator(
@@ -69,6 +71,7 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
             shape,
             Language.valueOf(language.uppercase()),
             typeOfProjectRequested,
+            dependencyInjection,
             ClassesPerModule(ClassesPerModuleType.valueOf(classesModuleType.uppercase()), classesModule),
             versions = versions,
             TypeOfStringResources.valueOf(typeOfStringResources.uppercase()),

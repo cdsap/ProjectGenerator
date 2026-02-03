@@ -1,17 +1,18 @@
 package io.github.cdsap.projectgenerator.generator.rootproject
 
 import io.github.cdsap.projectgenerator.generator.extension.isAgp9
+import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Processor
 import io.github.cdsap.projectgenerator.model.Versions
 
 class GradleProperties {
-    fun get(versions: Versions) = """
+    fun get(versions: Versions, di: DependencyInjection) = """
         org.gradle.jvmargs=-Xmx5g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
         android.useAndroidX=true
         org.gradle.caching=true
         dependency.analysis.compatibility=NONE
         ${k2usage(versions)}
-        ${disableNewDslInAGP9BecauseHilt(versions)}
+        ${disableNewDslInAGP9BecauseHilt(versions, di)}
     """.trimIndent()
 
     // Disable K2 for KSP 2.0
@@ -22,8 +23,8 @@ class GradleProperties {
     }
 
     // Hilt is not compatible with AGP9, if AGP9 is enabled we need to disable android.newDsl=false
-    private fun disableNewDslInAGP9BecauseHilt(versions: Versions): String {
-        return if (versions.android.agp.isAgp9()) {
+    private fun disableNewDslInAGP9BecauseHilt(versions: Versions, di: DependencyInjection): String {
+        return if (di == DependencyInjection.HILT && versions.android.agp.isAgp9()) {
             "android.newDsl=false"
         } else ""
     }

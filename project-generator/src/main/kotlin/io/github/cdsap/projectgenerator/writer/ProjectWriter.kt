@@ -12,6 +12,7 @@ import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.TypeOfStringResources
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
 import io.github.cdsap.projectgenerator.model.Versions
+import io.github.cdsap.projectgenerator.model.DependencyInjection
 import kotlinx.coroutines.runBlocking
 import java.io.File
 
@@ -20,6 +21,7 @@ class ProjectWriter(
     private val languages: List<LanguageAttributes>,
     private val versions: Versions,
     private val typeOfProjectRequested: TypeProjectRequested,
+    private val di: DependencyInjection,
     private val typeOfStringResources: TypeOfStringResources,
     private val generateUnitTest: Boolean,
     private val gradle: GradleWrapper,
@@ -28,7 +30,7 @@ class ProjectWriter(
 ) {
     fun write() {
         println("Creating Convention Plugin files")
-        ConventionPluginWriter(languages, versions, typeOfProjectRequested).write()
+        ConventionPluginWriter(languages, versions, typeOfProjectRequested, di).write()
         println("Creating Modules files")
         runBlocking {
         when (typeOfProjectRequested) {
@@ -37,7 +39,8 @@ class ProjectWriter(
                 languages,
                 typeOfStringResources,
                 generateUnitTest,
-                versions
+                versions,
+                di
             ).write()
 
             TypeProjectRequested.JVM -> JvmModulesWriter(nodes, languages, generateUnitTest, versions).write()
@@ -61,7 +64,7 @@ class ProjectWriter(
     }
 
     private fun createToml(languages: List<LanguageAttributes>) {
-        val toml = AndroidToml().toml(versions)
+        val toml = AndroidToml().toml(versions, di)
         languages.forEach {
             File("${it.projectName}/gradle/libs.versions.toml").projectFile(toml)
         }
@@ -77,7 +80,7 @@ class ProjectWriter(
         languages: List<LanguageAttributes>
     ) {
         val plugins = if (typeOfProjectRequested == TypeProjectRequested.JVM) BuildGradle().getJvm(versions)
-        else BuildGradle().getAndroid(versions)
+        else BuildGradle().getAndroid(versions, di)
         languages.forEach {
             File("${it.projectName}/build.${it.extension}").projectFile(plugins)
         }
@@ -104,7 +107,7 @@ class ProjectWriter(
     }
 
     private fun createGradleProperties(languages: List<LanguageAttributes>) {
-        val gradleProperties = GradleProperties().get(versions)
+        val gradleProperties = GradleProperties().get(versions, di)
         languages.forEach {
             File("${it.projectName}/gradle.properties").projectFile(gradleProperties)
         }

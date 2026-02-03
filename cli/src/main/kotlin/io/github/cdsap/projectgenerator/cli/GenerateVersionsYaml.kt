@@ -31,6 +31,8 @@ class GenerateVersionsYaml {
             |  work: ${versions.android.work}
             |  hilt: ${versions.android.hilt}
             |  hiltAandroidx: ${versions.android.hiltAandroidx}
+            |  metro: ${versions.android.metro}
+            |  metroPlugin: ${versions.android.metroPlugin}
             |  composeBom: ${versions.android.composeBom}
             |testing:
             |  junit4: ${versions.testing.junit4}
