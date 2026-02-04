@@ -36,7 +36,7 @@ class ProjectGeneratorE2EAgp9Test {
             TypeProjectRequested.ANDROID,
             DependencyInjection.HILT,
             ClassesPerModule(ClassesPerModuleType.FIXED, 20),
-            Versions(project = Project(jdk = "17"), android = Android(agp = "9.0.0-alpha14")),
+            Versions(project = Project(jdk = "17"), android = Android(agp = "9.0.0")),
             TypeOfStringResources.LARGE,
             5,
             true,
