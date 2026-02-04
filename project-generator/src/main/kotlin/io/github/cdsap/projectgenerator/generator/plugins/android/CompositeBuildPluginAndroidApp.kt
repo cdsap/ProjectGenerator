@@ -26,7 +26,7 @@ class CompositeBuildPluginAndroidApp {
         |            with(pluginManager) {
         |                apply("com.android.application")
         |                ${provideKgpBasedOnAgp(versions)}
-        |                ${provideKotlinProcessor(versions)}
+        |                ${provideKotlinProcessor(versions, di)}
         |                ${applyDiPlugin(di)}
         |                apply("org.jetbrains.kotlin.plugin.compose")
         |            }
@@ -68,10 +68,12 @@ class CompositeBuildPluginAndroidApp {
         |}
         |""".trimMargin()
 
-    fun provideKotlinProcessor(versions: Versions) = if (versions.kotlin.kotlinProcessor.processor == Processor.KAPT)
+    fun provideKotlinProcessor(versions: Versions, di: DependencyInjection) = if (versions.kotlin.kotlinProcessor.processor == Processor.KAPT)
         """apply("kotlin-kapt")"""
-    else
+    else if( di == DependencyInjection.HILT)
         """apply("com.google.devtools.ksp")"""
+    else
+        ""
 
     fun provideKgpBasedOnAgp(versions: Versions) = if (!versions.android.agp.isAgp9())
         """apply("org.jetbrains.kotlin.android")"""

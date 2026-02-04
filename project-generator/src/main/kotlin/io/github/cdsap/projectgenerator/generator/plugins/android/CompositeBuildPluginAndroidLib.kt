@@ -23,12 +23,12 @@ class CompositeBuildPluginAndroidLib {
         |            with(pluginManager) {
         |                apply("com.android.library")
         |                ${provideKgpBasedOnAgp(versions)}
-        |                ${provideKotlinProcessor(versions)}
+        |                ${provideKotlinProcessor(versions,di)}
         |                ${applyDiPlugin(di)}
         |                apply("org.jetbrains.kotlin.plugin.compose")
         |            }
         |
-        |            extensions.configure<com.android.build.gradle.LibraryExtension>  {
+        |            extensions.configure<com.android.build.api.dsl.LibraryExtension>  {
         |                namespace = "com.awesome." + target.name.replace(":","_").replace("-", "")
         |                compileSdk = 36
         |                defaultConfig {
@@ -65,10 +65,12 @@ class CompositeBuildPluginAndroidLib {
         |}
         |""".trimMargin()
 
-    fun provideKotlinProcessor(versions: Versions) = if (versions.kotlin.kotlinProcessor.processor == Processor.KAPT)
+    fun provideKotlinProcessor(versions: Versions, di: DependencyInjection) = if (versions.kotlin.kotlinProcessor.processor == Processor.KAPT)
         """apply("kotlin-kapt")"""
-    else
+    else if( di == DependencyInjection.HILT)
         """apply("com.google.devtools.ksp")"""
+    else
+        ""
 
     fun provideKgpBasedOnAgp(versions: Versions) = if (!versions.android.agp.isAgp9())
         """apply("org.jetbrains.kotlin.android")"""
