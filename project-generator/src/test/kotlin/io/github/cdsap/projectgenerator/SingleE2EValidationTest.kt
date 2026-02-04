@@ -34,7 +34,7 @@ class SingleE2EValidationTest {
             language = Language.KTS,
             typeOfProjectRequested = TypeProjectRequested.ANDROID,
             classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 20),
-            versions = Versions(project = Project(jdk = "17"), android = Android(agp = "9.0.0-alpha14")),
+            versions = Versions(project = Project(jdk = "17"), android = Android(agp = "9.0.0")),
             typeOfStringResources = TypeOfStringResources.LARGE,
             layers = 5,
             generateUnitTest = true,
