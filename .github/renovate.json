@@ -90,6 +90,12 @@
         },
         {
             "fileMatch": ["^.*Versions\\.kt$"],
+            "matchStrings": ["val metro: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""],
+            "depNameTemplate": "dev.zacsweers.metro:dev.zacsweers.metro.gradle.plugin",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": ["^.*Versions\\.kt$"],
             "matchStrings": ["val composeBom: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""],
             "depNameTemplate": "androidx.compose:compose-bom",
             "datasourceTemplate": "maven"
