@@ -64,14 +64,13 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
         val typeOfProjectRequested = TypeProjectRequested.valueOf(type.uppercase())
         val shape = Shape.valueOf(shape.uppercase())
         val dependencyInjection = DependencyInjection.valueOf(di.uppercase())
-        val versions = getVersions(versionsFile, develocityUrl, agp9)
+        val versions = getVersions(versionsFile, develocityUrl, agp9).copy(di = dependencyInjection)
         val develocityEnabled = getDevelocityEnabled(develocity, develocityUrl)
         ProjectGenerator(
             modules,
             shape,
             Language.valueOf(language.uppercase()),
             typeOfProjectRequested,
-            dependencyInjection,
             ClassesPerModule(ClassesPerModuleType.valueOf(classesModuleType.uppercase()), classesModule),
             versions = versions,
             TypeOfStringResources.valueOf(typeOfStringResources.uppercase()),

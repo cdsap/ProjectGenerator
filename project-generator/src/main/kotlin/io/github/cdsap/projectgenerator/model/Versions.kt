@@ -7,6 +7,7 @@ data class Versions(
     val android: Android = Android(),
     val testing: Testing = Testing(),
     val project: Project = Project(),
+    val di: DependencyInjection = DependencyInjection.HILT,
     val additionalBuildGradleRootPlugins: List<AdditionalPlugin> = listOf(
         AdditionalPlugin(
             "com.autonomousapps.dependency-analysis",

@@ -13,6 +13,7 @@ class GenerateVersionsYaml {
             |  develocity: ${versions.project.develocity}
             |  develocityUrl: ${versions.project.develocityUrl}
             |  jdk: ${versions.project.jdk}
+            |di: ${versions.di}
             |kotlin:
             |  kgp: ${versions.kotlin.kgp}
             |  ksp: ${versions.kotlin.ksp}

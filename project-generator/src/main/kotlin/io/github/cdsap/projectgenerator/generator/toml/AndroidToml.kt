@@ -6,7 +6,7 @@ import io.github.cdsap.projectgenerator.model.Versions
 
 class AndroidToml {
 
-    fun toml(version: Versions, di: DependencyInjection) = """
+    fun toml(version: Versions) = """
         [versions]
         agp = "${version.android.agp}"
         kotlin = "${version.kotlin.kgp}"
@@ -21,8 +21,8 @@ class AndroidToml {
         activity = "${version.android.activity}"
         constraintlayout = "${version.android.constraintlayout}"
         work = "${version.android.work}"
-        ${hiltVersions(version, di)}
-        ${metroVersions(version, di)}
+        ${hiltVersions(version, version.di)}
+        ${metroVersions(version, version.di)}
         compose-bom = "${version.android.composeBom}"
         junit4 = "${version.testing.junit4}"
         junit5 = "${version.testing.junit5}"
@@ -47,8 +47,8 @@ class AndroidToml {
         activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
         constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
         work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
-        ${hiltLibraries(di)}
-        ${metroLibraries(di)}
+        ${hiltLibraries(version.di)}
+        ${metroLibraries(version.di)}
         kotlin-jvm-metadata = { group = "org.jetbrains.kotlin", name = "kotlin-metadata-jvm", version.ref = "kotlin"}
 
         compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
@@ -79,15 +79,15 @@ class AndroidToml {
         # Dependencies of the included build-logic
         android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
         kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
-        ${hiltBuildLogicLibrary(di)}
-        ${metroBuildLogicLibrary(di)}
+        ${hiltBuildLogicLibrary(version.di)}
+        ${metroBuildLogicLibrary(version.di)}
         kotlin-compose-plugin = { group = "org.jetbrains.kotlin.plugin.compose", name = "org.jetbrains.kotlin.plugin.compose.gradle.plugin", version.ref="kotlin" }
 
         [plugins]
         android-application = { id = "com.android.application", version.ref = "agp" }
         android-library = { id = "com.android.library", version.ref = "agp" }
-        ${hiltPlugin(di)}
-        ${metroPlugin(di)}
+        ${hiltPlugin(version.di)}
+        ${metroPlugin(version.di)}
         kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
         kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
         kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
