@@ -1,6 +1,7 @@
 package io.github.cdsap.projectgenerator.generator.rootproject
 
 import io.github.cdsap.projectgenerator.generator.extension.isAgp9
+import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Processor
 import io.github.cdsap.projectgenerator.model.Versions
 
@@ -23,7 +24,7 @@ class GradleProperties {
 
     // Hilt is not compatible with AGP9, if AGP9 is enabled we need to disable android.newDsl=false
     private fun disableNewDslInAGP9BecauseHilt(versions: Versions): String {
-        return if (versions.android.agp.isAgp9()) {
+        return if (versions.di == DependencyInjection.HILT && versions.android.agp.isAgp9()) {
             "android.newDsl=false"
         } else ""
     }

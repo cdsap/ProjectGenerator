@@ -40,6 +40,7 @@ Then, you can use the versions.yaml in the `generate-project` command:
 - `--layers`: Number of layers (default: 5)
 - `--language`: kts (default), groovy, both
 - `--type`: android (default), jvm
+- `--di`: hilt (default), metro, none
 - `--classes-module`: Number of classes per module (default: 5)
 - `--classes-module-type`: fixed (default), random
 - `--type-of-string-resources`: normal (default), large
@@ -66,7 +67,7 @@ ProjectGenerator(
     language = Language.KTS,
     typeOfProjectRequested = TypeProjectRequested.ANDROID,
     classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 20),
-    versions = Versions(project = Project(jdk = "17")),
+    versions = Versions(project = Project(jdk = "17"), di = DependencyInjection.HILT),
     typeOfStringResources = TypeOfStringResources.LARGE,
     layers = 5,
     generateUnitTest = true,

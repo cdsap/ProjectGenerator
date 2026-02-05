@@ -111,7 +111,7 @@ class ConventionPluginWriterTest {
         val buildGradleFile = File("$projectBasePath/build-logic/convention/build.gradle.kts")
         assertTrue(buildGradleFile.exists(), "build.gradle.kts missing for $projectBasePath")
         assertEquals(
-            CompositeBuildBuildGradle().get(versions, TypeProjectRequested.ANDROID).trim(),
+            CompositeBuildBuildGradle().get(versions, TypeProjectRequested.ANDROID, versions.di).trim(),
             buildGradleFile.readText().trim(),
             "build.gradle.kts content mismatch for $projectBasePath"
         )
@@ -127,7 +127,7 @@ class ConventionPluginWriterTest {
         val appPluginFile = File("$projectBasePath/build-logic/convention/src/main/kotlin/com/logic/CompositeBuildPluginAndroidApp.kt")
         assertTrue(appPluginFile.exists(), "App plugin missing for $projectBasePath")
         assertEquals(
-            CompositeBuildPluginAndroidApp().get(versions).trim(),
+            CompositeBuildPluginAndroidApp().get(versions, versions.di).trim(),
             appPluginFile.readText().trim(),
             "App plugin content mismatch for $projectBasePath"
         )
@@ -135,7 +135,7 @@ class ConventionPluginWriterTest {
         val libPluginFile = File("$projectBasePath/build-logic/convention/src/main/kotlin/com/logic/CompositeBuildPluginAndroidLib.kt")
         assertTrue(libPluginFile.exists(), "Lib plugin missing for $projectBasePath")
         assertEquals(
-            CompositeBuildPluginAndroidLib().get(versions).trim(),
+            CompositeBuildPluginAndroidLib().get(versions, versions.di).trim(),
             libPluginFile.readText().trim(),
             "Lib plugin content mismatch for $projectBasePath"
         )
@@ -148,7 +148,7 @@ class ConventionPluginWriterTest {
         val buildGradleFile = File("$projectBasePath/build-logic/convention/build.gradle.kts")
         assertTrue(buildGradleFile.exists(), "build.gradle.kts missing for $projectBasePath")
         assertEquals(
-            CompositeBuildBuildGradle().get(versions, TypeProjectRequested.JVM).trim(),
+            CompositeBuildBuildGradle().get(versions, TypeProjectRequested.JVM, versions.di).trim(),
             buildGradleFile.readText().trim(),
             "build.gradle.kts content mismatch for $projectBasePath"
         )

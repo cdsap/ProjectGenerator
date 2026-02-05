@@ -74,4 +74,3 @@ class ProjectGeneratorE2EAgp9Test {
     }
 
 }
-

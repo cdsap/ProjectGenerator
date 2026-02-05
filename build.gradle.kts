@@ -5,8 +5,6 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
-
 project.extensions.getByType(KotlinJvmProjectExtension::class.java).apply {
     jvmToolchain(23)
 }
-

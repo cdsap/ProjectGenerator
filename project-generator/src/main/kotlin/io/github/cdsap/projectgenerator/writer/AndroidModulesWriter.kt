@@ -13,14 +13,15 @@ class AndroidModulesWriter(
     languages: List<LanguageAttributes>,
     typeOfStringResources: TypeOfStringResources,
     generateUnitTest: Boolean,
-    versions: Versions
+    versions: Versions,
+    di: DependencyInjection
 ) : ModulesWrite<ModuleClassDefinitionAndroid, GenerateDictionaryAndroid>(
-    classGenerator = ClassGeneratorAndroid(),
+    classGenerator = ClassGeneratorAndroid(di),
     classPlanner = ModuleClassPlannerAndroid(),
     testGenerator = TestGeneratorAndroid(),
-    resourceGeneratorA = ResourceGenerator(),
+    resourceGeneratorA = ResourceGenerator(di),
     generateUnitTest = generateUnitTest,
-    buildFilesGenerator = BuildFilesGeneratorAndroid(versions),
+    buildFilesGenerator = BuildFilesGeneratorAndroid(versions, di),
     resources = typeOfStringResources,
     nodes = nodes,
     languages = languages

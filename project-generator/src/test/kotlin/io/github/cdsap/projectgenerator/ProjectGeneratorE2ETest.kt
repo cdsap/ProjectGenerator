@@ -147,4 +147,3 @@ class ProjectGeneratorE2ETest {
         assert(toml.readText().contains("agp = \"9.9.9\""))
     }
 }
-

@@ -1,11 +1,12 @@
 package io.github.cdsap.projectgenerator.generator.plugins.android
 
 import io.github.cdsap.projectgenerator.generator.extension.isAgp9
+import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Processor
 import io.github.cdsap.projectgenerator.model.Versions
 
 class CompositeBuildPluginAndroidApp {
-    fun get(versions: Versions) = """
+    fun get(versions: Versions, di: DependencyInjection) = """
         |package com.logic
         |
         |import org.gradle.api.Plugin
@@ -25,8 +26,8 @@ class CompositeBuildPluginAndroidApp {
         |            with(pluginManager) {
         |                apply("com.android.application")
         |                ${provideKgpBasedOnAgp(versions)}
-        |                ${provideKotlinProcessor(versions)}
-        |                apply("dagger.hilt.android.plugin")
+        |                ${provideKotlinProcessor(versions, di)}
+        |                ${applyDiPlugin(di)}
         |                apply("org.jetbrains.kotlin.plugin.compose")
         |            }
         |
@@ -57,17 +58,7 @@ class CompositeBuildPluginAndroidApp {
         |            target.extensions.getByType(org.gradle.api.plugins.JavaPluginExtension::class.java).apply {
         |                toolchain.languageVersion.set(org.gradle.jvm.toolchain.JavaLanguageVersion.of(${versions.project.jdk}))
         |            }
-        |            // Hilt missing Java Toolchain support https://github.com/google/dagger/issues/4623
-        |            val toolchains = target.extensions.getByType(JavaToolchainService::class.java)
-        |            target.tasks.withType(JavaCompile::class.java)
-        |                 .matching { it.name.startsWith("hiltJavaCompile") }
-        |                 .configureEach {
-        |                     javaCompiler.set(
-        |                         toolchains.compilerFor {
-        |                             languageVersion.set(JavaLanguageVersion.of(${versions.project.jdk}))
-        |                         }
-        |                     )
-        |                 }
+        |            ${hiltToolchainFix(versions, di)}
         |
         |            dependencies {
         |
@@ -77,13 +68,43 @@ class CompositeBuildPluginAndroidApp {
         |}
         |""".trimMargin()
 
-    fun provideKotlinProcessor(versions: Versions) = if (versions.kotlin.kotlinProcessor.processor == Processor.KAPT)
+    fun provideKotlinProcessor(versions: Versions, di: DependencyInjection) = if (versions.kotlin.kotlinProcessor.processor == Processor.KAPT)
         """apply("kotlin-kapt")"""
-    else
+    else if( di == DependencyInjection.HILT)
         """apply("com.google.devtools.ksp")"""
+    else
+        ""
 
     fun provideKgpBasedOnAgp(versions: Versions) = if (!versions.android.agp.isAgp9())
         """apply("org.jetbrains.kotlin.android")"""
     else
         """"""
+
+    fun applyDiPlugin(di: DependencyInjection): String {
+        return when (di) {
+            DependencyInjection.HILT -> """apply("dagger.hilt.android.plugin")"""
+            DependencyInjection.METRO -> """apply("dev.zacsweers.metro")"""
+            DependencyInjection.NONE -> """"""
+        }
+    }
+
+    fun hiltToolchainFix(versions: Versions, di: DependencyInjection): String {
+        return if (di == DependencyInjection.HILT) {
+            """
+            // Hilt missing Java Toolchain support https://github.com/google/dagger/issues/4623
+            val toolchains = target.extensions.getByType(JavaToolchainService::class.java)
+            target.tasks.withType(JavaCompile::class.java)
+                 .matching { it.name.startsWith("hiltJavaCompile") }
+                 .configureEach {
+                     javaCompiler.set(
+                         toolchains.compilerFor {
+                             languageVersion.set(JavaLanguageVersion.of(${versions.project.jdk}))
+                         }
+                     )
+                 }
+            """.trimIndent()
+        } else {
+            ""
+        }
+    }
 }

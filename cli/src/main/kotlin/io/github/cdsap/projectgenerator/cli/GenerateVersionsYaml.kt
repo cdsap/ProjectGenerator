@@ -13,6 +13,7 @@ class GenerateVersionsYaml {
             |  develocity: ${versions.project.develocity}
             |  develocityUrl: ${versions.project.develocityUrl}
             |  jdk: ${versions.project.jdk}
+            |di: ${versions.di}
             |kotlin:
             |  kgp: ${versions.kotlin.kgp}
             |  ksp: ${versions.kotlin.ksp}
@@ -31,6 +32,8 @@ class GenerateVersionsYaml {
             |  work: ${versions.android.work}
             |  hilt: ${versions.android.hilt}
             |  hiltAandroidx: ${versions.android.hiltAandroidx}
+            |  metro: ${versions.android.metro}
+            |  metroPlugin: ${versions.android.metroPlugin}
             |  composeBom: ${versions.android.composeBom}
             |testing:
             |  junit4: ${versions.testing.junit4}

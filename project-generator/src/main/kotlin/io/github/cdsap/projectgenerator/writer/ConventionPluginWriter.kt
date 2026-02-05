@@ -35,7 +35,8 @@ class ConventionPluginWriter(
             File("${it.projectName}/build-logic/convention/build.gradle.kts").projectFile(
                 CompositeBuildBuildGradle().get(
                     versions,
-                    requested
+                    requested,
+                    versions.di
                 )
             )
         }
@@ -59,8 +60,8 @@ class ConventionPluginWriter(
     }
 
     private fun createPluginAndroid(languages: List<LanguageAttributes>) {
-        val pluginAndroidLib = CompositeBuildPluginAndroidLib().get(versions)
-        val pluginAndroidApp = CompositeBuildPluginAndroidApp().get(versions)
+        val pluginAndroidLib = CompositeBuildPluginAndroidLib().get(versions, versions.di)
+        val pluginAndroidApp = CompositeBuildPluginAndroidApp().get(versions, versions.di)
         languages.forEach {
             File("${it.projectName}/build-logic/convention/src/main/kotlin/com/logic/CompositeBuildPluginAndroidApp.kt").projectFile(
                 pluginAndroidApp
@@ -80,4 +81,3 @@ class ConventionPluginWriter(
         }
     }
 }
-

@@ -9,6 +9,7 @@ import io.github.cdsap.projectgenerator.generator.android.ValuesStrings
 import io.github.cdsap.projectgenerator.writer.ResourceGeneratorA
 import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.generator.classes.GenerateDictionaryAndroid
+import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.TypeOfStringResources
@@ -16,7 +17,9 @@ import io.github.cdsap.projectgenerator.model.TypeProject
 import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
 
-class ResourceGenerator() : ResourceGeneratorA<GenerateDictionaryAndroid> {
+class ResourceGenerator(
+    private val di: DependencyInjection
+) : ResourceGeneratorA<GenerateDictionaryAndroid> {
 
     override fun generate(
         node: ProjectGraph,
@@ -46,7 +49,7 @@ class ResourceGenerator() : ResourceGeneratorA<GenerateDictionaryAndroid> {
     ) {
         val (layoutDir, valuesDir, manifestDir) = createResources(lang, node)
         Manifest().createManifest(manifestDir, node.layer, NameMappings.moduleName(node.id), TypeProject.ANDROID_APP, dictionary)
-        AndroidApplication().createApplicationClass(node, lang)
+        AndroidApplication().createApplicationClass(node, lang, di, dictionary)
         val moduleDir = NameMappings.moduleName(node.id)
         createLayoutFiles(layoutDir, moduleDir)
         createValueFiles(valuesDir, moduleDir, typeOfStringResources)

@@ -37,7 +37,8 @@ class ProjectWriter(
                 languages,
                 typeOfStringResources,
                 generateUnitTest,
-                versions
+                versions,
+                versions.di
             ).write()
 
             TypeProjectRequested.JVM -> JvmModulesWriter(nodes, languages, generateUnitTest, versions).write()
@@ -77,7 +78,7 @@ class ProjectWriter(
         languages: List<LanguageAttributes>
     ) {
         val plugins = if (typeOfProjectRequested == TypeProjectRequested.JVM) BuildGradle().getJvm(versions)
-        else BuildGradle().getAndroid(versions)
+        else BuildGradle().getAndroid(versions, versions.di)
         languages.forEach {
             File("${it.projectName}/build.${it.extension}").projectFile(plugins)
         }

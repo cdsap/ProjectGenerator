@@ -1,11 +1,12 @@
 package io.github.cdsap.projectgenerator.generator.rootproject
 
+import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Processor
 import io.github.cdsap.projectgenerator.model.Versions
 
 class BuildGradle {
 
-    fun getAndroid(versions: Versions) = """
+    fun getAndroid(versions: Versions, di: DependencyInjection) = """
         plugins {
             alias(libs.plugins.kotlin.jvm) apply false
             alias(libs.plugins.kotlin.android) apply false
@@ -13,7 +14,7 @@ class BuildGradle {
             alias(libs.plugins.android.application) apply false
             alias(libs.plugins.android.library) apply false
             ${provideKotlinProcessor(versions)}
-            alias(libs.plugins.hilt) apply false
+            ${diPlugins(di)}
             ${additionalBuildGradlePlugins(versions)}
         }
         """.trimIndent()
@@ -30,6 +31,14 @@ class BuildGradle {
         """"""
     else
         """alias(libs.plugins.kotlin.ksp) apply false"""
+
+    fun diPlugins(di: DependencyInjection): String {
+        return when (di) {
+            DependencyInjection.HILT -> "alias(libs.plugins.hilt) apply false"
+            DependencyInjection.METRO -> "alias(libs.plugins.metro) apply false"
+            DependencyInjection.NONE -> ""
+        }
+    }
 
     fun additionalBuildGradlePlugins(versions: Versions): String {
         var additionalPlugins = ""

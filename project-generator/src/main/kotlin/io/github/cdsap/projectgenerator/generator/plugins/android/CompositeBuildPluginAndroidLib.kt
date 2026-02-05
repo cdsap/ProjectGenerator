@@ -1,11 +1,12 @@
 package io.github.cdsap.projectgenerator.generator.plugins.android
 
 import io.github.cdsap.projectgenerator.generator.extension.isAgp9
+import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Processor
 import io.github.cdsap.projectgenerator.model.Versions
 
 class CompositeBuildPluginAndroidLib {
-    fun get(versions: Versions) = """
+    fun get(versions: Versions, di: DependencyInjection) = """
         |package com.logic
         |
         |import org.gradle.api.Plugin
@@ -22,12 +23,12 @@ class CompositeBuildPluginAndroidLib {
         |            with(pluginManager) {
         |                apply("com.android.library")
         |                ${provideKgpBasedOnAgp(versions)}
-        |                ${provideKotlinProcessor(versions)}
-        |                apply("dagger.hilt.android.plugin")
+        |                ${provideKotlinProcessor(versions,di)}
+        |                ${applyDiPlugin(di)}
         |                apply("org.jetbrains.kotlin.plugin.compose")
         |            }
         |
-        |            extensions.configure<com.android.build.gradle.LibraryExtension>  {
+        |            extensions.configure<com.android.build.api.dsl.LibraryExtension>  {
         |                namespace = "com.awesome." + target.name.replace(":","_").replace("-", "")
         |                compileSdk = 36
         |                defaultConfig {
@@ -64,13 +65,23 @@ class CompositeBuildPluginAndroidLib {
         |}
         |""".trimMargin()
 
-    fun provideKotlinProcessor(versions: Versions) = if (versions.kotlin.kotlinProcessor.processor == Processor.KAPT)
+    fun provideKotlinProcessor(versions: Versions, di: DependencyInjection) = if (versions.kotlin.kotlinProcessor.processor == Processor.KAPT)
         """apply("kotlin-kapt")"""
-    else
+    else if( di == DependencyInjection.HILT)
         """apply("com.google.devtools.ksp")"""
+    else
+        ""
 
     fun provideKgpBasedOnAgp(versions: Versions) = if (!versions.android.agp.isAgp9())
         """apply("org.jetbrains.kotlin.android")"""
     else
         """"""
+
+    fun applyDiPlugin(di: DependencyInjection): String {
+        return when (di) {
+            DependencyInjection.HILT -> """apply("dagger.hilt.android.plugin")"""
+            DependencyInjection.METRO -> """apply("dev.zacsweers.metro")"""
+            DependencyInjection.NONE -> """"""
+        }
+    }
 }

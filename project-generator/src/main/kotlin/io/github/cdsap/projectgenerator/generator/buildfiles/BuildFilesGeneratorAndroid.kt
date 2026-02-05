@@ -6,10 +6,14 @@ import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.TypeProject
 import io.github.cdsap.projectgenerator.model.Versions
+import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.NameMappings
 import java.io.File
 
-class BuildFilesGeneratorAndroid(val versions: Versions) : BuildFilesGenerator {
+class BuildFilesGeneratorAndroid(
+    private val versions: Versions,
+    private val di: DependencyInjection
+) : BuildFilesGenerator {
     override fun generateBuildFiles(
         node: ProjectGraph,
         lang: LanguageAttributes,
@@ -37,7 +41,7 @@ class BuildFilesGeneratorAndroid(val versions: Versions) : BuildFilesGenerator {
             }
         }
 
-        val deps = AndroidToml().tomlImplementations(versions)
+        val deps = AndroidToml().tomlImplementations(versions, di)
         return """
             |plugins {
             |    id("awesome.androidapp.plugin")
@@ -55,7 +59,7 @@ ${testImplementations.joinToString("\n").prependIndent("    ")}
     private fun createAndroidLibBuildFile(node: ProjectGraph, generateUnitTests: Boolean): String {
         val implementations = mutableSetOf<String>()
         val testImplementations = mutableSetOf<String>()
-        val deps = AndroidToml().tomlImplementations(versions)
+        val deps = AndroidToml().tomlImplementations(versions, di)
         // Add direct dependencies first (only from different layers)
         node.nodes.forEach { dependency ->
             if (dependency.layer != node.layer) {

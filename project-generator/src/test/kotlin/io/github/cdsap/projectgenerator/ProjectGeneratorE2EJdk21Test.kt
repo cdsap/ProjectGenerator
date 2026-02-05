@@ -71,4 +71,3 @@ class ProjectGeneratorE2EJdk21Test {
     }
 
 }
-

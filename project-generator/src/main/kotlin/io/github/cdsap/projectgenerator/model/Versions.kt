@@ -7,6 +7,7 @@ data class Versions(
     val android: Android = Android(),
     val testing: Testing = Testing(),
     val project: Project = Project(),
+    val di: DependencyInjection = DependencyInjection.HILT,
     val additionalBuildGradleRootPlugins: List<AdditionalPlugin> = listOf(
         AdditionalPlugin(
             "com.autonomousapps.dependency-analysis",
@@ -75,6 +76,8 @@ data class Android(
     val work: String = "2.11.1",
     val hilt: String = "2.59.1",
     val hiltAandroidx: String = "1.3.0",
+    val metro: String = "0.10.2",
+    val metroPlugin: String = "0.10.2",
     val composeBom: String = "2026.01.01",
     val robolectric: String = "4.16.1",
     val espresso: String = "3.7.0",
