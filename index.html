@@ -436,8 +436,8 @@
 
         <div class="description">
             <p>Generate <strong>Gradle Android modularized projects</strong> designed specifically for <strong>building purposes</strong>. Create customizable module architectures with build configurations and testing frameworks. Perfect for research, performance analysis, and testing build systems at scale.</p>
-            <p class="github-link">📦 Based on <a href="https://github.com/cdsap/ProjectGenerator" target="_blank" rel="noopener noreferrer">cdsap/ProjectGenerator</a> v0.3.10 - CLI for generating modularized Gradle projects in different logic layers</p>
-            <p class="github-link">🔧 <a href="https://github.com/cdsap/ProjectGenerator/blob/v0.3.10/project-generator/src/main/kotlin/io/github/cdsap/projectgenerator/model/Versions.kt" target="_blank" rel="noopener noreferrer">View supported versions</a> - Check the available Gradle, Kotlin, and plugin versions for your generated projects</p>
+            <p class="github-link">📦 Based on <a href="https://github.com/cdsap/ProjectGenerator" target="_blank" rel="noopener noreferrer">cdsap/ProjectGenerator</a> v0.4.0 - CLI for generating modularized Gradle projects in different logic layers</p>
+            <p class="github-link">🔧 <a href="https://github.com/cdsap/ProjectGenerator/blob/v0.4.0/project-generator/src/main/kotlin/io/github/cdsap/projectgenerator/model/Versions.kt" target="_blank" rel="noopener noreferrer">View supported versions</a> - Check the available Gradle, Kotlin, and plugin versions for your generated projects</p>
         </div>
 
         <form id="projectForm">
@@ -538,6 +538,16 @@
                     <option value="gradle_8_13">Gradle 8.13</option>
                 </select>
             </div>
+
+            <div class="form-group">
+                <label for="classes-module-type">DI Type:</label>
+                <select id="di-type" name="di-type">
+                    <option value="hilt">Hilt</option>
+                    <option value="metro">Metro</option>
+                    <option value="none">None</option>
+                </select>
+            </div>
+
 
             <div class="form-group">
                 <div class="checkbox-group">
@@ -670,7 +680,7 @@
                 formData.append('captchaToken', captchaToken);
 
                 // Add all form fields
-                const formFields = ['project-name', 'modules', 'shape', 'layers', 'language', 'type', 'classes-module', 'classes-module-type', 'gradle'];
+                const formFields = ['project-name', 'modules', 'shape', 'layers', 'language', 'type', 'classes-module', 'classes-module-type', 'gradle','di-type'];
                 formFields.forEach(field => {
                     const value = document.getElementById(field).value;
                     if (value) {
