@@ -58,6 +58,7 @@ app.post('/api/generate', upload.single('versions-file'), async (req, res) => {
             `--modules`, modules,
             `--layers`, body.layers || 5,
             `--language`, body.language || 'kts',
+            `--di`, body['di-type'] || 'hilt',
             `--type`, body.type || 'android',
             `--classes-module`, Math.min(parseInt(body['classes-module']) || 15, 15),
             `--classes-module-type`, body['classes-module-type'] || 'fixed',
