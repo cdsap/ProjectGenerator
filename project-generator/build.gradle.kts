@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "io.github.cdsap"
-version = "0.3.10"
+version = "0.4.0"
 
 dependencies {
     implementation(libs.kotlinx.coroutines.core)
@@ -37,7 +37,7 @@ tasks.register<Test>("unitTest") {
 mavenPublishing {
     publishToMavenCentral()
     signAllPublications()
-    coordinates("io.github.cdsap", "projectgenerator", "0.3.10")
+    coordinates("io.github.cdsap", "projectgenerator", "0.4.0")
 
     pom {
         scm {
