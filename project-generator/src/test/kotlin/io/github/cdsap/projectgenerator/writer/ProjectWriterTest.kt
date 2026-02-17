@@ -3,6 +3,7 @@ package io.github.cdsap.projectgenerator
 import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
 import io.github.cdsap.projectgenerator.writer.ProjectWriter
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
@@ -62,5 +63,40 @@ class ProjectWriterTest {
         assert(file.exists() && file.isFile) {
             "File does not exist or is not a regular file: $file"
         }
+    }
+
+    @Test
+    fun `generates manual room wiring for DI none`() {
+        val node = ProjectGraph("module_1_1", 1, emptyList(), TypeProject.ANDROID_APP, 12)
+        val language = LanguageAttributes("gradle.kts", "${tempDir}/project_kts")
+        val versions = Versions(
+            di = DependencyInjection.NONE,
+            android = Android(roomDatabase = true)
+        )
+
+        val projectWriter = ProjectWriter(
+            listOf(node),
+            listOf(language),
+            versions,
+            TypeProjectRequested.ANDROID,
+            TypeOfStringResources.NORMAL,
+            false,
+            GradleWrapper(Gradle.GRADLE_9_3_0),
+            false,
+            "manual_room_none"
+        )
+
+        projectWriter.write()
+
+        val activityFile = File(
+            "${language.projectName}/${NameMappings.layerName(1)}/${NameMappings.moduleName("module_1_1")}" +
+                "/src/main/kotlin/com/awesomeapp/${NameMappings.modulePackageName("module_1_1")}/Activity1_10.kt"
+        )
+
+        assertTrue(activityFile.exists(), "Expected generated Activity file to exist")
+        val content = activityFile.readText()
+        assertTrue(content.contains("ViewModelProvider.Factory"))
+        assertTrue(content.contains("Room.databaseBuilder"))
+        assertTrue(content.contains("by viewModels { viewModelFactory }"))
     }
 }

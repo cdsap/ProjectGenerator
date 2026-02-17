@@ -553,12 +553,21 @@ class ClassGeneratorAndroid(
         val moduleId = NameMappings.moduleName(moduleDefinition.moduleId)
         val viewModelClass = findClassName(a, moduleId, ClassTypeAndroid.VIEWMODEL) ?: "Viewmodel${moduleDefinition.moduleNumber}_1"
         val screenClass = findClassName(a, moduleId, ClassTypeAndroid.SCREEN) ?: "Screen${moduleDefinition.moduleNumber}_1"
+        val useCaseClass = findClassName(a, moduleId, ClassTypeAndroid.USECASE) ?: "Usecase${moduleDefinition.moduleNumber}_1"
+        val repositoryClass = findClassName(a, moduleId, ClassTypeAndroid.REPOSITORY) ?: "Repository${moduleDefinition.moduleNumber}_1"
+        val daoClass = findClassName(a, moduleId, ClassTypeAndroid.DAO) ?: "Dao${moduleDefinition.moduleNumber}_1"
+        val databaseClass = findClassName(a, moduleId, ClassTypeAndroid.DATABASE) ?: "Database${moduleDefinition.moduleNumber}_1"
 
         val imports = buildString {
             appendLine("import android.os.Bundle")
             appendLine("import androidx.activity.ComponentActivity")
             appendLine("import androidx.activity.compose.setContent")
             appendLine("import androidx.activity.viewModels")
+            if (di == DependencyInjection.NONE) {
+                appendLine("import androidx.lifecycle.ViewModel")
+                appendLine("import androidx.lifecycle.ViewModelProvider")
+                appendLine("import androidx.room.Room")
+            }
             appendLine("import com.awesomeapp.${NameMappings.modulePackageName(moduleId)}.ui.theme.FeatureTheme")
             if (di == DependencyInjection.HILT) {
                 appendLine("import dagger.hilt.android.AndroidEntryPoint")
@@ -566,6 +575,33 @@ class ClassGeneratorAndroid(
         }
 
         val entryPointAnnotation = if (di == DependencyInjection.HILT) "@AndroidEntryPoint" else ""
+        val manualWiring = if (di == DependencyInjection.NONE) {
+            """
+            |    private val database: $databaseClass by lazy {
+            |        Room.databaseBuilder(applicationContext, $databaseClass::class.java, "${moduleDefinition.moduleId}.db")
+            |            .fallbackToDestructiveMigration()
+            |            .build()
+            |    }
+            |    private val dao: $daoClass by lazy { database.dao() }
+            |    private val repository: $repositoryClass by lazy { $repositoryClass(dao) }
+            |    private val useCase: $useCaseClass by lazy { $useCaseClass(repository) }
+            |
+            |    private val viewModelFactory: ViewModelProvider.Factory by lazy {
+            |        object : ViewModelProvider.Factory {
+            |            @Suppress("UNCHECKED_CAST")
+            |            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            |                if (modelClass.isAssignableFrom($viewModelClass::class.java)) {
+            |                    return $viewModelClass(useCase) as T
+            |                }
+            |                throw IllegalArgumentException("Unknown ViewModel class: ${'$'}modelClass")
+            |            }
+            |        }
+            |    }
+            |    private val viewModel: $viewModelClass by viewModels { viewModelFactory }
+            """.trimMargin()
+        } else {
+            "    private val viewModel: $viewModelClass by viewModels()"
+        }
 
         return """
             |package $packageName
@@ -574,7 +610,7 @@ class ClassGeneratorAndroid(
             |
             |$entryPointAnnotation
             |class $className : ComponentActivity() {
-            |    private val viewModel: $viewModelClass by viewModels()
+            |$manualWiring
             |
             |    override fun onCreate(savedInstanceState: Bundle?) {
             |        super.onCreate(savedInstanceState)
