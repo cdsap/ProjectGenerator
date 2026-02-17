@@ -21,6 +21,7 @@ class AndroidToml {
         activity = "${version.android.activity}"
         constraintlayout = "${version.android.constraintlayout}"
         work = "${version.android.work}"
+        room = "${version.android.room}"
         ${hiltVersions(version, version.di)}
         ${metroVersions(version, version.di)}
         compose-bom = "${version.android.composeBom}"
@@ -47,6 +48,10 @@ class AndroidToml {
         activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
         constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
         work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
+        room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+        room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+        room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+        room-testing = { group = "androidx.room", name = "room-testing", version.ref = "room" }
         ${hiltLibraries(version.di)}
         ${metroLibraries(version.di)}
         kotlin-jvm-metadata = { group = "org.jetbrains.kotlin", name = "kotlin-metadata-jvm", version.ref = "kotlin"}
@@ -94,7 +99,7 @@ class AndroidToml {
         kotlin-ksp = { id ="com.google.devtools.ksp", version.ref = "ksp" }
     """.trimIndent()
 
-    fun tomlImplementations(version: Versions, di: DependencyInjection) = """
+    fun tomlImplementations(version: Versions, di: DependencyInjection, roomDatabase: Boolean = false) = """
     |implementation(libs.androidx.core.ktx)
     |implementation(libs.appcompat)
     |implementation(libs.material)
@@ -107,6 +112,7 @@ class AndroidToml {
     |implementation(libs.activity.ktx)
     |implementation(libs.constraintlayout)
     |implementation(libs.work.runtime.ktx)
+    |${roomDependencies(version, roomDatabase)}
     |${hiltDependencies(version, di)}
     |${metroDependencies(di)}
 
@@ -135,6 +141,19 @@ class AndroidToml {
     |testImplementation(libs.androidx.test.junit)
     |androidTestImplementation(libs.espresso.core)
 """.trimMargin()
+
+    private fun roomDependencies(version: Versions, roomDatabase: Boolean): String {
+        return if (roomDatabase) {
+            """
+            implementation(libs.room.runtime)
+            implementation(libs.room.ktx)
+            add("${kotlinProcessor(version)}", libs.room.compiler)
+            testImplementation(libs.room.testing)
+            """.trimIndent()
+        } else {
+            ""
+        }
+    }
 
     fun kotlinProcessor(version: Versions): String {
         if (version.kotlin.kotlinProcessor.processor == Processor.KAPT) {
@@ -229,11 +248,11 @@ class AndroidToml {
             implementation(libs.hilt.work)
             implementation(libs.hilt.android)
 
-            ${kotlinProcessor(version)}(libs.hilt.compiler.androidx)
-            ${kotlinProcessor(version)}(libs.hilt.compiler)
-            ${kotlinProcessor(version)}(libs.kotlin.jvm.metadata)
-            ${kotlinProcessor(version)}Test(libs.hilt.compiler)
-            ${kotlinProcessor(version)}AndroidTest(libs.hilt.compiler)
+            add("${kotlinProcessor(version)}", libs.hilt.compiler.androidx)
+            add("${kotlinProcessor(version)}", libs.hilt.compiler)
+            add("${kotlinProcessor(version)}", libs.kotlin.jvm.metadata)
+            add("${kotlinProcessor(version)}Test", libs.hilt.compiler)
+            add("${kotlinProcessor(version)}AndroidTest", libs.hilt.compiler)
             testImplementation(libs.hilt.android.testing)
             """.trimIndent()
         } else {

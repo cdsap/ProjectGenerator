@@ -14,7 +14,8 @@ class AndroidApplication {
         node: ProjectGraph,
         lang: LanguageAttributes,
         di: DependencyInjection,
-        dictionary: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
+        dictionary: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>,
+        roomDatabase: Boolean = false
     ) {
         val layerDir = NameMappings.layerName(node.layer)
         val moduleDir = NameMappings.moduleName(node.id)
@@ -86,22 +87,69 @@ class AndroidApplication {
                     ?.firstOrNull { it.type == ClassTypeAndroid.VIEWMODEL }
                     ?.className
                     ?: "Viewmodel${moduleNumber}_1"
-                """
-                |package com.awesomeapp.$packageDir
-                |
-                |import android.app.Application
-                |import dev.zacsweers.metro.DependencyGraph
-                |import dev.zacsweers.metro.createGraph
-                |
-                |@DependencyGraph
-                |interface AppGraph {
-                |    val viewModel: $viewModel
-                |}
-                |
-                |class MainApplication : Application() {
-                |    val graph: AppGraph by lazy { createGraph() }
-                |}
-                """.trimMargin()
+                if (roomDatabase) {
+                    val databaseClass = dictionary[moduleId]
+                        ?.firstOrNull { it.type == ClassTypeAndroid.DATABASE }
+                        ?.className
+                        ?: "Database${moduleNumber}_1"
+                    val daoClass = dictionary[moduleId]
+                        ?.firstOrNull { it.type == ClassTypeAndroid.DAO }
+                        ?.className
+                        ?: "Dao${moduleNumber}_1"
+                    """
+                    |package com.awesomeapp.$packageDir
+                    |
+                    |import android.app.Application
+                    |import android.content.Context
+                    |import androidx.room.Room
+                    |import dev.zacsweers.metro.DependencyGraph
+                    |import dev.zacsweers.metro.Provides
+                    |import dev.zacsweers.metro.createGraphFactory
+                    |
+                    |@DependencyGraph
+                    |interface AppGraph {
+                    |    val viewModel: $viewModel
+                    |
+                    |    @DependencyGraph.Factory
+                    |    fun interface Factory {
+                    |        fun create(@Provides context: Context): AppGraph
+                    |    }
+                    |
+                    |    @Provides
+                    |    fun provideDatabase(context: Context): $databaseClass {
+                    |        return Room.databaseBuilder(context, $databaseClass::class.java, "$moduleId.db")
+                    |            .fallbackToDestructiveMigration()
+                    |            .build()
+                    |    }
+                    |
+                    |    @Provides
+                    |    fun provideDao(db: $databaseClass): $daoClass {
+                    |        return db.dao()
+                    |    }
+                    |}
+                    |
+                    |class MainApplication : Application() {
+                    |    val graph: AppGraph by lazy { createGraphFactory<AppGraph.Factory>().create(this) }
+                    |}
+                    """.trimMargin()
+                } else {
+                    """
+                    |package com.awesomeapp.$packageDir
+                    |
+                    |import android.app.Application
+                    |import dev.zacsweers.metro.DependencyGraph
+                    |import dev.zacsweers.metro.createGraph
+                    |
+                    |@DependencyGraph
+                    |interface AppGraph {
+                    |    val viewModel: $viewModel
+                    |}
+                    |
+                    |class MainApplication : Application() {
+                    |    val graph: AppGraph by lazy { createGraph() }
+                    |}
+                    """.trimMargin()
+                }
             }
 
             DependencyInjection.NONE -> """

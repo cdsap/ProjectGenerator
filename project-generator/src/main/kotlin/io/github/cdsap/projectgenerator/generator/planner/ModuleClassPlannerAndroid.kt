@@ -7,9 +7,7 @@ import io.github.cdsap.projectgenerator.writer.ModuleClassPlanner
 /**
  * Plans what classes each module should have and their dependencies
  */
-class ModuleClassPlannerAndroid(
-    private val maxLimitToCreateApiAndRepositories: Int = 1000
-) : ModuleClassPlanner<ModuleClassDefinitionAndroid> {
+class ModuleClassPlannerAndroid : ModuleClassPlanner<ModuleClassDefinitionAndroid> {
     override fun planModuleClasses(projectGraph: ProjectGraph): ModuleClassDefinitionAndroid {
         val moduleId = NameMappings.moduleName(projectGraph.id)
         val layer = projectGraph.layer
@@ -17,143 +15,57 @@ class ModuleClassPlannerAndroid(
         val classes = mutableListOf<ClassDefinitionAndroid>()
         var currentIndex = 1
 
-        // First, add all core classes in the correct order
-        val coreClasses = mutableListOf<ClassDefinitionAndroid>()
+        val localDep = { type: ClassTypeAndroid ->
+            mutableListOf(ClassDependencyAndroid(type, moduleId))
+        }
 
-        // Every module gets a ViewModel
-        coreClasses.add(
-            ClassDefinitionAndroid(
-                type = ClassTypeAndroid.VIEWMODEL,
-                index = currentIndex++,
-                dependencies = findDependenciesForClass(ClassTypeAndroid.VIEWMODEL, projectGraph).toMutableList()
-            )
+        val baseClasses = listOf(
+            ClassTypeAndroid.ENTITY,
+            ClassTypeAndroid.MODEL,
+            ClassTypeAndroid.DATABASE,
+            ClassTypeAndroid.DAO,
+            ClassTypeAndroid.REPOSITORY,
+            ClassTypeAndroid.USECASE,
+            ClassTypeAndroid.STATE,
+            ClassTypeAndroid.VIEWMODEL,
+            ClassTypeAndroid.SCREEN
         )
 
-        // If we have more than 1 class, add Activity
-        if (projectGraph.classes > 1) {
-            coreClasses.add(
+        baseClasses.forEach { type ->
+            val deps = when (type) {
+                ClassTypeAndroid.REPOSITORY -> localDep(ClassTypeAndroid.DAO)
+                ClassTypeAndroid.USECASE -> localDep(ClassTypeAndroid.REPOSITORY)
+                ClassTypeAndroid.VIEWMODEL -> localDep(ClassTypeAndroid.USECASE)
+                ClassTypeAndroid.SCREEN -> localDep(ClassTypeAndroid.VIEWMODEL)
+                else -> mutableListOf()
+            }
+            classes.add(ClassDefinitionAndroid(type = type, index = currentIndex++, dependencies = deps))
+        }
+
+        if (projectGraph.type == TypeProject.ANDROID_APP) {
+            classes.add(
                 ClassDefinitionAndroid(
                     type = ClassTypeAndroid.ACTIVITY,
                     index = currentIndex++,
-                    dependencies = mutableListOf() // Activity doesn't need Fragment dependency yet
+                    dependencies = mutableListOf()
                 )
             )
-        }
-
-        // If we have more than 2 classes, add Compose Activity
-        if (projectGraph.classes > 2) {
-            coreClasses.add(
-                ClassDefinitionAndroid(
-                    type = ClassTypeAndroid.ACTIVITY,
-                    index = currentIndex++,
-                    dependencies = mutableListOf() // Compose Activity doesn't need Fragment dependency yet
-                )
-            )
-        }
-
-        // If we have more than 3 classes, add Fragment
-        if (projectGraph.classes > 3) {
-            coreClasses.add(
+            classes.add(
                 ClassDefinitionAndroid(
                     type = ClassTypeAndroid.FRAGMENT,
                     index = currentIndex++,
-                    dependencies = findDependenciesForClass(ClassTypeAndroid.FRAGMENT, projectGraph).toMutableList()
+                    dependencies = mutableListOf()
                 )
             )
         }
 
-        // If we have more than 4 classes and it's a multiple of 4, add Repository and API
-        // But limit based on concurrentLimit to avoid long Dagger compilation times
-        if (projectGraph.classes > 4 && moduleNumber % 4 == 0) {
-            if(  moduleNumber <= maxLimitToCreateApiAndRepositories) {
-                coreClasses.add(
-                    ClassDefinitionAndroid(
-                        type = ClassTypeAndroid.REPOSITORY,
-                        index = currentIndex++,
-                        dependencies = findDependenciesForClass(
-                            ClassTypeAndroid.REPOSITORY,
-                            projectGraph
-                        ).toMutableList()
-                    )
-                )
-                coreClasses.add(
-                    ClassDefinitionAndroid(
-                        type = ClassTypeAndroid.API,
-                        index = currentIndex++
-                    )
-                )
-            } else {
-                coreClasses.add(
-                    ClassDefinitionAndroid(
-                        type = ClassTypeAndroid.MODEL,
-                        index = currentIndex++
-                    )
-                )
-            }
-        }
-
-        // If we have more than 6 classes and it's a multiple of 5, add Service and Worker
-        if (projectGraph.classes > 6 && moduleNumber % 5 == 0) {
-            coreClasses.add(
-                ClassDefinitionAndroid(
-                    type = ClassTypeAndroid.SERVICE,
-                    index = currentIndex++,
-                    dependencies = findDependenciesForClass(ClassTypeAndroid.SERVICE, projectGraph).toMutableList()
-                )
-            )
-            coreClasses.add(
-                ClassDefinitionAndroid(
-                    type = ClassTypeAndroid.WORKER,
-                    index = currentIndex++
-                )
-            )
-        }
-
-        // If we have more than 8 classes and it's a multiple of 3, add UseCase
-        if (projectGraph.classes > 8 && moduleNumber % 3 == 0) {
-            coreClasses.add(
-                ClassDefinitionAndroid(
-                    type = ClassTypeAndroid.USECASE,
-                    index = currentIndex++,
-                    dependencies = findDependenciesForClass(ClassTypeAndroid.USECASE, projectGraph).toMutableList()
-                )
-            )
-        }
-
-        // If we have more than 9 classes, add State
-        if (projectGraph.classes > 9) {
-            coreClasses.add(
-                ClassDefinitionAndroid(
-                    type = ClassTypeAndroid.STATE,
-                    index = currentIndex++
-                )
-            )
-        }
-
-        // If we have more than 10 classes, add Model
-        if (projectGraph.classes > 10) {
-            coreClasses.add(
-                ClassDefinitionAndroid(
-                    type = ClassTypeAndroid.MODEL,
-                    index = currentIndex++
-                )
-            )
-        }
-
-        // Add core classes to the final list
-        classes.addAll(coreClasses)
-
-        // Add additional classes to reach the requested number
         val remainingClasses = projectGraph.classes - classes.size
         if (remainingClasses > 0) {
-            // Create additional classes with simpler types that don't require dependencies
             for (i in 1..remainingClasses) {
-                val classType = when (i % 3) {
-                    0 -> ClassTypeAndroid.STATE
-                    1 -> ClassTypeAndroid.MODEL
-                    else -> ClassTypeAndroid.ACTIVITY
+                val classType = when (i % 2) {
+                    0 -> ClassTypeAndroid.MODEL
+                    else -> ClassTypeAndroid.STATE
                 }
-
                 classes.add(
                     ClassDefinitionAndroid(
                         type = classType,
@@ -161,16 +73,6 @@ class ModuleClassPlannerAndroid(
                         dependencies = mutableListOf()
                     )
                 )
-            }
-        }
-
-        // Now update Activity dependencies to reference the correct Fragment
-        classes.forEach { classDef ->
-            if (classDef.type == ClassTypeAndroid.ACTIVITY) {
-                val fragment = classes.find { it.type == ClassTypeAndroid.FRAGMENT }
-                if (fragment != null) {
-                    classDef.dependencies.add(ClassDependencyAndroid(ClassTypeAndroid.FRAGMENT, moduleId))
-                }
             }
         }
 
@@ -193,45 +95,6 @@ class ModuleClassPlannerAndroid(
         if (!classType.requiresDependency()) return emptyList()
 
         val dependencyType = classType.dependencyType() ?: return emptyList()
-        val availableModules = getAvailableModules(currentModule)
-
-        return availableModules
-            .filter { module -> hasClassType(module, dependencyType) }
-            .map { module -> ClassDependencyAndroid(dependencyType, NameMappings.moduleName(module.id)) }
-    }
-
-    private fun getAvailableModules(currentModule: ProjectGraph): List<ProjectGraph> {
-        val currentModuleNumber = currentModule.id.split("_").last().toInt()
-        val currentLayer = currentModule.layer
-
-        return currentModule.nodes.filter { node ->
-            val otherModuleNumber = node.id.split("_").last().toInt()
-            val otherLayer = node.layer
-
-            // Only reference modules that:
-            // 1. Are in the same layer but have a lower module number
-            // 2. Are in a lower layer
-            // 3. Have the required class types based on their module number
-            ((node.layer == currentLayer && otherModuleNumber < currentModuleNumber) ||
-                (otherLayer < currentLayer)) &&
-                hasClassType(
-                    node,
-                    ClassTypeAndroid.REPOSITORY
-                ) // Only include modules that have the required class type
-        }
-    }
-
-    private fun hasClassType(module: ProjectGraph, classType: ClassTypeAndroid): Boolean {
-        val moduleNumber = module.id.split("_").last().toInt()
-
-        return when (classType) {
-            ClassTypeAndroid.REPOSITORY -> moduleNumber % 4 == 0 && moduleNumber > 0 && moduleNumber <= maxLimitToCreateApiAndRepositories
-            ClassTypeAndroid.API -> moduleNumber % 4 == 0 && moduleNumber > 0 && moduleNumber <= maxLimitToCreateApiAndRepositories
-            ClassTypeAndroid.WORKER -> moduleNumber % 5 == 0 && moduleNumber > 0
-            ClassTypeAndroid.VIEWMODEL -> true // All modules have ViewModels
-            ClassTypeAndroid.SERVICE -> moduleNumber % 5 == 0 && moduleNumber > 0
-            ClassTypeAndroid.USECASE -> moduleNumber % 3 == 0 && moduleNumber > 0
-            else -> false
-        }
+        return listOf(ClassDependencyAndroid(dependencyType, NameMappings.moduleName(currentModule.id)))
     }
 }

@@ -7,11 +7,15 @@ enum class ClassTypeAndroid {
     VIEWMODEL,
     REPOSITORY,
     API,
+    ENTITY,
+    DAO,
+    DATABASE,
     WORKER,
     ACTIVITY,
     FRAGMENT,
     SERVICE,
     STATE,
+    SCREEN,
     MODEL,
     USECASE; // Semicolon might be needed if methods are present, adding for safety
 
@@ -24,6 +28,8 @@ enum class ClassTypeAndroid {
             REPOSITORY -> true
             SERVICE -> true
             USECASE -> true
+            DAO -> true
+            SCREEN -> true
             else -> false
         }
     }
@@ -35,6 +41,8 @@ enum class ClassTypeAndroid {
             REPOSITORY -> API
             SERVICE -> REPOSITORY
             USECASE -> REPOSITORY
+            DAO -> DATABASE
+            SCREEN -> VIEWMODEL
             else -> null
         }
     }
