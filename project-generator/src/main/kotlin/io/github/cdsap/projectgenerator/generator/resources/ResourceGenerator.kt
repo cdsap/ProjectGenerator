@@ -18,7 +18,8 @@ import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
 
 class ResourceGenerator(
-    private val di: DependencyInjection
+    private val di: DependencyInjection,
+    private val roomDatabase: Boolean = false
 ) : ResourceGeneratorA<GenerateDictionaryAndroid> {
 
     override fun generate(
@@ -49,7 +50,7 @@ class ResourceGenerator(
     ) {
         val (layoutDir, valuesDir, manifestDir) = createResources(lang, node)
         Manifest().createManifest(manifestDir, node.layer, NameMappings.moduleName(node.id), TypeProject.ANDROID_APP, dictionary)
-        AndroidApplication().createApplicationClass(node, lang, di, dictionary)
+        AndroidApplication().createApplicationClass(node, lang, di, dictionary, roomDatabase)
         val moduleDir = NameMappings.moduleName(node.id)
         createLayoutFiles(layoutDir, moduleDir)
         createValueFiles(valuesDir, moduleDir, typeOfStringResources)

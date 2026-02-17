@@ -7,17 +7,7 @@ import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.text.appendLine
 
-/**
- * Generates class files based on module class definitions
- */
-data class GenerateDictionaryAndroid(
-    val className: String,
-    val type: ClassTypeAndroid,
-    val index: Int,
-    val dependencies: List<ClassDependencyAndroid>
-)
-
-class ClassGeneratorAndroid(
+class ClassGeneratorAndroidLegacy(
     private val di: DependencyInjection
 ) :
     ClassGenerator<ModuleClassDefinitionAndroid, GenerateDictionaryAndroid> {
@@ -69,51 +59,96 @@ class ClassGeneratorAndroid(
     ) {
         val packageName = "com.awesomeapp.${NameMappings.modulePackageName(moduleDefinition.moduleId)}"
         val moduleName = "Module_${moduleDefinition.moduleNumber}"
+        // Create imports for this module's classes
         val classImports = StringBuilder()
         val provideMethods = mutableListOf<String>()
 
-        val databaseClass = moduleDefinition.classes.firstOrNull { it.type == ClassTypeAndroid.DATABASE }
-            ?.let { "${it.type.className()}${moduleDefinition.moduleNumber}_${it.index}" }
-        val daoClass = moduleDefinition.classes.firstOrNull { it.type == ClassTypeAndroid.DAO }
-            ?.let { "${it.type.className()}${moduleDefinition.moduleNumber}_${it.index}" }
+        moduleDefinition.classes.forEach { classDefinition ->
+            if (classDefinition.type != ClassTypeAndroid.STATE) { // Skip STATE type classes
+                val className =
+                    "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}"
+                classImports.appendLine("import $packageName.$className")
 
-        if (databaseClass != null) {
-            classImports.appendLine("import $packageName.$databaseClass")
-            provideMethods.add(
-                """
-                |    @Provides
-                |    @Singleton
-                |    fun provide$databaseClass(@ApplicationContext context: Context): $databaseClass {
-                |        return Room.databaseBuilder(context, $databaseClass::class.java, "${moduleDefinition.moduleId}.db")
-                |            .fallbackToDestructiveMigration()
-                |            .build()
-                |    }
-                """.trimMargin()
-            )
+                when (classDefinition.type) {
+                    ClassTypeAndroid.API -> {
+                        provideMethods.add(
+                            """
+                        |    @Provides
+                        |    @Singleton
+                        |    fun provide$className(): $className {
+                        |        return $className()
+                        |    }
+                        """.trimMargin()
+                        )
+                    }
+
+                    ClassTypeAndroid.REPOSITORY -> {
+                        // For repositories, we need to provide their API dependencies
+                        if (classDefinition.dependencies.isNotEmpty()) {
+                            val xa = mutableListOf<String>()
+                            classDefinition.dependencies.mapIndexed { index, dep ->
+                                val depModuleId = dep.sourceModuleId
+                                val s = a.filter { it.key == depModuleId }
+                                if (s.isNotEmpty()) {
+                                    val x = s.values.flatten().first { it.type == ClassTypeAndroid.API }
+                                    if (x != null) {
+
+                                        val apiClassName = x.className
+                                        classImports.appendLine(
+                                            "import com.awesomeapp.${
+                                                NameMappings.modulePackageName(
+                                                    dep.sourceModuleId
+                                                )
+                                            }.$apiClassName"
+                                        )
+                                        xa.add("api$index: $apiClassName = $apiClassName()")
+
+                                    }
+                                }
+                            }
+                            val constructorParams = xa.joinToString(",\n        ")
+
+                            provideMethods.add(
+                                """
+                            |    @Provides
+                            |    @Singleton
+                            |    fun provide$className(
+                            |        $constructorParams
+                            |    ): $className {
+                            |        return $className(${
+                                    constructorParams.split(",").map { it.split(":").first() }.joinToString(", ")
+                                })
+                            |    }
+                            """.trimMargin()
+                            )
+                        } else {
+                            provideMethods.add(
+                                """
+                            |    @Provides
+                            |    @Singleton
+                            |    fun provide$className(): $className {
+                            |        return $className()
+                            |    }
+                            """.trimMargin()
+                            )
+                        }
+                    }
+
+                    else -> {
+                    }
+
+                }
+            }
         }
 
-        if (daoClass != null && databaseClass != null) {
-            classImports.appendLine("import $packageName.$daoClass")
-            provideMethods.add(
-                """
-                |    @Provides
-                |    fun provide$daoClass(db: $databaseClass): $daoClass {
-                |        return db.dao()
-                |    }
-                """.trimMargin()
-            )
-        }
-
+        // Only create the module if we have something to provide
         if (provideMethods.isNotEmpty()) {
             val content = """
                 |package $packageName.di
                 |
-                |import android.content.Context
-                |import androidx.room.Room
                 |import dagger.Module
                 |import dagger.Provides
                 |import dagger.hilt.InstallIn
-                |import dagger.hilt.android.qualifiers.ApplicationContext
                 |import dagger.hilt.components.SingletonComponent
                 |import javax.inject.Singleton
                 |${classImports.toString().trim()}
@@ -138,6 +173,7 @@ class ClassGeneratorAndroid(
             File("$diPackagePath/$moduleName.kt").writeText(content)
         }
     }
+
     private fun generateClassContent(
         classDefinition: ClassDefinitionAndroid,
         moduleDefinition: ModuleClassDefinitionAndroid,
@@ -150,28 +186,22 @@ class ClassGeneratorAndroid(
             ClassTypeAndroid.VIEWMODEL -> generateViewModel(
                 packageName,
                 className,
-                moduleDefinition,
                 classDefinition.dependencies,
                 a
             )
 
             ClassTypeAndroid.REPOSITORY -> generateRepository(packageName, className, classDefinition.dependencies, a)
             ClassTypeAndroid.API -> generateApi(packageName, className)
-            ClassTypeAndroid.ENTITY -> generateEntity(packageName, className)
-            ClassTypeAndroid.DAO -> generateDao(packageName, className, moduleDefinition, a)
-            ClassTypeAndroid.DATABASE -> generateDatabase(packageName, className, moduleDefinition, a)
             ClassTypeAndroid.WORKER -> generateWorker(packageName, className)
-            ClassTypeAndroid.ACTIVITY -> generateComposeActivity(packageName, className, moduleDefinition, a)
+            ClassTypeAndroid.ACTIVITY -> generateComposeActivity(packageName, className, moduleDefinition.moduleNumber)
             ClassTypeAndroid.FRAGMENT -> generateFragment(packageName, className)
             ClassTypeAndroid.SERVICE -> generateService(packageName, className)
-            ClassTypeAndroid.STATE -> generateState(packageName, className, moduleDefinition, a)
-            ClassTypeAndroid.SCREEN -> generateScreen(packageName, className, moduleDefinition, a)
+            ClassTypeAndroid.STATE -> generateState(packageName, className)
             ClassTypeAndroid.MODEL -> generateModel(packageName, className)
             ClassTypeAndroid.USECASE -> generateUseCase(
                 packageName,
                 className,
-                moduleDefinition,
-                a
+                moduleDefinition.moduleNumber.toString()
             )
 
             else -> throw IllegalArgumentException("Unsupported class type: ${classDefinition.type}")
@@ -181,7 +211,6 @@ class ClassGeneratorAndroid(
     private fun generateViewModel(
         packageName: String,
         className: String,
-        moduleDefinition: ModuleClassDefinitionAndroid,
         dependencies: List<ClassDependencyAndroid>,
         a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ): String {
@@ -190,7 +219,9 @@ class ClassGeneratorAndroid(
             appendLine("import androidx.lifecycle.ViewModel")
             appendLine("import androidx.lifecycle.viewModelScope")
             appendLine("import kotlinx.coroutines.launch")
-            appendLine("import kotlinx.coroutines.flow.collectLatest")
+            appendLine("import kotlinx.coroutines.coroutineScope")
+            appendLine("import kotlinx.coroutines.async")
+            appendLine("import kotlinx.coroutines.awaitAll")
             appendLine("import kotlinx.coroutines.flow.MutableStateFlow")
             appendLine("import kotlinx.coroutines.flow.StateFlow")
             appendLine("import kotlinx.coroutines.flow.asStateFlow")
@@ -205,13 +236,47 @@ class ClassGeneratorAndroid(
                 }
                 DependencyInjection.NONE -> {}
             }
+            dependencies.forEach { dep ->
+                val depModuleId = dep.sourceModuleId
+                val s = a.filter { it.key == depModuleId }
+                if (s.isNotEmpty()) {
+                    val x = s.values.flatten().firstOrNull { it.type == ClassTypeAndroid.REPOSITORY }
+                    if (x != null) {
+                        val repoClassName = x.className
+                        appendLine("import com.awesomeapp.${NameMappings.modulePackageName(dep.sourceModuleId)}.$repoClassName")
+                    }
+                }
+            }
         }
 
-        val moduleId = dependencies.firstOrNull()?.sourceModuleId ?: ""
-        val useCaseClass = findClassName(a, moduleId, ClassTypeAndroid.USECASE) ?: "Usecase${moduleDefinition.moduleNumber}_1"
-        val stateClass = findClassName(a, moduleId, ClassTypeAndroid.STATE) ?: "State${moduleDefinition.moduleNumber}_1"
-        val modelClass = findClassName(a, moduleId, ClassTypeAndroid.MODEL) ?: "Model${moduleDefinition.moduleNumber}_1"
-        val constructorParams = "private val useCase: $useCaseClass"
+        val constructorParams = dependencies.mapIndexed { index, dep ->
+            val s = a.filter { it.key == dep.sourceModuleId }.values.flatten()
+                .first { it.type == ClassTypeAndroid.REPOSITORY }
+            val repoClassName = s.className
+            "private val repository$index: $repoClassName"
+        }.joinToString(",\n    ")
+
+        // Step 1: Generate the data fetching logic as a clean, un-indented block using trimIndent().
+        val dataAssignmentBlock = if (dependencies.isEmpty()) {
+            """
+        val data = "Data from $className"
+        """.trimIndent()
+        } else {
+            val lambdaList = dependencies.indices.joinToString(",\n                    ") {
+                "{ repository$it.getData() }"
+            }
+            """
+        val data = coroutineScope {
+            val fetchers = listOf<suspend () -> String>(
+                $lambdaList
+            )
+            val results = fetchers.map { fetcher ->
+                async { fetcher() }
+            }.awaitAll()
+            results.joinToString("")
+        }
+        """.trimIndent()
+        }
 
         val diAnnotation = when (di) {
             DependencyInjection.HILT -> "@HiltViewModel"
@@ -231,14 +296,16 @@ class ClassGeneratorAndroid(
     |class $className ${injectAnnotation}constructor(
     |    $constructorParams
     |) : ViewModel() {
-    |    private val _state = MutableStateFlow($stateClass())
-    |    val state: StateFlow<$stateClass> = _state.asStateFlow()
+    |    private val _state = MutableStateFlow<String>("")
+    |    val state: StateFlow<String> = _state.asStateFlow()
     |
     |    init {
     |        viewModelScope.launch(Dispatchers.IO) {
-    |            useCase.seedIfEmpty()
-    |            useCase().collectLatest { items: List<$modelClass> ->
-    |                _state.emit(_state.value.copy(items = items, isLoading = false))
+    |            try {
+    |${dataAssignmentBlock.prependIndent("                ")}
+    |                _state.emit(data)
+    |            } catch (e: Exception) {
+    |                _state.emit("Error: ${'$'}{e.message}")
     |            }
     |        }
     |    }
@@ -255,8 +322,9 @@ class ClassGeneratorAndroid(
         val imports = buildString {
             appendLine("import kotlinx.coroutines.Dispatchers")
             appendLine("import kotlinx.coroutines.withContext")
-            appendLine("import kotlinx.coroutines.flow.Flow")
-            appendLine("import kotlinx.coroutines.flow.map")
+            appendLine("import kotlinx.coroutines.coroutineScope")
+            appendLine("import kotlinx.coroutines.async")
+            appendLine("import kotlinx.coroutines.awaitAll")
             when (di) {
                 DependencyInjection.HILT -> {
                     appendLine("import javax.inject.Inject")
@@ -267,13 +335,40 @@ class ClassGeneratorAndroid(
                 }
                 DependencyInjection.NONE -> {}
             }
+            dependencies.forEach { dep ->
+                val depModuleId = dep.sourceModuleId
+                val matches = a.filter { it.key == depModuleId }
+                if (matches.isNotEmpty()) {
+                    val apiClass = matches.values.flatten().firstOrNull { it.type == ClassTypeAndroid.API }
+                    if (apiClass != null) {
+                        appendLine("import com.awesomeapp.${NameMappings.modulePackageName(depModuleId)}.${apiClass.className}")
+                    }
+                }
+            }
         }
 
-        val moduleId = dependencies.firstOrNull()?.sourceModuleId ?: ""
-        val daoClass = findClassName(a, moduleId, ClassTypeAndroid.DAO) ?: "Dao1_1"
-        val entityClass = findClassName(a, moduleId, ClassTypeAndroid.ENTITY) ?: "Entity1_1"
-        val modelClass = findClassName(a, moduleId, ClassTypeAndroid.MODEL) ?: "Model1_1"
-        val constructorParams = "private val dao: $daoClass"
+        val constructorParams = dependencies.mapIndexedNotNull { index, dep ->
+            val depModuleId = dep.sourceModuleId
+            val apiClass = a[depModuleId]?.firstOrNull { it.type == ClassTypeAndroid.API }
+            apiClass?.let { "private val api$index: ${it.className}" }
+        }.joinToString(",\n    ")
+
+        val dataFetchLogic = if (dependencies.isEmpty()) {
+            "\"Data from $className Repository\""
+        } else {
+            val lambdaList = dependencies.indices.joinToString(",\n                    ") { "{ api$it.fetchData() }" }
+            """
+        coroutineScope {
+            val apis = listOf<suspend () -> String>(
+                $lambdaList
+            )
+            val results = apis.map { fetcher ->
+                async { fetcher() }
+            }.awaitAll()
+            results.joinToString("")
+        }
+        """.trimIndent()
+        }
 
         val singletonAnnotation = if (di == DependencyInjection.HILT) "@Singleton" else ""
         val injectAnnotation = when (di) {
@@ -290,44 +385,40 @@ class ClassGeneratorAndroid(
     |class $className ${injectAnnotation}constructor(
     |    $constructorParams
     |) {
-    |    fun observeItems(): Flow<List<$modelClass>> = dao.observeAll()
-    |        .map { entities -> entities.map { it.toModel() } }
-    |
-    |    suspend fun seedIfEmpty() = withContext(Dispatchers.IO) {
-    |        if (dao.count() == 0) {
-    |            dao.upsertAll(
-    |                listOf(
-    |                    $entityClass(id = 1, title = "Welcome", updatedAt = System.currentTimeMillis()),
-    |                    $entityClass(id = 2, title = "Getting started", updatedAt = System.currentTimeMillis())
-    |                )
-    |            )
-    |        }
-    |    }
-    |
-    |    private fun $entityClass.toModel(): $modelClass {
-    |        return $modelClass(id = id, title = title)
+    |    suspend fun getData(): String = withContext(Dispatchers.IO) {
+    |${dataFetchLogic.prependIndent("            ")}
     |    }
     |}
     """.trimMargin()
     }
+
     private fun generateFragment(packageName: String, className: String): String {
         val moduleId = packageName.split(".").last()
-        val layoutName = "fragment_feature_${NameMappings.modulePackageName(moduleId).lowercase()}"
+        val moduleNumber = moduleId.split("_").last()
 
         val imports = buildString {
             appendLine("import android.os.Bundle")
             appendLine("import android.view.LayoutInflater")
             appendLine("import android.view.View")
             appendLine("import android.view.ViewGroup")
-            appendLine("import android.widget.TextView")
+            appendLine("import androidx.compose.foundation.layout.Box")
+            appendLine("import androidx.compose.foundation.layout.fillMaxSize")
+            appendLine("import androidx.compose.material3.Text")
+            appendLine("import androidx.compose.runtime.Composable")
+            appendLine("import androidx.compose.runtime.collectAsState")
+            appendLine("import androidx.compose.runtime.getValue")
+            appendLine("import androidx.compose.ui.Alignment")
+            appendLine("import androidx.compose.ui.Modifier")
+            appendLine("import androidx.compose.ui.platform.ComposeView")
             appendLine("import androidx.fragment.app.Fragment")
-            appendLine("import com.awesomeapp.${NameMappings.modulePackageName(moduleId)}.R")
+            appendLine("import androidx.fragment.app.viewModels")
             if (di == DependencyInjection.HILT) {
                 appendLine("import dagger.hilt.android.AndroidEntryPoint")
             }
         }
 
         val entryPointAnnotation = if (di == DependencyInjection.HILT) "@AndroidEntryPoint" else ""
+        val viewModelClass = "Feature${moduleNumber}_1"
 
         return """
             |package $packageName
@@ -342,12 +433,11 @@ class ClassGeneratorAndroid(
             |        container: ViewGroup?,
             |        savedInstanceState: Bundle?
             |    ): View {
-            |        return inflater.inflate(R.layout.$layoutName, container, false)
-            |    }
+            |        return ComposeView(requireContext()).apply {
+            |            setContent {
             |
-            |    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            |        super.onViewCreated(view, savedInstanceState)
-            |        view.findViewById<TextView>(R.id.text_feature)?.text = "Feature $moduleId"
+            |            }
+            |        }
             |    }
             |}
         """.trimMargin()
@@ -378,119 +468,6 @@ class ClassGeneratorAndroid(
             |}
         """.trimMargin()
     }
-
-    private fun generateEntity(packageName: String, className: String): String {
-        return """
-            |package $packageName
-            |
-            |import androidx.room.Entity
-            |import androidx.room.PrimaryKey
-            |
-            |@Entity(tableName = "items")
-            |data class $className(
-            |    @PrimaryKey val id: Long,
-            |    val title: String,
-            |    val updatedAt: Long
-            |)
-        """.trimMargin()
-    }
-
-    private fun generateDao(
-        packageName: String,
-        className: String,
-        moduleDefinition: ModuleClassDefinitionAndroid,
-        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
-    ): String {
-        val moduleId = NameMappings.moduleName(moduleDefinition.moduleId)
-        val entityClass = findClassName(a, moduleId, ClassTypeAndroid.ENTITY) ?: "Entity${moduleDefinition.moduleNumber}_1"
-        return """
-            |package $packageName
-            |
-            |import androidx.room.Dao
-            |import androidx.room.Insert
-            |import androidx.room.OnConflictStrategy
-            |import androidx.room.Query
-            |import kotlinx.coroutines.flow.Flow
-            |
-            |@Dao
-            |interface $className {
-            |    @Query("SELECT * FROM items ORDER BY updatedAt DESC")
-            |    fun observeAll(): Flow<List<$entityClass>>
-            |
-            |    @Query("SELECT COUNT(*) FROM items")
-            |    suspend fun count(): Int
-            |
-            |    @Insert(onConflict = OnConflictStrategy.REPLACE)
-            |    suspend fun upsertAll(items: List<$entityClass>)
-            |}
-        """.trimMargin()
-    }
-
-    private fun generateDatabase(
-        packageName: String,
-        className: String,
-        moduleDefinition: ModuleClassDefinitionAndroid,
-        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
-    ): String {
-        val moduleId = NameMappings.moduleName(moduleDefinition.moduleId)
-        val entityClass = findClassName(a, moduleId, ClassTypeAndroid.ENTITY) ?: "Entity${moduleDefinition.moduleNumber}_1"
-        val daoClass = findClassName(a, moduleId, ClassTypeAndroid.DAO) ?: "Dao${moduleDefinition.moduleNumber}_1"
-        return """
-            |package $packageName
-            |
-            |import androidx.room.Database
-            |import androidx.room.RoomDatabase
-            |
-            |@Database(entities = [$entityClass::class], version = 1, exportSchema = false)
-            |abstract class $className : RoomDatabase() {
-            |    abstract fun dao(): $daoClass
-            |}
-        """.trimMargin()
-    }
-
-    private fun generateScreen(
-        packageName: String,
-        className: String,
-        moduleDefinition: ModuleClassDefinitionAndroid,
-        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
-    ): String {
-        val moduleId = NameMappings.moduleName(moduleDefinition.moduleId)
-        val viewModelClass = findClassName(a, moduleId, ClassTypeAndroid.VIEWMODEL) ?: "Viewmodel${moduleDefinition.moduleNumber}_1"
-        val modelClass = findClassName(a, moduleId, ClassTypeAndroid.MODEL) ?: "Model${moduleDefinition.moduleNumber}_1"
-        return """
-            |package $packageName
-            |
-            |import androidx.compose.foundation.layout.Box
-            |import androidx.compose.foundation.layout.fillMaxSize
-            |import androidx.compose.foundation.lazy.LazyColumn
-            |import androidx.compose.foundation.lazy.items
-            |import androidx.compose.material3.CircularProgressIndicator
-            |import androidx.compose.material3.Text
-            |import androidx.compose.runtime.Composable
-            |import androidx.compose.runtime.collectAsState
-            |import androidx.compose.runtime.getValue
-            |import androidx.compose.ui.Alignment
-            |import androidx.compose.ui.Modifier
-            |
-            |@Composable
-            |fun $className(viewModel: $viewModelClass) {
-            |    val state by viewModel.state.collectAsState()
-            |
-            |    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            |        if (state.isLoading) {
-            |            CircularProgressIndicator()
-            |        } else {
-            |            LazyColumn {
-            |                items(state.items) { item: $modelClass ->
-            |                    Text(text = item.title)
-            |                }
-            |            }
-            |        }
-            |    }
-            |}
-        """.trimMargin()
-    }
-
 
     private fun generateWorker(packageName: String, className: String): String {
         if (di != DependencyInjection.HILT) {
@@ -544,30 +521,23 @@ class ClassGeneratorAndroid(
         """.trimMargin()
     }
 
-    private fun generateComposeActivity(
-        packageName: String,
-        className: String,
-        moduleDefinition: ModuleClassDefinitionAndroid,
-        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
-    ): String {
-        val moduleId = NameMappings.moduleName(moduleDefinition.moduleId)
-        val viewModelClass = findClassName(a, moduleId, ClassTypeAndroid.VIEWMODEL) ?: "Viewmodel${moduleDefinition.moduleNumber}_1"
-        val screenClass = findClassName(a, moduleId, ClassTypeAndroid.SCREEN) ?: "Screen${moduleDefinition.moduleNumber}_1"
-        val useCaseClass = findClassName(a, moduleId, ClassTypeAndroid.USECASE) ?: "Usecase${moduleDefinition.moduleNumber}_1"
-        val repositoryClass = findClassName(a, moduleId, ClassTypeAndroid.REPOSITORY) ?: "Repository${moduleDefinition.moduleNumber}_1"
-        val daoClass = findClassName(a, moduleId, ClassTypeAndroid.DAO) ?: "Dao${moduleDefinition.moduleNumber}_1"
-        val databaseClass = findClassName(a, moduleId, ClassTypeAndroid.DATABASE) ?: "Database${moduleDefinition.moduleNumber}_1"
+    private fun generateComposeActivity(packageName: String, className: String, moduleNumber: Int): String {
+        val moduleId = packageName.split(".").last()
+        val viewModelClass = "Viewmodel${moduleNumber}_1"
 
         val imports = buildString {
             appendLine("import android.os.Bundle")
             appendLine("import androidx.activity.ComponentActivity")
             appendLine("import androidx.activity.compose.setContent")
             appendLine("import androidx.activity.viewModels")
-            if (di == DependencyInjection.NONE) {
-                appendLine("import androidx.lifecycle.ViewModel")
-                appendLine("import androidx.lifecycle.ViewModelProvider")
-                appendLine("import androidx.room.Room")
-            }
+            appendLine("import androidx.compose.foundation.layout.Box")
+            appendLine("import androidx.compose.foundation.layout.fillMaxSize")
+            appendLine("import androidx.compose.material3.Text")
+            appendLine("import androidx.compose.runtime.Composable")
+            appendLine("import androidx.compose.runtime.collectAsState")
+            appendLine("import androidx.compose.runtime.getValue")
+            appendLine("import androidx.compose.ui.Alignment")
+            appendLine("import androidx.compose.ui.Modifier")
             appendLine("import com.awesomeapp.${NameMappings.modulePackageName(moduleId)}.ui.theme.FeatureTheme")
             if (di == DependencyInjection.HILT) {
                 appendLine("import dagger.hilt.android.AndroidEntryPoint")
@@ -575,33 +545,6 @@ class ClassGeneratorAndroid(
         }
 
         val entryPointAnnotation = if (di == DependencyInjection.HILT) "@AndroidEntryPoint" else ""
-        val manualWiring = if (di == DependencyInjection.NONE) {
-            """
-            |    private val database: $databaseClass by lazy {
-            |        Room.databaseBuilder(applicationContext, $databaseClass::class.java, "${moduleDefinition.moduleId}.db")
-            |            .fallbackToDestructiveMigration()
-            |            .build()
-            |    }
-            |    private val dao: $daoClass by lazy { database.dao() }
-            |    private val repository: $repositoryClass by lazy { $repositoryClass(dao) }
-            |    private val useCase: $useCaseClass by lazy { $useCaseClass(repository) }
-            |
-            |    private val viewModelFactory: ViewModelProvider.Factory by lazy {
-            |        object : ViewModelProvider.Factory {
-            |            @Suppress("UNCHECKED_CAST")
-            |            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            |                if (modelClass.isAssignableFrom($viewModelClass::class.java)) {
-            |                    return $viewModelClass(useCase) as T
-            |                }
-            |                throw IllegalArgumentException("Unknown ViewModel class: ${'$'}modelClass")
-            |            }
-            |        }
-            |    }
-            |    private val viewModel: $viewModelClass by viewModels { viewModelFactory }
-            """.trimMargin()
-        } else {
-            "    private val viewModel: $viewModelClass by viewModels()"
-        }
 
         return """
             |package $packageName
@@ -610,15 +553,24 @@ class ClassGeneratorAndroid(
             |
             |$entryPointAnnotation
             |class $className : ComponentActivity() {
-            |$manualWiring
+            |    private val viewModel: $viewModelClass by viewModels()
             |
             |    override fun onCreate(savedInstanceState: Bundle?) {
             |        super.onCreate(savedInstanceState)
             |        setContent {
             |            FeatureTheme {
-            |                $screenClass(viewModel)
+            |                FeatureScreen_${className}(viewModel)
             |            }
             |        }
+            |    }
+            |}
+            |
+            |@Composable
+            |fun FeatureScreen_${className}(viewModel: $viewModelClass) {
+            |    val state by viewModel.state.collectAsState()
+            |
+            |    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            |        Text(text = state)
             |    }
             |}
         """.trimMargin()
@@ -664,41 +616,37 @@ class ClassGeneratorAndroid(
         """.trimMargin()
     }
 
-    private fun generateState(
-        packageName: String,
-        className: String,
-        moduleDefinition: ModuleClassDefinitionAndroid,
-        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
-    ): String {
-        val moduleId = NameMappings.moduleName(moduleDefinition.moduleId)
-        val modelClass = findClassName(a, moduleId, ClassTypeAndroid.MODEL) ?: "Model${moduleDefinition.moduleNumber}_1"
+    private fun generateState(packageName: String, className: String): String {
         return """
             |package $packageName
             |
-            |data class $className(
-            |    val items: List<$modelClass> = emptyList(),
-            |    val isLoading: Boolean = true,
-            |    val error: String? = null
-            |)
+            |sealed class $className {
+            |    data object Loading : $className()
+            |    data class Success(val data: String) : $className()
+            |    data class Error(val message: String) : $className()
+            |
+            |    companion object {
+            |        fun loading() = Loading
+            |        fun success(data: String) = Success(data)
+            |        fun error(message: String) = Error(message)
+            |    }
+            |}
         """.trimMargin()
     }
+
     private fun generateModel(packageName: String, className: String): String {
         return """
             |package $packageName
             |
             |data class $className(
-            |    val id: Long,
-            |    val title: String
+            |    val id: String = "$className-${System.currentTimeMillis()}",
+            |    val name: String = "Model for $className",
+            |    val description: String = "Description for $className"
             |)
         """.trimMargin()
     }
 
-    private fun generateUseCase(
-        packageName: String,
-        className: String,
-        moduleDefinition: ModuleClassDefinitionAndroid,
-        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
-    ): String {
+    private fun generateUseCase(packageName: String, className: String, moduleNumber: String): String {
         val injectImport = when (di) {
             DependencyInjection.HILT -> "import javax.inject.Inject"
             DependencyInjection.METRO -> "import dev.zacsweers.metro.Inject"
@@ -708,33 +656,19 @@ class ClassGeneratorAndroid(
             DependencyInjection.HILT, DependencyInjection.METRO -> "@Inject "
             DependencyInjection.NONE -> ""
         }
-        val moduleId = NameMappings.moduleName(moduleDefinition.moduleId)
-        val repositoryClass = findClassName(a, moduleId, ClassTypeAndroid.REPOSITORY) ?: "Repository${moduleDefinition.moduleNumber}_1"
-        val modelClass = findClassName(a, moduleId, ClassTypeAndroid.MODEL) ?: "Model${moduleDefinition.moduleNumber}_1"
-
         return """
             |package $packageName
             |
             |import kotlinx.coroutines.flow.Flow
+            |import kotlinx.coroutines.flow.flow
             |$injectImport
             |
-            |class $className ${injectAnnotation}constructor(
-            |    private val repository: $repositoryClass
-            |) {
-            |    operator fun invoke(): Flow<List<$modelClass>> = repository.observeItems()
-            |
-            |    suspend fun seedIfEmpty() = repository.seedIfEmpty()
+            |class $className ${injectAnnotation}constructor() {
+            |    operator fun invoke(): Flow<String> = flow {
+            |        emit("Data from $className UseCase")
+            |    }
             |}
         """.trimMargin()
-    }
-
-    private fun findClassName(
-        classesDictionary: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>,
-        moduleId: String,
-        type: ClassTypeAndroid
-    ): String? {
-        if (moduleId.isBlank()) return null
-        return classesDictionary[moduleId]?.firstOrNull { it.type == type }?.className
     }
 
     private fun writeClassFile(

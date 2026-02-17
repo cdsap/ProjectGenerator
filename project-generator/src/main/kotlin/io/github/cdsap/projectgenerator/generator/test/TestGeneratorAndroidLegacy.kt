@@ -11,7 +11,7 @@ import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
 
 
-class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, GenerateDictionaryAndroid> {
+class TestGeneratorAndroidLegacy : TestGenerator<ModuleClassDefinitionAndroid, GenerateDictionaryAndroid> {
 
 
     override fun generate(
@@ -43,9 +43,6 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
         val testContent = when (classDefinition.type) {
             ClassTypeAndroid.REPOSITORY -> generateRepositoryTest(moduleDefinition, classDefinition, classesDictionary)
             ClassTypeAndroid.API -> generateApiTest(className)
-            ClassTypeAndroid.ENTITY -> generateEntityTest(className)
-            ClassTypeAndroid.DAO -> generateDaoTest(className)
-            ClassTypeAndroid.DATABASE -> generateDatabaseTest(className)
             // todo generate correct tests for viewModel
 //            ClassTypeAndroid.VIEWMODEL -> generateViewModelTest(
 //                className,
@@ -58,9 +55,8 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
             ClassTypeAndroid.FRAGMENT -> generateFragmentTest(className)
             ClassTypeAndroid.SERVICE -> generateServiceTest(className)
             ClassTypeAndroid.STATE -> generateStateTest(className)
-            ClassTypeAndroid.SCREEN -> generateScreenTest(className)
             ClassTypeAndroid.MODEL -> generateModelTest(className)
-            ClassTypeAndroid.USECASE -> generateUseCaseTest(moduleDefinition, className, classesDictionary)
+            ClassTypeAndroid.USECASE -> generateUseCaseTest(moduleDefinition, className)
             else -> ""
         }
 
@@ -81,16 +77,6 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
 
             // Add specific imports based on class type
             when (classDefinition.type) {
-                ClassTypeAndroid.REPOSITORY, ClassTypeAndroid.USECASE -> {
-                    appendLine("import androidx.room.Room")
-                    appendLine("import androidx.test.core.app.ApplicationProvider")
-                    appendLine("import android.content.Context")
-                    appendLine("import kotlinx.coroutines.flow.first")
-                    appendLine("import org.junit.After")
-                    appendLine("import org.robolectric.RobolectricTestRunner")
-                    appendLine("import org.robolectric.annotation.Config")
-                }
-
                 ClassTypeAndroid.WORKER -> {
                     appendLine("import androidx.work.testing.TestWorkerBuilder")
                     appendLine("import androidx.work.Worker")
@@ -99,6 +85,10 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
                     appendLine("import android.content.Context")
                     appendLine("import androidx.work.testing.TestListenableWorkerBuilder")
                     appendLine("import androidx.work.CoroutineWorker")
+                }
+
+                ClassTypeAndroid.USECASE -> {
+                    appendLine("import kotlinx.coroutines.flow.first")
                 }
 
                // ClassTypeAndroid.VIEWMODEL -> {
@@ -133,19 +123,13 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
         }
 
         val classAnnotations = "@OptIn(ExperimentalCoroutinesApi::class)"
-        val runnerAnnotations = if (classDefinition.type == ClassTypeAndroid.REPOSITORY ||
-            classDefinition.type == ClassTypeAndroid.USECASE) {
-            "\n@RunWith(RobolectricTestRunner::class)\n@Config(sdk = [28])"
-        } else {
-            ""
-        }
 
         return """
             |package com.awesomeapp.${NameMappings.modulePackageName(moduleDefinition.moduleId)}
             |
             |$imports
             |
-            |$classAnnotations$runnerAnnotations
+            |$classAnnotations
             |class ${className}Test {
             |    $testContent
             |}
@@ -157,40 +141,31 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
         classDefinition: ClassDefinitionAndroid,
         a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ): String {
-        val moduleId = NameMappings.moduleName(moduleDefinition.moduleId)
-        val databaseClass = a[moduleId]?.firstOrNull { it.type == ClassTypeAndroid.DATABASE }?.className
-            ?: "Database${moduleDefinition.moduleNumber}_1"
-        val daoClass = a[moduleId]?.firstOrNull { it.type == ClassTypeAndroid.DAO }?.className
-            ?: "Dao${moduleDefinition.moduleNumber}_1"
-        val entityClass = a[moduleId]?.firstOrNull { it.type == ClassTypeAndroid.ENTITY }?.className
-            ?: "Entity${moduleDefinition.moduleNumber}_1"
-        val repositoryClass = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}"
+        val xa = mutableListOf<String>()
 
+        if (classDefinition.dependencies.isNotEmpty()) {
+            classDefinition.dependencies.mapIndexed { index, dep ->
+                val s = a.filter { it.key == dep.sourceModuleId }
+                if (s.isNotEmpty()) {
+                    val x = s.values.flatten().first { it.type == ClassTypeAndroid.API }
+                    if (x != null) {
+                        val apiClassName = x.className
+                        xa.add("$apiClassName()")
+                    }
+                }
+            }
+        } else ""
+
+        val constructorParams = xa.joinToString(",\n            ")
         val testContent = """
-            |    private lateinit var db: $databaseClass
-            |    private lateinit var dao: $daoClass
-            |    private lateinit var repository: $repositoryClass
-            |
             |    @Before
             |    fun setup() {
-            |        val context = ApplicationProvider.getApplicationContext<Context>()
-            |        db = Room.inMemoryDatabaseBuilder(context, $databaseClass::class.java)
-            |            .allowMainThreadQueries()
-            |            .build()
-            |        dao = db.dao()
-            |        repository = $repositoryClass(dao)
-            |    }
-            |
-            |    @After
-            |    fun tearDown() {
-            |        db.close()
             |    }
             |
             |    @Test
-            |    fun `observeItems emits items`() = runTest {
-            |        dao.upsertAll(listOf($entityClass(id = 1, title = "Hello", updatedAt = 1L)))
-            |        val items = repository.observeItems().first()
-            |        assertTrue(items.isNotEmpty())
+            |    fun `test getData returns data`() = runTest {
+            |        val result = ${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}($constructorParams).getData()
+            |        assertNotNull(result)
             |    }
         """.trimMargin()
 
@@ -209,35 +184,6 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
         |    fun `test fetchData returns data`() = runTest {
         |        val result = api.fetchData()
         |        assertNotNull(result)
-        |    }
-    """.trimMargin()
-
-    private fun generateEntityTest(className: String): String = """
-        |    @Test
-        |    fun `entity can be created`() {
-        |        val entity = $className(id = 1, title = "Title", updatedAt = 1L)
-        |        assertNotNull(entity)
-        |    }
-    """.trimMargin()
-
-    private fun generateDaoTest(className: String): String = """
-        |    @Test
-        |    fun `dao interface exists`() {
-        |        assertTrue(true)
-        |    }
-    """.trimMargin()
-
-    private fun generateDatabaseTest(className: String): String = """
-        |    @Test
-        |    fun `database class exists`() {
-        |        assertTrue(true)
-        |    }
-    """.trimMargin()
-
-    private fun generateScreenTest(className: String): String = """
-        |    @Test
-        |    fun `screen composable exists`() {
-        |        assertTrue(true)
         |    }
     """.trimMargin()
 
@@ -370,62 +316,50 @@ class TestGeneratorAndroid : TestGenerator<ModuleClassDefinitionAndroid, Generat
 
     private fun generateStateTest(className: String): String = """
         |    @Test
-        |    fun `default state is loading`() {
-        |        val state = $className()
-        |        assertTrue(state.isLoading)
+        |    fun `test loading state`() {
+        |        val state = $className.Loading
+        |        assertNotNull(state)
+        |    }
+        |
+        |    @Test
+        |    fun `test success state`() {
+        |        val state = $className.Success("test data")
+        |        assertNotNull(state)
+        |        assertEquals("test data", (state as $className.Success).data)
+        |    }
+        |
+        |    @Test
+        |    fun `test error state`() {
+        |        val state = $className.Error("test error")
+        |        assertNotNull(state)
+        |        assertEquals("test error", (state as $className.Error).message)
         |    }
     """.trimMargin()
 
     private fun generateModelTest(className: String): String = """
         |    @Test
         |    fun `test model creation`() {
-        |        val model = $className(id = 1, title = "Title")
+        |        val model = $className()
         |        assertNotNull(model)
         |    }
     """.trimMargin()
 
-    private fun generateUseCaseTest(
-        moduleDefinition: ModuleClassDefinitionAndroid,
-        className: String,
-        a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
-    ): String {
-        val moduleId = NameMappings.moduleName(moduleDefinition.moduleId)
-        val databaseClass = a[moduleId]?.firstOrNull { it.type == ClassTypeAndroid.DATABASE }?.className
-            ?: "Database${moduleDefinition.moduleNumber}_1"
-        val daoClass = a[moduleId]?.firstOrNull { it.type == ClassTypeAndroid.DAO }?.className
-            ?: "Dao${moduleDefinition.moduleNumber}_1"
-        val entityClass = a[moduleId]?.firstOrNull { it.type == ClassTypeAndroid.ENTITY }?.className
-            ?: "Entity${moduleDefinition.moduleNumber}_1"
-        val repositoryClass = a[moduleId]?.firstOrNull { it.type == ClassTypeAndroid.REPOSITORY }?.className
-            ?: "Repository${moduleDefinition.moduleNumber}_1"
+    private fun generateUseCaseTest(moduleDefinition: ModuleClassDefinitionAndroid, className: String): String {
         return """
-            |    private lateinit var db: $databaseClass
-            |    private lateinit var dao: $daoClass
-            |    private lateinit var repository: $repositoryClass
             |    private lateinit var useCase: $className
             |
             |    @Before
             |    fun setup() {
-            |        val context = ApplicationProvider.getApplicationContext<Context>()
-            |        db = Room.inMemoryDatabaseBuilder(context, $databaseClass::class.java)
-            |            .allowMainThreadQueries()
-            |            .build()
-            |        dao = db.dao()
-            |        repository = $repositoryClass(dao)
-            |        useCase = $className(repository)
-            |    }
-            |
-            |    @After
-            |    fun tearDown() {
-            |        db.close()
+            |        useCase = $className()
             |    }
             |
             |    @Test
-            |    fun `invoke returns items`() = runTest {
-            |        dao.upsertAll(listOf($entityClass(id = 1, title = "Hi", updatedAt = 1L)))
-            |        val items = useCase().first()
-            |        assertTrue(items.isNotEmpty())
+            |    fun `test invoke returns data`() = runTest {
+            |        val result = useCase().first()
+            |        assertEquals("Data from $className UseCase", result)
             |    }
         """.trimMargin()
     }
+
+
 }

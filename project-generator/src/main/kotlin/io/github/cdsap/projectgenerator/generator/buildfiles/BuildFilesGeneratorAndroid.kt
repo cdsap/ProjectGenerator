@@ -41,7 +41,7 @@ class BuildFilesGeneratorAndroid(
             }
         }
 
-        val deps = AndroidToml().tomlImplementations(versions, di)
+        val deps = AndroidToml().tomlImplementations(versions, di, versions.android.roomDatabase)
         return """
             |plugins {
             |    id("awesome.androidapp.plugin")
@@ -59,7 +59,7 @@ ${testImplementations.joinToString("\n").prependIndent("    ")}
     private fun createAndroidLibBuildFile(node: ProjectGraph, generateUnitTests: Boolean): String {
         val implementations = mutableSetOf<String>()
         val testImplementations = mutableSetOf<String>()
-        val deps = AndroidToml().tomlImplementations(versions, di)
+        val deps = AndroidToml().tomlImplementations(versions, di, versions.android.roomDatabase)
         // Add direct dependencies first (only from different layers)
         node.nodes.forEach { dependency ->
             if (dependency.layer != node.layer) {

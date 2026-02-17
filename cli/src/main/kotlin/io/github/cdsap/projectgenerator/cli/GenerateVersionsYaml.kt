@@ -30,6 +30,8 @@ class GenerateVersionsYaml {
             |  activity: ${versions.android.activity}
             |  constraintlayout: ${versions.android.constraintlayout}
             |  work: ${versions.android.work}
+            |  room: ${versions.android.room}
+            |  roomDatabase: ${versions.android.roomDatabase}
             |  hilt: ${versions.android.hilt}
             |  hiltAandroidx: ${versions.android.hiltAandroidx}
             |  metro: ${versions.android.metro}

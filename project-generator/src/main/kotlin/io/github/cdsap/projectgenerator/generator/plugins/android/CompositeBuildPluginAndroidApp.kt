@@ -32,10 +32,10 @@ class CompositeBuildPluginAndroidApp {
         |            }
         |
         |            extensions.configure<com.android.build.api.dsl.ApplicationExtension> {
-        |                namespace = "com.awesome." + target.name.replace(":","_").replace("-", "")
+        |                namespace = "com.awesomeapp." + target.name.replace(":","_").replace("-", "")
         |                compileSdk = 36
         |                defaultConfig {
-        |                    applicationId = "com.awesome." + target.name.replace(":","_").replace("-", "")
+        |                    applicationId = "com.awesomeapp." + target.name.replace(":","_").replace("-", "")
         |                    minSdk = 24
         |                    targetSdk = 36
         |                    versionCode = 1
@@ -68,12 +68,13 @@ class CompositeBuildPluginAndroidApp {
         |}
         |""".trimMargin()
 
-    fun provideKotlinProcessor(versions: Versions, di: DependencyInjection) = if (versions.kotlin.kotlinProcessor.processor == Processor.KAPT)
-        """apply("kotlin-kapt")"""
-    else if( di == DependencyInjection.HILT)
-        """apply("com.google.devtools.ksp")"""
-    else
-        ""
+    fun provideKotlinProcessor(versions: Versions, di: DependencyInjection): String {
+        if (versions.kotlin.kotlinProcessor.processor == Processor.KAPT) {
+            return """apply("kotlin-kapt")"""
+        }
+        val shouldApplyKsp = di == DependencyInjection.HILT || versions.android.roomDatabase
+        return if (shouldApplyKsp) """apply("com.google.devtools.ksp")""" else ""
+    }
 
     fun provideKgpBasedOnAgp(versions: Versions) = if (!versions.android.agp.isAgp9())
         """apply("org.jetbrains.kotlin.android")"""
