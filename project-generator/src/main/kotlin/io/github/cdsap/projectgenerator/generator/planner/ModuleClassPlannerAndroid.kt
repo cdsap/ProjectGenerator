@@ -12,11 +12,17 @@ class ModuleClassPlannerAndroid : ModuleClassPlanner<ModuleClassDefinitionAndroi
         val moduleId = NameMappings.moduleName(projectGraph.id)
         val layer = projectGraph.layer
         val moduleNumber = projectGraph.id.split("_").last().toInt()
+        val maxClasses = projectGraph.classes.coerceAtLeast(0)
         val classes = mutableListOf<ClassDefinitionAndroid>()
         var currentIndex = 1
 
         val localDep = { type: ClassTypeAndroid ->
             mutableListOf(ClassDependencyAndroid(type, moduleId))
+        }
+        val addClass = { type: ClassTypeAndroid, deps: MutableList<ClassDependencyAndroid> ->
+            if (classes.size < maxClasses) {
+                classes.add(ClassDefinitionAndroid(type = type, index = currentIndex++, dependencies = deps))
+            }
         }
 
         val baseClasses = listOf(
@@ -39,27 +45,15 @@ class ModuleClassPlannerAndroid : ModuleClassPlanner<ModuleClassDefinitionAndroi
                 ClassTypeAndroid.SCREEN -> localDep(ClassTypeAndroid.VIEWMODEL)
                 else -> mutableListOf()
             }
-            classes.add(ClassDefinitionAndroid(type = type, index = currentIndex++, dependencies = deps))
+            addClass(type, deps)
         }
 
         if (projectGraph.type == TypeProject.ANDROID_APP) {
-            classes.add(
-                ClassDefinitionAndroid(
-                    type = ClassTypeAndroid.ACTIVITY,
-                    index = currentIndex++,
-                    dependencies = mutableListOf()
-                )
-            )
-            classes.add(
-                ClassDefinitionAndroid(
-                    type = ClassTypeAndroid.FRAGMENT,
-                    index = currentIndex++,
-                    dependencies = mutableListOf()
-                )
-            )
+            addClass(ClassTypeAndroid.ACTIVITY, mutableListOf())
+            addClass(ClassTypeAndroid.FRAGMENT, mutableListOf())
         }
 
-        val remainingClasses = projectGraph.classes - classes.size
+        val remainingClasses = maxClasses - classes.size
         if (remainingClasses > 0) {
             for (i in 1..remainingClasses) {
                 val classType = when (i % 2) {
