@@ -12,7 +12,7 @@ class BuildGradle {
             alias(libs.plugins.kotlin.android) apply false
             alias(libs.plugins.kotlin.compose) apply false
             alias(libs.plugins.android.application) apply false
-            alias(libs.plugins.android.library) apply false
+            ${androidLibraryRootPlugin(versions)}
             ${provideKotlinProcessor(versions)}
             ${diPlugins(di)}
             ${additionalBuildGradlePlugins(versions)}
@@ -46,6 +46,14 @@ class BuildGradle {
             additionalPlugins += "id(\"${it.id}\") version \"${it.version}\" apply ${it.apply}\n"
         }
         return additionalPlugins
+    }
+
+    private fun androidLibraryRootPlugin(versions: Versions): String {
+        return if (versions.android.kotlinMultiplatformLibrary) {
+            "alias(libs.plugins.android.kotlin.multiplatform.library) apply false"
+        } else {
+            "alias(libs.plugins.android.library) apply false"
+        }
     }
 
 }

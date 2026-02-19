@@ -7,6 +7,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.UsageError
 import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.options.*
@@ -59,13 +60,23 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
     private val develocityUrl by option()
     private val agp9 by option().flag(default = false)
     private val roomDatabase by option("--room-database").flag(default = false)
+    private val kotlinMultiplatformLibrary by option("--android-kotlin-multiplatform-library").flag(default = false)
 
 
     override fun run() {
         val typeOfProjectRequested = TypeProjectRequested.valueOf(type.uppercase())
         val shape = Shape.valueOf(shape.uppercase())
         val dependencyInjection = DependencyInjection.valueOf(di.uppercase())
-        val versions = getVersions(versionsFile, develocityUrl, agp9, roomDatabase).copy(di = dependencyInjection)
+        if (typeOfProjectRequested != TypeProjectRequested.ANDROID && kotlinMultiplatformLibrary) {
+            throw UsageError("--android-kotlin-multiplatform-library is only available when --type android.")
+        }
+        val versions = getVersions(
+            fileVersions = versionsFile,
+            develocityUrl = develocityUrl,
+            agp9 = agp9,
+            roomDatabase = roomDatabase,
+            kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
+        ).copy(di = dependencyInjection)
         val develocityEnabled = getDevelocityEnabled(develocity, develocityUrl)
         ProjectGenerator(
             modules,
@@ -104,7 +115,13 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
         }
     }
 
-    private fun getVersions(fileVersions: File?, develocityUrl: String?, agp9: Boolean, roomDatabase: Boolean): Versions {
+    private fun getVersions(
+        fileVersions: File?,
+        develocityUrl: String?,
+        agp9: Boolean,
+        roomDatabase: Boolean,
+        kotlinMultiplatformLibrary: Boolean
+    ): Versions {
         val versions = if (fileVersions != null) {
             parseYaml(fileVersions)
         } else {
@@ -117,15 +134,18 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
                 Versions()
             }
         }
-        val withRoomDatabase = if (roomDatabase) {
-            versions.copy(android = versions.android.copy(roomDatabase = true))
-        } else {
-            versions
+        var androidConfig = versions.android
+        if (roomDatabase) {
+            androidConfig = androidConfig.copy(roomDatabase = true)
         }
+        if (kotlinMultiplatformLibrary) {
+            androidConfig = androidConfig.copy(kotlinMultiplatformLibrary = true)
+        }
+        val withAndroidFlags = versions.copy(android = androidConfig)
         return if (develocityUrl != null) {
-            withRoomDatabase.copy(project = withRoomDatabase.project.copy(develocityUrl = develocityUrl))
+            withAndroidFlags.copy(project = withAndroidFlags.project.copy(develocityUrl = develocityUrl))
         } else {
-            withRoomDatabase
+            withAndroidFlags
         }
 
     }

@@ -32,6 +32,7 @@ class GenerateVersionsYaml {
             |  work: ${versions.android.work}
             |  room: ${versions.android.room}
             |  roomDatabase: ${versions.android.roomDatabase}
+            |  kotlinMultiplatformLibrary: ${versions.android.kotlinMultiplatformLibrary}
             |  hilt: ${versions.android.hilt}
             |  hiltAandroidx: ${versions.android.hiltAandroidx}
             |  metro: ${versions.android.metro}
