@@ -91,6 +91,7 @@ class AndroidToml {
         [plugins]
         android-application = { id = "com.android.application", version.ref = "agp" }
         android-library = { id = "com.android.library", version.ref = "agp" }
+        android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
         ${hiltPlugin(version.di)}
         ${metroPlugin(version.di)}
         kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

@@ -99,4 +99,29 @@ class ProjectWriterTest {
         assertTrue(content.contains("Room.databaseBuilder"))
         assertTrue(content.contains("by viewModels { viewModelFactory }"))
     }
+
+    @Test
+    fun `uses android kotlin multiplatform library root plugin alias when enabled`() {
+        val node = ProjectGraph("module_1_1", 1, emptyList(), TypeProject.ANDROID_LIB, 10)
+        val language = LanguageAttributes("gradle.kts", "${tempDir}/project_kts_kmp")
+        val versions = Versions(android = Android(kotlinMultiplatformLibrary = true))
+        val projectWriter = ProjectWriter(
+            listOf(node),
+            listOf(language),
+            versions,
+            TypeProjectRequested.ANDROID,
+            TypeOfStringResources.NORMAL,
+            false,
+            GradleWrapper(Gradle.GRADLE_9_3_0),
+            false,
+            "kmp_android_lib_alias"
+        )
+
+        projectWriter.write()
+
+        val rootBuild = File("${language.projectName}/build.gradle.kts")
+        assertTrue(rootBuild.exists(), "Expected root build.gradle.kts to exist")
+        val content = rootBuild.readText()
+        assertTrue(content.contains("alias(libs.plugins.android.kotlin.multiplatform.library) apply false"))
+    }
 }

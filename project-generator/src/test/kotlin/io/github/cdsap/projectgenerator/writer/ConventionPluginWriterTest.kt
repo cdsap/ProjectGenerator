@@ -5,6 +5,7 @@ import io.github.cdsap.projectgenerator.generator.includedbuild.CompositeBuildSe
 import io.github.cdsap.projectgenerator.generator.plugins.android.CompositeBuildPluginAndroidApp
 import io.github.cdsap.projectgenerator.generator.plugins.android.CompositeBuildPluginAndroidLib
 import io.github.cdsap.projectgenerator.generator.plugins.jvm.CompositeBuildJvmLib
+import io.github.cdsap.projectgenerator.model.Android
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
 import io.github.cdsap.projectgenerator.model.Versions
@@ -102,6 +103,27 @@ class ConventionPluginWriterTest {
         writer.write()
 
         assertEquals(0, tempDir.listFiles()?.size ?: 0, "Temp directory should be empty")
+    }
+
+    @Test
+    fun `write should use android kotlin multiplatform library plugin when enabled`() {
+        val projectName = "androidKmpLib"
+        val language = LanguageAttributes(projectName = "${tempDir.path}/$projectName", extension = "gradle.kts")
+        val versions = Versions(android = Android(kotlinMultiplatformLibrary = true))
+        val writer = ConventionPluginWriter(
+            languages = listOf(language),
+            versions = versions,
+            requested = TypeProjectRequested.ANDROID
+        )
+
+        writer.write()
+
+        val libPluginFile = File("${language.projectName}/build-logic/convention/src/main/kotlin/com/logic/CompositeBuildPluginAndroidLib.kt")
+        assertTrue(libPluginFile.exists(), "Lib plugin missing for ${language.projectName}")
+        assertTrue(
+            libPluginFile.readText().contains("apply(\"com.android.kotlin.multiplatform.library\")"),
+            "Expected KMP Android library plugin application in lib convention plugin"
+        )
     }
 
     private fun assertAndroidConventionFilesExist(projectBasePath: String, versions: Versions) {

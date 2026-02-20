@@ -21,7 +21,7 @@ class CompositeBuildPluginAndroidLib {
         |    override fun apply(target: Project) {
         |        with(target) {
         |            with(pluginManager) {
-        |                apply("com.android.library")
+        |                apply("${androidLibraryPluginId(versions)}")
         |                ${provideKgpBasedOnAgp(versions)}
         |                ${provideKotlinProcessor(versions,di)}
         |                ${applyDiPlugin(di)}
@@ -83,6 +83,14 @@ class CompositeBuildPluginAndroidLib {
             DependencyInjection.HILT -> """apply("dagger.hilt.android.plugin")"""
             DependencyInjection.METRO -> """apply("dev.zacsweers.metro")"""
             DependencyInjection.NONE -> """"""
+        }
+    }
+
+    private fun androidLibraryPluginId(versions: Versions): String {
+        return if (versions.android.kotlinMultiplatformLibrary) {
+            "com.android.kotlin.multiplatform.library"
+        } else {
+            "com.android.library"
         }
     }
 }

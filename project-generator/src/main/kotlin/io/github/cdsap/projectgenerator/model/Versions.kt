@@ -76,6 +76,7 @@ data class Android(
     val work: String = "2.11.1",
     val room: String = "2.8.4",
     val roomDatabase: Boolean = false,
+    val kotlinMultiplatformLibrary: Boolean = false,
     val hilt: String = "2.59.1",
     val hiltAandroidx: String = "1.3.0",
     val metro: String = "0.10.4",

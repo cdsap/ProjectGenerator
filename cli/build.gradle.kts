@@ -14,6 +14,7 @@ dependencies {
     implementation(libs.jackson.dataformat.yaml)
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks.test {
