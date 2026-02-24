@@ -43,14 +43,25 @@ app.post('/api/generate', upload.single('versions-file'), async (req, res) => {
         const tmpDir = fs.mkdtempSync('/tmp/gen-');
         const outputName = `project-${uuidv4()}`;
         const outputZip = path.join(tmpDir, `${outputName}.zip`);
+        const toBool = (value) => value === true || value === 'true' || value === '1' || value === 1;
 
         // reCAPTCHA validation
         const isCaptchaValid = await verifyCaptcha(body.captchaToken);
         if (!isCaptchaValid) return res.status(403).send('Invalid CAPTCHA');
 
-        // Limit modules to maximum of 1500
+        // Limit modules to maximum of 300
         const modules = Math.min(parseInt(body.modules) || 0, 300);
         console.log(`Modules requested: ${body.modules}, limited to: ${modules}`);
+
+        // Accept both legacy and current field names from frontend clients
+        const type = body.type || 'android';
+        const diInput = (body.di || body['di-type'] || 'hilt').toString().toLowerCase();
+        const supportedDi = new Set(['hilt', 'metro', 'none']);
+        const di = supportedDi.has(diInput) ? diInput : 'hilt';
+        const roomDatabase = toBool(body['room-database']) || toBool(body.roomDatabase);
+        const androidKmpLibrary =
+            toBool(body['android-kotlin-multiplatform-library']) ||
+            toBool(body.androidKotlinMultiplatformLibrary);
 
         // ✅ Build CLI args safely
         const args = [
@@ -58,8 +69,8 @@ app.post('/api/generate', upload.single('versions-file'), async (req, res) => {
             `--modules`, modules,
             `--layers`, body.layers || 5,
             `--language`, body.language || 'kts',
-            `--di`, body['di-type'] || 'hilt',
-            `--type`, body.type || 'android',
+            `--di`, di,
+            `--type`, type,
             `--classes-module`, Math.min(parseInt(body['classes-module']) || 15, 15),
             `--classes-module-type`, body['classes-module-type'] || 'fixed',
             `--type-of-string-resources`, body['type-of-string-resources'] || 'normal',
@@ -68,11 +79,13 @@ app.post('/api/generate', upload.single('versions-file'), async (req, res) => {
 
         // Add project name if provided
         if (body['project-name']) { args.push('--project-name', body['project-name']);}
-        if (body['generate-unit-test'] === 'true' || body['generate-unit-test'] === true) args.push('--generate-unit-test');
-        if (body['agp9'] === 'true' || body['agp9'] === true) args.push('--agp9');
-        if (body.develocity === 'true' || body.develocity === true) args.push('--develocity');
+        if (toBool(body['generate-unit-test']) || toBool(body.generateUnitTest)) args.push('--generate-unit-test');
+        if (toBool(body['agp9'])) args.push('--agp9');
+        if (toBool(body.develocity)) args.push('--develocity');
         if (body['develocity-url']) args.push('--develocity-url', body['develocity-url']);
-        if (body.type === 'android' && body.processor) args.push('--processor', body.processor);
+        if (type === 'android' && body.processor) args.push('--processor', body.processor);
+        if (type === 'android' && roomDatabase) args.push('--room-database');
+        if (type === 'android' && androidKmpLibrary) args.push('--android-kotlin-multiplatform-library');
         if (req.file) args.push('--versions-file', req.file.path);
 
         const command = `/usr/local/bin/projectGenerator generate-project ${args.join(' ')}`;
