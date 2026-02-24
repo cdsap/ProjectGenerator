@@ -193,31 +193,10 @@ class ModuleClassPlannerAndroidLegacy(
         if (!classType.requiresDependency()) return emptyList()
 
         val dependencyType = classType.dependencyType() ?: return emptyList()
-        val availableModules = getAvailableModules(currentModule)
-
-        return availableModules
-            .filter { module -> hasClassType(module, dependencyType) }
-            .map { module -> ClassDependencyAndroid(dependencyType, NameMappings.moduleName(module.id)) }
-    }
-
-    private fun getAvailableModules(currentModule: ProjectGraph): List<ProjectGraph> {
-        val currentModuleNumber = currentModule.id.split("_").last().toInt()
-        val currentLayer = currentModule.layer
-
-        return currentModule.nodes.filter { node ->
-            val otherModuleNumber = node.id.split("_").last().toInt()
-            val otherLayer = node.layer
-
-            // Only reference modules that:
-            // 1. Are in the same layer but have a lower module number
-            // 2. Are in a lower layer
-            // 3. Have the required class types based on their module number
-            ((node.layer == currentLayer && otherModuleNumber < currentModuleNumber) ||
-                (otherLayer < currentLayer)) &&
-                hasClassType(
-                    node,
-                    ClassTypeAndroid.REPOSITORY
-                ) // Only include modules that have the required class type
+        return if (hasClassType(currentModule, dependencyType)) {
+            listOf(ClassDependencyAndroid(dependencyType, NameMappings.moduleName(currentModule.id)))
+        } else {
+            emptyList()
         }
     }
 

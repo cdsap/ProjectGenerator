@@ -46,10 +46,6 @@ class ClassGeneratorAndroidLegacy(
             writeClassFile(classContent, classDefinition, moduleDefinition, projectName)
         }
 
-        if (di == DependencyInjection.HILT) {
-            createDaggerModule(moduleDefinition, projectName, a)
-        }
-
     }
 
     private fun createDaggerModule(
@@ -412,12 +408,16 @@ class ClassGeneratorAndroidLegacy(
             appendLine("import androidx.compose.ui.platform.ComposeView")
             appendLine("import androidx.fragment.app.Fragment")
             appendLine("import androidx.fragment.app.viewModels")
-            if (di == DependencyInjection.HILT) {
+            if (shouldAddHiltAndroidEntryPoint(moduleId, className, ClassTypeAndroid.FRAGMENT)) {
                 appendLine("import dagger.hilt.android.AndroidEntryPoint")
             }
         }
 
-        val entryPointAnnotation = if (di == DependencyInjection.HILT) "@AndroidEntryPoint" else ""
+        val entryPointAnnotation = if (shouldAddHiltAndroidEntryPoint(moduleId, className, ClassTypeAndroid.FRAGMENT)) {
+            "@AndroidEntryPoint"
+        } else {
+            ""
+        }
         val viewModelClass = "Feature${moduleNumber}_1"
 
         return """
@@ -521,7 +521,11 @@ class ClassGeneratorAndroidLegacy(
         """.trimMargin()
     }
 
-    private fun generateComposeActivity(packageName: String, className: String, moduleNumber: Int): String {
+    private fun generateComposeActivity(
+        packageName: String,
+        className: String,
+        moduleNumber: Int
+    ): String {
         val moduleId = packageName.split(".").last()
         val viewModelClass = "Viewmodel${moduleNumber}_1"
 
@@ -539,12 +543,16 @@ class ClassGeneratorAndroidLegacy(
             appendLine("import androidx.compose.ui.Alignment")
             appendLine("import androidx.compose.ui.Modifier")
             appendLine("import com.awesomeapp.${NameMappings.modulePackageName(moduleId)}.ui.theme.FeatureTheme")
-            if (di == DependencyInjection.HILT) {
+            if (shouldAddHiltAndroidEntryPoint(moduleId, className, ClassTypeAndroid.ACTIVITY)) {
                 appendLine("import dagger.hilt.android.AndroidEntryPoint")
             }
         }
 
-        val entryPointAnnotation = if (di == DependencyInjection.HILT) "@AndroidEntryPoint" else ""
+        val entryPointAnnotation = if (shouldAddHiltAndroidEntryPoint(moduleId, className, ClassTypeAndroid.ACTIVITY)) {
+            "@AndroidEntryPoint"
+        } else {
+            ""
+        }
 
         return """
             |package $packageName
@@ -577,17 +585,22 @@ class ClassGeneratorAndroidLegacy(
     }
 
     private fun generateService(packageName: String, className: String): String {
+        val moduleId = packageName.split(".").last()
         val imports = buildString {
             appendLine("import android.app.Service")
             appendLine("import android.content.Intent")
             appendLine("import android.os.IBinder")
-            if (di == DependencyInjection.HILT) {
+            if (shouldAddHiltAndroidEntryPoint(moduleId, className, ClassTypeAndroid.SERVICE)) {
                 appendLine("import dagger.hilt.android.AndroidEntryPoint")
             }
             appendLine("import kotlinx.coroutines.*")
         }
 
-        val entryPointAnnotation = if (di == DependencyInjection.HILT) "@AndroidEntryPoint" else ""
+        val entryPointAnnotation = if (shouldAddHiltAndroidEntryPoint(moduleId, className, ClassTypeAndroid.SERVICE)) {
+            "@AndroidEntryPoint"
+        } else {
+            ""
+        }
 
         return """
             |package $packageName
@@ -632,6 +645,20 @@ class ClassGeneratorAndroidLegacy(
             |    }
             |}
         """.trimMargin()
+    }
+
+    /**
+     * Keep Hilt Android entry points extremely small to avoid huge aggregated component generation.
+     * We only annotate the launcher-like activity in the app module.
+     */
+    private fun shouldAddHiltAndroidEntryPoint(
+        modulePackageId: String,
+        className: String,
+        classType: ClassTypeAndroid
+    ): Boolean {
+        if (di != DependencyInjection.HILT) return false
+        if (modulePackageId != "app") return false
+        return classType == ClassTypeAndroid.ACTIVITY && className.endsWith("_2")
     }
 
     private fun generateModel(packageName: String, className: String): String {
