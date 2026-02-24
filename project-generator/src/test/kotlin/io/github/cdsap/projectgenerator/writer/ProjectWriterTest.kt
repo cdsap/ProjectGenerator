@@ -124,4 +124,75 @@ class ProjectWriterTest {
         val content = rootBuild.readText()
         assertTrue(content.contains("alias(libs.plugins.android.kotlin.multiplatform.library) apply false"))
     }
+
+    @Test
+    fun `does not generate legacy hilt modules for non-room mode`() {
+        val node = ProjectGraph("module_1_1", 1, emptyList(), TypeProject.ANDROID_LIB, 12)
+        val language = LanguageAttributes("gradle.kts", "${tempDir}/project_kts_hilt_lean")
+        val versions = Versions(di = DependencyInjection.HILT, android = Android(roomDatabase = false))
+        val projectWriter = ProjectWriter(
+            listOf(node),
+            listOf(language),
+            versions,
+            TypeProjectRequested.ANDROID,
+            TypeOfStringResources.NORMAL,
+            false,
+            GradleWrapper(Gradle.GRADLE_9_3_0),
+            false,
+            "hilt_lean_graph"
+        )
+
+        projectWriter.write()
+
+        val moduleFile = File(
+            "${language.projectName}/${NameMappings.layerName(1)}/${NameMappings.moduleName("module_1_1")}" +
+                "/src/main/kotlin/com/awesomeapp/${NameMappings.modulePackageName("module_1_1")}/di/Module_1.kt"
+        )
+        assertTrue(!moduleFile.exists(), "Legacy Hilt module file should not be generated in non-room mode")
+    }
+
+    @Test
+    fun `limits hilt android entry points to app launcher activity`() {
+        val previousLayerNames = NameMappings.layerNames
+        val previousModuleNames = NameMappings.moduleNames
+        NameMappings.layerNames = mapOf(1 to "layer_1", 2 to "app")
+        NameMappings.moduleNames = mapOf("module_1_1" to "sample-lib", "module_2_1" to "app")
+        try {
+            val nodes = listOf(
+                ProjectGraph("module_1_1", 1, emptyList(), TypeProject.ANDROID_LIB, 12),
+                ProjectGraph("module_2_1", 2, emptyList(), TypeProject.ANDROID_APP, 12)
+            )
+            val language = LanguageAttributes("gradle.kts", "${tempDir}/project_kts_hilt_entrypoints")
+            val versions = Versions(di = DependencyInjection.HILT, android = Android(roomDatabase = false))
+            val projectWriter = ProjectWriter(
+                nodes,
+                listOf(language),
+                versions,
+                TypeProjectRequested.ANDROID,
+                TypeOfStringResources.NORMAL,
+                false,
+                GradleWrapper(Gradle.GRADLE_9_3_0),
+                false,
+                "hilt_entrypoints"
+            )
+
+            projectWriter.write()
+
+            val libActivity = File(
+                "${language.projectName}/${NameMappings.layerName(1)}/${NameMappings.moduleName("module_1_1")}" +
+                    "/src/main/kotlin/com/awesomeapp/${NameMappings.modulePackageName("module_1_1")}/Activity1_2.kt"
+            )
+            val appActivity = File(
+                "${language.projectName}/${NameMappings.layerName(2)}/${NameMappings.moduleName("module_2_1")}" +
+                    "/src/main/kotlin/com/awesomeapp/${NameMappings.modulePackageName("module_2_1")}/Activity1_2.kt"
+            )
+            assertTrue(libActivity.exists(), "Expected lib activity to exist")
+            assertTrue(appActivity.exists(), "Expected app activity to exist")
+            assertTrue(!libActivity.readText().contains("@AndroidEntryPoint"))
+            assertTrue(appActivity.readText().contains("@AndroidEntryPoint"))
+        } finally {
+            NameMappings.layerNames = previousLayerNames
+            NameMappings.moduleNames = previousModuleNames
+        }
+    }
 }
