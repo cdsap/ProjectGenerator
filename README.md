@@ -10,7 +10,7 @@ If you need to create small or medium projects (<300 modules), you can use the w
 ## CLI
 ### Install
 ```
-curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.4.0/projectGenerator  --output projectGenerator
+curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.4.1/projectGenerator  --output projectGenerator
 chmod 0757 projectGenerator
 ```
 
@@ -51,6 +51,8 @@ Then, you can use the versions.yaml in the `generate-project` command:
 - `--versions-file`: Path to a custom YAML file with dependency versions
 - `--project-name`: Name of the project
 - `--agp9`: Use AGP 9.x (default: false). Only for Android projects.
+- `--room-database`: Enable Room database generation (default: false). Only for Android projects.
+- `--android-kotlin-multiplatform-library`: For Android projects, generate Android library modules with `com.android.kotlin.multiplatform.library` instead of `com.android.library` (default: false).
 
 #### Example: Generate a project with custom options
 ```bash
@@ -78,7 +80,7 @@ ProjectGenerator(
 ```
 ### Dependency
 ```
-  implementation("io.github.cdsap:projectgenerator:0.4.0")
+  implementation("io.github.cdsap:projectgenerator:0.4.1")
 ```
 
 # Options
@@ -130,6 +132,23 @@ Kotlin-JVM project
 #### Example
 ```kotlin
 ./projectGenerator  generate-project  --shape triangle --layers 5 --modules 100 --type jvm
+```
+
+## Android-only options
+### `--room-database`
+Enable Room database generation in Android projects.
+
+##### Example
+```kotlin
+./projectGenerator generate-project --type android --modules 100 --room-database
+```
+
+### `--android-kotlin-multiplatform-library`
+Use the Android Kotlin Multiplatform library plugin for generated Android library modules.
+
+##### Example
+```kotlin
+./projectGenerator generate-project --type android --modules 100 --android-kotlin-multiplatform-library
 ```
 
 ## `Classes Module`
