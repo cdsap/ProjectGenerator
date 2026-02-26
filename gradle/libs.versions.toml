@@ -6,7 +6,7 @@ fatbinary = "1.0"
 coroutines = "1.10.2"
 junit = "6.0.3"
 clikt = "5.1.0"
-jackson = "2.12.3"
+jackson = "2.21.1"
 
 [libraries]
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
