@@ -436,8 +436,8 @@
 
         <div class="description">
             <p>Generate <strong>Gradle Android modularized projects</strong> designed specifically for <strong>building purposes</strong>. Create customizable module architectures with build configurations and testing frameworks. Perfect for research, performance analysis, and testing build systems at scale.</p>
-            <p class="github-link">📦 Based on <a href="https://github.com/cdsap/ProjectGenerator" target="_blank" rel="noopener noreferrer">cdsap/ProjectGenerator</a> v0.4.0 - CLI for generating modularized Gradle projects in different logic layers</p>
-            <p class="github-link">🔧 <a href="https://github.com/cdsap/ProjectGenerator/blob/v0.4.0/project-generator/src/main/kotlin/io/github/cdsap/projectgenerator/model/Versions.kt" target="_blank" rel="noopener noreferrer">View supported versions</a> - Check the available Gradle, Kotlin, and plugin versions for your generated projects</p>
+            <p class="github-link">📦 Based on <a href="https://github.com/cdsap/ProjectGenerator" target="_blank" rel="noopener noreferrer">cdsap/ProjectGenerator</a> v0.4.1 - CLI for generating modularized Gradle projects in different logic layers</p>
+            <p class="github-link">🔧 <a href="https://github.com/cdsap/ProjectGenerator/blob/v0.4.1/project-generator/src/main/kotlin/io/github/cdsap/projectgenerator/model/Versions.kt" target="_blank" rel="noopener noreferrer">View supported versions</a> - Check the available Gradle, Kotlin, and plugin versions for your generated projects</p>
         </div>
 
         <form id="projectForm">
@@ -548,6 +548,19 @@
                 </select>
             </div>
 
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="android-kotlin-multiplatform-library" name="android-kotlin-multiplatform-library">
+                    <label for="android-kotlin-multiplatform-library">For Android projects, generate Android library modules with com.android.kotlin.multiplatform.library instead of com.android.library</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="room-database" name="room-database">
+                    <label for="room-database">Enable Room database generation (Android projects)</label>
+                </div>
+            </div>
 
             <div class="form-group">
                 <div class="checkbox-group">
@@ -691,6 +704,12 @@
                 // Add checkboxes
                 if (document.getElementById('generate-unit-test').checked) {
                     formData.append('generate-unit-test', 'true');
+                }
+                if (document.getElementById('android-kotlin-multiplatform-library').checked) {
+                    formData.append('android-kotlin-multiplatform-library', 'true');
+                }
+                if (document.getElementById('room-database').checked) {
+                    formData.append('room-database', 'true');
                 }
                 if(document.getElementById('agp9').checked) {
                     formData.append('agp9', 'true');
