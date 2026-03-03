@@ -124,6 +124,14 @@ class ConventionPluginWriterTest {
             libPluginFile.readText().contains("apply(\"com.android.kotlin.multiplatform.library\")"),
             "Expected KMP Android library plugin application in lib convention plugin"
         )
+        assertTrue(
+            libPluginFile.readText().contains("extensions.configure<KotlinMultiplatformExtension>"),
+            "Expected KotlinMultiplatformExtension configuration in lib convention plugin"
+        )
+        assertTrue(
+            libPluginFile.readText().contains("targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java).configureEach"),
+            "Expected KotlinMultiplatformAndroidLibraryTarget configuration in lib convention plugin"
+        )
     }
 
     private fun assertAndroidConventionFilesExist(projectBasePath: String, versions: Versions) {

@@ -5,13 +5,19 @@ import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.NameMappings
 import java.io.File
 
-class ClassTheme {
+class ClassTheme(
+    private val kotlinMultiplatformLibrary: Boolean = false
+) {
     fun createThemeFile(node: ProjectGraph, lang: LanguageAttributes) {
         val layerDir = NameMappings.layerName(node.layer)
         val moduleDir = NameMappings.moduleName(node.id)
         val packageDir = NameMappings.modulePackageName(node.id)
         val themeDir =
-            File("${lang.projectName}/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$packageDir/ui/theme")
+            File(
+                "${lang.projectName}/$layerDir/$moduleDir/${
+                    AndroidSourceSetLayout.kotlinMainSourceDir(node.type, kotlinMultiplatformLibrary)
+                }/com/awesomeapp/$packageDir/ui/theme"
+            )
         themeDir.mkdirs()
         val themeFile = File(themeDir, "Theme.kt")
         val themeContent = """

@@ -59,7 +59,8 @@ ${testImplementations.joinToString("\n").prependIndent("    ")}
     private fun createAndroidLibBuildFile(node: ProjectGraph, generateUnitTests: Boolean): String {
         val implementations = mutableSetOf<String>()
         val testImplementations = mutableSetOf<String>()
-        val deps = AndroidToml().tomlImplementations(versions, di, versions.android.roomDatabase)
+        val toml = AndroidToml()
+        val deps = toml.tomlImplementations(versions, di, versions.android.roomDatabase)
         // Add direct dependencies first (only from different layers)
         node.nodes.forEach { dependency ->
             if (dependency.layer != node.layer) {
@@ -92,7 +93,8 @@ ${testImplementations.joinToString("\n").prependIndent("    ")}
             collectAllDependencies(dependency)
         }
 
-        return """
+        if (!versions.android.kotlinMultiplatformLibrary) {
+            return """
             |plugins {
             |    id("awesome.androidlib.plugin")
             |}
@@ -102,6 +104,44 @@ ${implementations.joinToString("\n").prependIndent("    ")}
 ${deps.prependIndent("    ")}
 |${testImplementations.joinToString("\n").prependIndent("    ")}
             |
+            |}
+        """.trimMargin()
+        }
+
+        val mainDependencies = buildString {
+            appendLine(implementations.joinToString("\n"))
+            appendLine(toml.tomlKmpAndroidMainImplementations(di, versions.android.roomDatabase))
+        }.trim()
+
+        val hostTestDependencies = buildString {
+            if (generateUnitTests) {
+                appendLine(testImplementations.joinToString("\n").replace("testImplementation", "implementation"))
+                appendLine(toml.tomlKmpAndroidHostTestImplementations(di, versions.android.roomDatabase))
+            }
+        }.trim()
+
+        val processorDependencies = toml.tomlKmpProcessorDependencies(versions, di, versions.android.roomDatabase).trim()
+
+        return """
+            |plugins {
+            |    id("awesome.androidlib.plugin")
+            |}
+            |
+            |kotlin {
+            |    sourceSets {
+            |        androidMain.dependencies {
+${mainDependencies.prependIndent("            ")}
+            |        }
+            |${if (generateUnitTests) """
+            |        androidHostTest.dependencies {
+${hostTestDependencies.prependIndent("            ")}
+            |        }
+            |""".trimMargin() else ""}
+            |    }
+            |}
+            |
+            |dependencies {
+${processorDependencies.prependIndent("    ")}
             |}
         """.trimMargin()
     }

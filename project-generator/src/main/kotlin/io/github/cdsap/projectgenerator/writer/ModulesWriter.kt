@@ -2,6 +2,7 @@ package io.github.cdsap.projectgenerator.writer
 
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.NameMappings
+import io.github.cdsap.projectgenerator.generator.android.AndroidSourceSetLayout
 import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.TypeOfStringResources
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +25,8 @@ abstract class ModulesWrite<MODULE_DEF, DICT>(
     private val buildFilesGenerator: BuildFilesGenerator,
     private val resources: TypeOfStringResources? = null,
     private val nodes: List<ProjectGraph>,
-    private val languages: List<LanguageAttributes>
+    private val languages: List<LanguageAttributes>,
+    private val androidKotlinMultiplatformLibrary: Boolean = false
 ) {
     suspend fun write() = coroutineScope {
         val classesDictionary = ConcurrentHashMap<String, CopyOnWriteArrayList<DICT>>()
@@ -73,11 +75,13 @@ abstract class ModulesWrite<MODULE_DEF, DICT>(
         val layerDir = NameMappings.layerName(node.layer)
         val moduleDir = NameMappings.moduleName(node.id)
         val packageDir = NameMappings.modulePackageName(node.id)
-        File("${lang.projectName}/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$packageDir/").mkdirs()
+        val mainSourceDir = AndroidSourceSetLayout.kotlinMainSourceDir(node.type, androidKotlinMultiplatformLibrary)
+        File("${lang.projectName}/$layerDir/$moduleDir/$mainSourceDir/com/awesomeapp/$packageDir/").mkdirs()
 
         // Create test directory if needed
         if (generateUnitTest) {
-            File("${lang.projectName}/$layerDir/$moduleDir/src/test/kotlin/com/awesomeapp/$packageDir/").mkdirs()
+            val testSourceDir = AndroidSourceSetLayout.kotlinTestSourceDir(node.type, androidKotlinMultiplatformLibrary)
+            File("${lang.projectName}/$layerDir/$moduleDir/$testSourceDir/com/awesomeapp/$packageDir/").mkdirs()
         }
     }
 }

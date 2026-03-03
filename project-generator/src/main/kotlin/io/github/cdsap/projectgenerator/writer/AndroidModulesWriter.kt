@@ -19,13 +19,22 @@ class AndroidModulesWriter(
     versions: Versions,
     di: DependencyInjection
 ) : ModulesWrite<ModuleClassDefinitionAndroid, GenerateDictionaryAndroid>(
-    classGenerator = if (versions.android.roomDatabase) ClassGeneratorAndroid(di) else ClassGeneratorAndroidLegacy(di),
+    classGenerator = if (versions.android.roomDatabase) {
+        ClassGeneratorAndroid(di, versions.android.kotlinMultiplatformLibrary)
+    } else {
+        ClassGeneratorAndroidLegacy(di, versions.android.kotlinMultiplatformLibrary)
+    },
     classPlanner = if (versions.android.roomDatabase) ModuleClassPlannerAndroid() else ModuleClassPlannerAndroidLegacy(),
-    testGenerator = if (versions.android.roomDatabase) TestGeneratorAndroid() else TestGeneratorAndroidLegacy(),
-    resourceGeneratorA = ResourceGenerator(di, versions.android.roomDatabase),
+    testGenerator = if (versions.android.roomDatabase) {
+        TestGeneratorAndroid(versions.android.kotlinMultiplatformLibrary)
+    } else {
+        TestGeneratorAndroidLegacy(versions.android.kotlinMultiplatformLibrary)
+    },
+    resourceGeneratorA = ResourceGenerator(di, versions.android.roomDatabase, versions.android.kotlinMultiplatformLibrary),
     generateUnitTest = generateUnitTest,
     buildFilesGenerator = BuildFilesGeneratorAndroid(versions, di),
     resources = typeOfStringResources,
     nodes = nodes,
-    languages = languages
+    languages = languages,
+    androidKotlinMultiplatformLibrary = versions.android.kotlinMultiplatformLibrary
 )

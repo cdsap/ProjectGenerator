@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator.generator.classes
 
+import io.github.cdsap.projectgenerator.generator.android.AndroidSourceSetLayout
 import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.writer.ClassGenerator
@@ -18,7 +19,8 @@ data class GenerateDictionaryAndroid(
 )
 
 class ClassGeneratorAndroid(
-    private val di: DependencyInjection
+    private val di: DependencyInjection,
+    private val kotlinMultiplatformLibrary: Boolean = false
 ) :
     ClassGenerator<ModuleClassDefinitionAndroid, GenerateDictionaryAndroid> {
 
@@ -127,8 +129,12 @@ class ClassGeneratorAndroid(
 
             val layerDir = NameMappings.layerName(moduleDefinition.layer)
             val moduleDir = NameMappings.moduleName(moduleDefinition.moduleId)
+            val mainSourceDir = AndroidSourceSetLayout.kotlinMainSourceDir(
+                moduleDefinition.projectType ?: TypeProject.ANDROID_LIB,
+                kotlinMultiplatformLibrary
+            )
             val diPackagePath =
-                "${projectName}/$layerDir/$moduleDir/src/main/kotlin/${
+                "${projectName}/$layerDir/$moduleDir/$mainSourceDir/${
                     packageName.replace(
                         ".",
                         "/"
@@ -746,8 +752,12 @@ class ClassGeneratorAndroid(
         val layerDir = NameMappings.layerName(moduleDefinition.layer)
         val moduleDir = NameMappings.moduleName(moduleDefinition.moduleId)
         val packageDir = NameMappings.modulePackageName(moduleDefinition.moduleId)
+        val mainSourceDir = AndroidSourceSetLayout.kotlinMainSourceDir(
+            moduleDefinition.projectType ?: TypeProject.ANDROID_LIB,
+            kotlinMultiplatformLibrary
+        )
         val directory =
-            File("$projectName/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$packageDir/")
+            File("$projectName/$layerDir/$moduleDir/$mainSourceDir/com/awesomeapp/$packageDir/")
         directory.mkdirs()
 
         val fileName = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}.kt"
@@ -779,8 +789,9 @@ class ClassGeneratorAndroid(
 
         val layerDirApp = NameMappings.layerName(moduleDefinition.layer)
         val moduleDirApp = NameMappings.moduleName(moduleDefinition.moduleId)
+        val mainSourceDir = AndroidSourceSetLayout.kotlinMainSourceDir(TypeProject.ANDROID_APP, kotlinMultiplatformLibrary)
         val directory = File(
-            "$projectName/$layerDirApp/$moduleDirApp/src/main/kotlin/${
+            "$projectName/$layerDirApp/$moduleDirApp/$mainSourceDir/${
                 packageName.replace(
                     ".",
                     "/"

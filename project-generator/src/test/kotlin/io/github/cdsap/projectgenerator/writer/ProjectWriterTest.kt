@@ -196,4 +196,30 @@ class ProjectWriterTest {
             NameMappings.moduleNames = previousModuleNames
         }
     }
+
+    @Test
+    fun `writes android library sources into androidMain when kotlin multiplatform library is enabled`() {
+        val node = ProjectGraph("module_1_1", 1, emptyList(), TypeProject.ANDROID_LIB, 10)
+        val language = LanguageAttributes("gradle.kts", "${tempDir}/project_kts_android_main")
+        val versions = Versions(android = Android(kotlinMultiplatformLibrary = true))
+        val projectWriter = ProjectWriter(
+            listOf(node),
+            listOf(language),
+            versions,
+            TypeProjectRequested.ANDROID,
+            TypeOfStringResources.NORMAL,
+            true,
+            GradleWrapper(Gradle.GRADLE_9_3_0),
+            false,
+            "kmp_android_main_layout"
+        )
+
+        projectWriter.write()
+
+        val moduleBase = "${language.projectName}/${NameMappings.layerName(1)}/${NameMappings.moduleName("module_1_1")}"
+        assertTrue(File("$moduleBase/src/androidMain/kotlin").exists())
+        assertTrue(File("$moduleBase/src/androidMain/res").exists())
+        assertTrue(File("$moduleBase/src/androidMain/AndroidManifest.xml").exists())
+        assertTrue(File("$moduleBase/src/androidHostTest/kotlin").exists())
+    }
 }

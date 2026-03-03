@@ -9,7 +9,9 @@ import io.github.cdsap.projectgenerator.model.ClassTypeAndroid
 import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
 
-class AndroidApplication {
+class AndroidApplication(
+    private val kotlinMultiplatformLibrary: Boolean = false
+) {
     fun createApplicationClass(
         node: ProjectGraph,
         lang: LanguageAttributes,
@@ -21,7 +23,11 @@ class AndroidApplication {
         val moduleDir = NameMappings.moduleName(node.id)
         val packageDir = NameMappings.modulePackageName(node.id)
         val appDir =
-            File("${lang.projectName}/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$packageDir/")
+            File(
+                "${lang.projectName}/$layerDir/$moduleDir/${
+                    AndroidSourceSetLayout.kotlinMainSourceDir(node.type, kotlinMultiplatformLibrary)
+                }/com/awesomeapp/$packageDir/"
+            )
         appDir.mkdirs()
         val appFile = File(appDir, "MainApplication.kt")
 

@@ -100,7 +100,7 @@ class AndroidToml {
         kotlin-ksp = { id ="com.google.devtools.ksp", version.ref = "ksp" }
     """.trimIndent()
 
-    fun tomlImplementations(version: Versions, di: DependencyInjection, roomDatabase: Boolean = false) = """
+fun tomlImplementations(version: Versions, di: DependencyInjection, roomDatabase: Boolean = false) = """
     |implementation(libs.androidx.core.ktx)
     |implementation(libs.appcompat)
     |implementation(libs.material)
@@ -117,7 +117,7 @@ class AndroidToml {
     |${hiltDependencies(version, di)}
     |${metroDependencies(di)}
 
-    |implementation(platform(libs.compose.bom))
+    |implementation(project.dependencies.platform(libs.compose.bom))
     |implementation(libs.compose.ui)
     |implementation(libs.compose.ui.graphics)
     |implementation(libs.compose.ui.tooling.preview)
@@ -143,6 +143,55 @@ class AndroidToml {
     |androidTestImplementation(libs.espresso.core)
 """.trimMargin()
 
+    fun tomlKmpAndroidMainImplementations(di: DependencyInjection, roomDatabase: Boolean = false) = """
+    |implementation(libs.androidx.core.ktx)
+    |implementation(libs.appcompat)
+    |implementation(libs.material)
+    |implementation(libs.lifecycle.viewmodel.ktx)
+    |implementation(libs.lifecycle.runtime.ktx)
+    |implementation(libs.lifecycle.livedata.ktx)
+    |implementation(libs.lifecycle.common.java8)
+    |implementation(libs.coroutines.android)
+    |implementation(libs.fragment.ktx)
+    |implementation(libs.activity.ktx)
+    |implementation(libs.constraintlayout)
+    |implementation(libs.work.runtime.ktx)
+    |${roomRuntimeDependencies(roomDatabase)}
+    |${hiltRuntimeDependencies(di)}
+    |${metroDependencies(di)}
+    |
+    |implementation(project.dependencies.platform(libs.compose.bom))
+    |implementation(libs.compose.ui)
+    |implementation(libs.compose.ui.graphics)
+    |implementation(libs.compose.ui.tooling.preview)
+    |implementation(libs.compose.material3)
+    |implementation(libs.compose.runtime)
+    |implementation(libs.compose.runtime.livedata)
+    |implementation(libs.activity.compose)
+    |implementation(libs.lifecycle.viewmodel.compose)
+""".trimMargin()
+
+    fun tomlKmpAndroidHostTestImplementations(di: DependencyInjection, roomDatabase: Boolean = false) = """
+    |implementation(libs.junit4)
+    |implementation(libs.junit5.vintage)
+    |implementation(libs.coroutines.test)
+    |implementation(libs.core.testing)
+    |implementation(libs.mockk)
+    |implementation(libs.truth)
+    |implementation(libs.kotlin.test)
+    |implementation(libs.androidx.test.core)
+    |implementation(libs.work.testing)
+    |implementation(libs.robolectric)
+    |implementation(libs.androidx.test.junit)
+    |${if (roomDatabase) "implementation(libs.room.testing)" else ""}
+    |${if (di == DependencyInjection.HILT) "implementation(libs.hilt.android.testing)" else ""}
+""".trimMargin()
+
+    fun tomlKmpProcessorDependencies(version: Versions, di: DependencyInjection, roomDatabase: Boolean = false) = """
+    |${roomProcessorDependencies(version, roomDatabase, "kspAndroid")}
+    |${hiltProcessorDependencies(version, di, "kspAndroid")}
+""".trimMargin()
+
     private fun roomDependencies(version: Versions, roomDatabase: Boolean): String {
         return if (roomDatabase) {
             """
@@ -151,6 +200,29 @@ class AndroidToml {
             add("${kotlinProcessor(version)}", libs.room.compiler)
             testImplementation(libs.room.testing)
             """.trimIndent()
+        } else {
+            ""
+        }
+    }
+
+    private fun roomRuntimeDependencies(roomDatabase: Boolean): String {
+        return if (roomDatabase) {
+            """
+            implementation(libs.room.runtime)
+            implementation(libs.room.ktx)
+            """.trimIndent()
+        } else {
+            ""
+        }
+    }
+
+    private fun roomProcessorDependencies(
+        version: Versions,
+        roomDatabase: Boolean,
+        configuration: String = kotlinProcessor(version)
+    ): String {
+        return if (roomDatabase) {
+            """add("$configuration", libs.room.compiler)"""
         } else {
             ""
         }
@@ -255,6 +327,33 @@ class AndroidToml {
             add("${kotlinProcessor(version)}Test", libs.hilt.compiler)
             add("${kotlinProcessor(version)}AndroidTest", libs.hilt.compiler)
             testImplementation(libs.hilt.android.testing)
+            """.trimIndent()
+        } else {
+            ""
+        }
+    }
+
+    private fun hiltRuntimeDependencies(di: DependencyInjection): String {
+        return if (di == DependencyInjection.HILT) {
+            """
+            implementation(libs.hilt.work)
+            implementation(libs.hilt.android)
+            """.trimIndent()
+        } else {
+            ""
+        }
+    }
+
+    private fun hiltProcessorDependencies(
+        version: Versions,
+        di: DependencyInjection,
+        configuration: String = kotlinProcessor(version)
+    ): String {
+        return if (di == DependencyInjection.HILT) {
+            """
+            add("$configuration", libs.hilt.compiler.androidx)
+            add("$configuration", libs.hilt.compiler)
+            add("$configuration", libs.kotlin.jvm.metadata)
             """.trimIndent()
         } else {
             ""
