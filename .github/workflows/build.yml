@@ -115,7 +115,7 @@ jobs:
       - name: Archive production artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: graphs
+          name: graphs-${{ matrix.java }}
           path: |
             inverse_triangle.png
             triangle.png
