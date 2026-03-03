@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator.generator.test
 
+import io.github.cdsap.projectgenerator.DefaultTestVersions.Companion.LATEST_GRADLE
 import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.writer.ProjectWriter
 import io.github.cdsap.projectgenerator.model.*
@@ -29,7 +30,7 @@ class TestGeneratorJvmTest {
             TypeProjectRequested.JVM,
             TypeOfStringResources.NORMAL,
             true, // generateUnitTest
-            GradleWrapper(Gradle.GRADLE_9_3_0),
+            GradleWrapper(LATEST_GRADLE),
             false,
             ""
         )

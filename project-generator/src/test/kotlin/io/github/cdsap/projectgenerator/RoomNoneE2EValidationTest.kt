@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator
 
+import io.github.cdsap.projectgenerator.DefaultTestVersions.Companion.LATEST_GRADLE
 import io.github.cdsap.projectgenerator.model.Android
 import io.github.cdsap.projectgenerator.model.ClassesPerModule
 import io.github.cdsap.projectgenerator.model.ClassesPerModuleType
@@ -39,7 +40,7 @@ class RoomNoneE2EValidationTest {
             typeOfStringResources = TypeOfStringResources.NORMAL,
             layers = 3,
             generateUnitTest = true,
-            gradle = GradleWrapper(Gradle.GRADLE_9_3_0),
+            gradle = GradleWrapper(LATEST_GRADLE),
             path = tempDir.toFile().path,
             projectName = "room_none_e2e"
         ).write()

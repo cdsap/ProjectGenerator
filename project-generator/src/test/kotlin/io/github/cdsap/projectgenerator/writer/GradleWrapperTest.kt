@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator.writer
 
+import io.github.cdsap.projectgenerator.DefaultTestVersions.Companion.LATEST_GRADLE
 import io.github.cdsap.projectgenerator.model.Gradle
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -16,7 +17,7 @@ class GradleWrapperTest {
     @Test
     fun `installGradleVersion should unzip files and make them executable`() {
 
-        val gradle = Gradle.GRADLE_9_3_0
+        val gradle = LATEST_GRADLE
         val gradleWrapper = GradleWrapper(gradle)
 
         gradleWrapper.installGradleVersion(tempDir.absolutePath)

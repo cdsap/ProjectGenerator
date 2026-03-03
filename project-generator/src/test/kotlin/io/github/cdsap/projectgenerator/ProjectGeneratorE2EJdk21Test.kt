@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator
 
+import io.github.cdsap.projectgenerator.DefaultTestVersions.Companion.LATEST_GRADLE
 import io.github.cdsap.projectgenerator.model.ClassesPerModule
 import io.github.cdsap.projectgenerator.model.ClassesPerModuleType
 import io.github.cdsap.projectgenerator.model.Gradle
@@ -35,7 +36,7 @@ class ProjectGeneratorE2EJdk21Test {
             TypeOfStringResources.LARGE,
             5,
             true,
-            GradleWrapper(Gradle.GRADLE_9_3_0),
+            GradleWrapper(LATEST_GRADLE),
             path = tempDir.toFile().path,
             false,
             projectName = "${shape.name.lowercase().capitalize()}$modules"
