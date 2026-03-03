@@ -12,7 +12,8 @@ jobs:
     strategy:
       matrix:
         java:
-          - [17, 21]
+          - 17
+          - 21
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -31,7 +32,8 @@ jobs:
     strategy:
       matrix:
         java:
-          - [17,21]
+          - 17
+          - 21
         test-class:
           - 'io.github.cdsap.projectgenerator.ProjectGeneratorE2ETest'
           - 'io.github.cdsap.projectgenerator.ProjectGeneratorE2EAgp9Test'
@@ -59,7 +61,8 @@ jobs:
     strategy:
       matrix:
         java:
-          - [17, 21]
+          - 17
+          - 21
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs: unit-tests
