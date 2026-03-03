@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator.generator.buildfiles
 
+import io.github.cdsap.projectgenerator.DefaultTestVersions.Companion.LATEST_GRADLE
 import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.writer.ProjectWriter
 import io.github.cdsap.projectgenerator.model.Gradle
@@ -39,7 +40,7 @@ class BuildFilesGeneratorJvmTest {
             TypeProjectRequested.JVM,
             TypeOfStringResources.NORMAL,
             false,
-            GradleWrapper(Gradle.GRADLE_9_3_0),
+            GradleWrapper(LATEST_GRADLE),
             false,
             ""
         )
@@ -71,7 +72,7 @@ class BuildFilesGeneratorJvmTest {
             TypeProjectRequested.JVM,
             TypeOfStringResources.NORMAL,
             false,
-            GradleWrapper(Gradle.GRADLE_9_3_0),
+            GradleWrapper(LATEST_GRADLE),
             false,
             ""
         )

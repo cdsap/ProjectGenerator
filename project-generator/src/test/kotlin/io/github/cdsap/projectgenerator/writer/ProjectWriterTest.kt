@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator
 
+import io.github.cdsap.projectgenerator.DefaultTestVersions.Companion.LATEST_GRADLE
 import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
 import io.github.cdsap.projectgenerator.writer.ProjectWriter
@@ -38,7 +39,7 @@ class ProjectWriterTest {
             typeOfProjectRequested,
             TypeOfStringResources.NORMAL,
             false,
-            GradleWrapper(Gradle.GRADLE_8_13),
+            GradleWrapper(Gradle.GRADLE_8_14_3),
             true,
             "awesomeapp"
         )
@@ -81,7 +82,7 @@ class ProjectWriterTest {
             TypeProjectRequested.ANDROID,
             TypeOfStringResources.NORMAL,
             false,
-            GradleWrapper(Gradle.GRADLE_9_3_0),
+            GradleWrapper(LATEST_GRADLE),
             false,
             "manual_room_none"
         )
@@ -112,7 +113,7 @@ class ProjectWriterTest {
             TypeProjectRequested.ANDROID,
             TypeOfStringResources.NORMAL,
             false,
-            GradleWrapper(Gradle.GRADLE_9_3_0),
+            GradleWrapper(LATEST_GRADLE),
             false,
             "kmp_android_lib_alias"
         )
@@ -137,7 +138,7 @@ class ProjectWriterTest {
             TypeProjectRequested.ANDROID,
             TypeOfStringResources.NORMAL,
             false,
-            GradleWrapper(Gradle.GRADLE_9_3_0),
+            GradleWrapper(LATEST_GRADLE),
             false,
             "hilt_lean_graph"
         )
@@ -171,7 +172,7 @@ class ProjectWriterTest {
                 TypeProjectRequested.ANDROID,
                 TypeOfStringResources.NORMAL,
                 false,
-                GradleWrapper(Gradle.GRADLE_9_3_0),
+                GradleWrapper(LATEST_GRADLE),
                 false,
                 "hilt_entrypoints"
             )

@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator
 
+import io.github.cdsap.projectgenerator.DefaultTestVersions.Companion.LATEST_GRADLE
 import io.github.cdsap.projectgenerator.model.ClassesPerModule
 import io.github.cdsap.projectgenerator.model.ClassesPerModuleType
 import io.github.cdsap.projectgenerator.model.Gradle
@@ -38,7 +39,7 @@ class SingleE2EValidationTest {
             typeOfStringResources = TypeOfStringResources.LARGE,
             layers = 5,
             generateUnitTest = true,
-            gradle = GradleWrapper(Gradle.GRADLE_9_3_0),
+            gradle = GradleWrapper(LATEST_GRADLE),
             path = tempDir.toFile().path,
             projectName = "${shape.name.lowercase().capitalize()}_$modules"
         ).write()
@@ -87,7 +88,7 @@ class SingleE2EValidationTest {
             typeOfStringResources = TypeOfStringResources.LARGE,
             layers = 5,
             generateUnitTest = true,
-            gradle = GradleWrapper(Gradle.GRADLE_9_3_0),
+            gradle = GradleWrapper(LATEST_GRADLE),
             path = tempDir.toFile().path,
             projectName = "${shape.name.lowercase().capitalize()}_$modules"
         ).write()

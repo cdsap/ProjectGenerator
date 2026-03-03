@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator
 
+import io.github.cdsap.projectgenerator.DefaultTestVersions.Companion.LATEST_GRADLE
 import io.github.cdsap.projectgenerator.model.Android
 import io.github.cdsap.projectgenerator.model.ClassesPerModule
 import io.github.cdsap.projectgenerator.model.ClassesPerModuleType
@@ -42,7 +43,7 @@ class RoomDiVariantsAssembleE2EValidationTest {
             typeOfStringResources = TypeOfStringResources.NORMAL,
             layers = 2,
             generateUnitTest = false,
-            gradle = GradleWrapper(Gradle.GRADLE_9_3_0),
+            gradle = GradleWrapper(LATEST_GRADLE),
             path = tempDir.toFile().path,
             projectName = projectName
         ).write()

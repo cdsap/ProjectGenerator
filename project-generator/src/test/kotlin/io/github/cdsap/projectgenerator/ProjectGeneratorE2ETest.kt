@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator
 
+import io.github.cdsap.projectgenerator.DefaultTestVersions.Companion.LATEST_GRADLE
 import io.github.cdsap.projectgenerator.model.Android
 import io.github.cdsap.projectgenerator.model.ClassesPerModule
 import io.github.cdsap.projectgenerator.model.ClassesPerModuleType
@@ -38,7 +39,7 @@ class ProjectGeneratorE2ETest {
             TypeOfStringResources.LARGE,
             5,
             true,
-            GradleWrapper(Gradle.GRADLE_9_3_0),
+            GradleWrapper(LATEST_GRADLE),
             path = tempDir.toFile().path,
             false,
             projectName = "${shape.name.lowercase().capitalize()}$modules"
@@ -87,7 +88,7 @@ class ProjectGeneratorE2ETest {
             TypeOfStringResources.LARGE,
             5,
             true,
-            GradleWrapper(Gradle.GRADLE_8_13),
+            GradleWrapper(Gradle.GRADLE_8_14_3),
             path = tempDir.toFile().path,
             false,
             projectName = "${shape.name.lowercase().capitalize()}$modules"
@@ -133,7 +134,7 @@ class ProjectGeneratorE2ETest {
             TypeOfStringResources.LARGE,
             5,
             true,
-            GradleWrapper(Gradle.GRADLE_9_3_0),
+            GradleWrapper(LATEST_GRADLE),
             path = tempDir.toFile().path,
             false,
             projectName = "${shape.name.lowercase().capitalize()}$modules"
