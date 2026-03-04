@@ -36,9 +36,9 @@ jobs:
           - 21
         test-class:
           - 'io.github.cdsap.projectgenerator.ProjectGeneratorE2ETest'
-          - 'io.github.cdsap.projectgenerator.ProjectGeneratorE2EAgp9Test'
           - 'io.github.cdsap.projectgenerator.ProjectGeneratorE2EJdk21Test'
-          - 'io.github.cdsap.projectgenerator.SingleE2EValidationTest'
+          - 'io.github.cdsap.projectgenerator.RoomDiVariantsAssembleE2EValidationTest'
+          - 'io.github.cdsap.projectgenerator.AndroidKotlinMultiplatformLibraryE2EValidationTest'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs: unit-tests
