@@ -209,7 +209,7 @@ class ProjectWriterTest {
             TypeProjectRequested.ANDROID,
             TypeOfStringResources.NORMAL,
             true,
-            GradleWrapper(Gradle.GRADLE_9_3_0),
+            GradleWrapper(LATEST_GRADLE),
             false,
             "kmp_android_main_layout"
         )

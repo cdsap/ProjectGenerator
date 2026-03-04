@@ -108,7 +108,7 @@ class BuildFilesGeneratorAndroidTest {
             TypeProjectRequested.ANDROID,
             TypeOfStringResources.NORMAL,
             true,
-            GradleWrapper(Gradle.GRADLE_9_3_0),
+            GradleWrapper(LATEST_GRADLE),
             false,
             ""
         )
