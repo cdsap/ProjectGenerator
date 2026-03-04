@@ -7,98 +7,98 @@ import io.github.cdsap.projectgenerator.model.Versions
 class AndroidToml {
 
     fun toml(version: Versions) = """
-        [versions]
-        agp = "${version.android.agp}"
-        kotlin = "${version.kotlin.kgp}"
-        ksp = "${version.kotlin.ksp}"
-
-        androidx-core = "${version.android.androidxCore}"
-        appcompat = "${version.android.appcompat}"
-        material = "${version.android.material}"
-        lifecycle = "${version.android.lifecycle}"
-        coroutines = "${version.kotlin.coroutines}"
-        fragment = "${version.android.fragment}"
-        activity = "${version.android.activity}"
-        constraintlayout = "${version.android.constraintlayout}"
-        work = "${version.android.work}"
-        room = "${version.android.room}"
-        ${hiltVersions(version, version.di)}
-        ${metroVersions(version, version.di)}
-        compose-bom = "${version.android.composeBom}"
-        junit4 = "${version.testing.junit4}"
-        junit5 = "${version.testing.junit5}"
-        truth = "${version.testing.truth}"
-        mockk = "${version.testing.mockk}"
-        kotlin-test = "${version.kotlin.kotlinTest}"
-        core-testing = "${version.testing.coreTesting}"
-        robolectric = "${version.android.robolectric}"
-        espresso = "${version.android.espresso}"
-        junit-ext = "${version.testing.junitExt}"
-
-        [libraries]
-        androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core" }
-        appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-        material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-        lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
-        lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
-        lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
-        lifecycle-common-java8 = { group = "androidx.lifecycle", name = "lifecycle-common-java8", version.ref = "lifecycle" }
-        coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
-        fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragment" }
-        activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
-        constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-        work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
-        room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
-        room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
-        room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
-        room-testing = { group = "androidx.room", name = "room-testing", version.ref = "room" }
-        ${hiltLibraries(version.di)}
-        ${metroLibraries(version.di)}
-        kotlin-jvm-metadata = { group = "org.jetbrains.kotlin", name = "kotlin-metadata-jvm", version.ref = "kotlin"}
-
-        compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
-        compose-ui = { group = "androidx.compose.ui", name = "ui" }
-        compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
-        compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-        compose-material3 = { group = "androidx.compose.material3", name = "material3" }
-        compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
-        compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
-        activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
-        lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
-        compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-        compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-
-        junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
-        junit5-vintage = { group = "org.junit.vintage", name = "junit-vintage-engine", version.ref = "junit5" }
-        coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
-        core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "core-testing" }
-        mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
-        truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
-        kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin-test" }
-        androidx-test-core = { group = "androidx.test", name = "core", version = "1.5.0" }
-        work-testing = { group = "androidx.work", name = "work-testing", version.ref = "work" }
-        robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
-        androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit-ext" }
-        espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
-
-        # Dependencies of the included build-logic
-        android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
-        kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
-        ${hiltBuildLogicLibrary(version.di)}
-        ${metroBuildLogicLibrary(version.di)}
-        kotlin-compose-plugin = { group = "org.jetbrains.kotlin.plugin.compose", name = "org.jetbrains.kotlin.plugin.compose.gradle.plugin", version.ref="kotlin" }
-
-        [plugins]
-        android-application = { id = "com.android.application", version.ref = "agp" }
-        android-library = { id = "com.android.library", version.ref = "agp" }
-        android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
-        ${hiltPlugin(version.di)}
-        ${metroPlugin(version.di)}
-        kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-        kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-        kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-        kotlin-ksp = { id ="com.google.devtools.ksp", version.ref = "ksp" }
-    """.trimIndent()
+        |[versions]
+        |agp = "${version.android.agp}"
+        |kotlin = "${version.kotlin.kgp}"
+        |ksp = "${version.kotlin.ksp}"
+        |
+        |androidx-core = "${version.android.androidxCore}"
+        |appcompat = "${version.android.appcompat}"
+        |material = "${version.android.material}"
+        |lifecycle = "${version.android.lifecycle}"
+        |coroutines = "${version.kotlin.coroutines}"
+        |fragment = "${version.android.fragment}"
+        |activity = "${version.android.activity}"
+        |constraintlayout = "${version.android.constraintlayout}"
+        |work = "${version.android.work}"
+        |room = "${version.android.room}"
+        |${hiltVersions(version, version.di)}
+        |${metroVersions(version, version.di)}
+        |compose-bom = "${version.android.composeBom}"
+        |junit4 = "${version.testing.junit4}"
+        |junit5 = "${version.testing.junit5}"
+        |truth = "${version.testing.truth}"
+        |mockk = "${version.testing.mockk}"
+        |kotlin-test = "${version.kotlin.kotlinTest}"
+        |core-testing = "${version.testing.coreTesting}"
+        |robolectric = "${version.android.robolectric}"
+        |espresso = "${version.android.espresso}"
+        |junit-ext = "${version.testing.junitExt}"
+        |
+        |[libraries]
+        |androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core" }
+        |appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+        |material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+        |lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+        |lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
+        |lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
+        |lifecycle-common-java8 = { group = "androidx.lifecycle", name = "lifecycle-common-java8", version.ref = "lifecycle" }
+        |coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+        |fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragment" }
+        |activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
+        |constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+        |work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
+        |room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+        |room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+        |room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+        |room-testing = { group = "androidx.room", name = "room-testing", version.ref = "room" }
+        |${hiltLibraries(version.di)}
+        |${metroLibraries(version.di)}
+        |kotlin-jvm-metadata = { group = "org.jetbrains.kotlin", name = "kotlin-metadata-jvm", version.ref = "kotlin" }
+        |
+        |compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+        |compose-ui = { group = "androidx.compose.ui", name = "ui" }
+        |compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+        |compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+        |compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+        |compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
+        |compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
+        |activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+        |lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+        |compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+        |compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+        |
+        |junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
+        |junit5-vintage = { group = "org.junit.vintage", name = "junit-vintage-engine", version.ref = "junit5" }
+        |coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+        |core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "core-testing" }
+        |mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+        |truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
+        |kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin-test" }
+        |androidx-test-core = { group = "androidx.test", name = "core", version = "1.5.0" }
+        |work-testing = { group = "androidx.work", name = "work-testing", version.ref = "work" }
+        |robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
+        |androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit-ext" }
+        |espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+        |
+        |# Dependencies of the included build-logic
+        |android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+        |kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+        |${hiltBuildLogicLibrary(version.di)}
+        |${metroBuildLogicLibrary(version.di)}
+        |kotlin-compose-plugin = { group = "org.jetbrains.kotlin.plugin.compose", name = "org.jetbrains.kotlin.plugin.compose.gradle.plugin", version.ref = "kotlin" }
+        |
+        |[plugins]
+        |android-application = { id = "com.android.application", version.ref = "agp" }
+        |android-library = { id = "com.android.library", version.ref = "agp" }
+        |android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+        |${hiltPlugin(version.di)}
+        |${metroPlugin(version.di)}
+        |kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+        |kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+        |kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+        |kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+    """.trimMargin()
 
     fun tomlImplementations(version: Versions, di: DependencyInjection, roomDatabase: Boolean = false) = """
     |implementation(libs.androidx.core.ktx)
@@ -167,9 +167,9 @@ class AndroidToml {
     private fun hiltVersions(version: Versions, di: DependencyInjection): String {
         return if (di == DependencyInjection.HILT) {
             """
-            hilt = "${version.android.hilt}"
-            hilt-androidx = "${version.android.hiltAandroidx}"
-            """.trimIndent()
+            |hilt = "${version.android.hilt}"
+            |hilt-androidx = "${version.android.hiltAandroidx}"
+            """.trimMargin()
         } else {
             ""
         }
@@ -178,9 +178,9 @@ class AndroidToml {
     private fun metroVersions(version: Versions, di: DependencyInjection): String {
         return if (di == DependencyInjection.METRO) {
             """
-            metro = "${version.android.metro}"
-            metro-plugin = "${version.android.metroPlugin}"
-            """.trimIndent()
+            |metro = "${version.android.metro}"
+            |metro-plugin = "${version.android.metroPlugin}"
+            """.trimMargin()
         } else {
             ""
         }
@@ -189,13 +189,13 @@ class AndroidToml {
     private fun hiltLibraries(di: DependencyInjection): String {
         return if (di == DependencyInjection.HILT) {
             """
-            hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
-            hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hilt-androidx" }
-            hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
-            hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
-            hilt-compiler-androidx = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hilt-androidx" }
-            hilt-compiler-android-androidx = { group = "androidx.hilt", name = "hilt-android", version.ref = "hilt-androidx" }
-            """.trimIndent()
+            |hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+            |hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hilt-androidx" }
+            |hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+            |hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
+            |hilt-compiler-androidx = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hilt-androidx" }
+            |hilt-compiler-android-androidx = { group = "androidx.hilt", name = "hilt-android", version.ref = "hilt-androidx" }
+            """.trimMargin()
         } else {
             ""
         }
@@ -204,8 +204,8 @@ class AndroidToml {
     private fun metroLibraries(di: DependencyInjection): String {
         return if (di == DependencyInjection.METRO) {
             """
-            metro-runtime = { group = "dev.zacsweers.metro", name = "runtime", version.ref = "metro" }
-            """.trimIndent()
+            |metro-runtime = { group = "dev.zacsweers.metro", name = "runtime", version.ref = "metro" }
+            """.trimMargin()
         } else {
             ""
         }
