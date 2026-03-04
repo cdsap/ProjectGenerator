@@ -57,5 +57,13 @@ class RoomDiVariantsAssembleE2EValidationTest {
         assertTrue(assemble.output.contains("BUILD SUCCESSFUL"))
         assertTrue(assemble.output.contains("assembleDebug"))
         assertTrue(assemble.output.contains("assembleRelease"))
+
+        if (di == DependencyInjection.NONE) {
+            val tests = GradleRunner.create()
+                .withProjectDir(projectDir)
+                .withArguments("testDebugUnitTest")
+                .build()
+            assertTrue(tests.output.contains("BUILD SUCCESSFUL"))
+        }
     }
 }
