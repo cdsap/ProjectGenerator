@@ -26,7 +26,7 @@ class Manifest {
                 } else {
                     ""
                 }
-                val composeActivityName = ".$name"
+                val composeActivityName = if (name.isBlank()) "android.app.Activity" else ".$name"
                 val applicationName = ".MainApplication"
                 """
                     <?xml version="1.0" encoding="utf-8"?>

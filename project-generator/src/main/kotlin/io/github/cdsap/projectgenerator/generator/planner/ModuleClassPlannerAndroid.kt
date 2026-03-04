@@ -13,6 +13,12 @@ class ModuleClassPlannerAndroid : ModuleClassPlanner<ModuleClassDefinitionAndroi
         val layer = projectGraph.layer
         val moduleNumber = projectGraph.id.split("_").last().toInt()
         val maxClasses = projectGraph.classes.coerceAtLeast(0)
+        val effectiveMaxClasses = if (projectGraph.type == TypeProject.ANDROID_APP) {
+            // Room app modules need a baseline dependency chain for a valid launch activity.
+            maxClasses.coerceAtLeast(10)
+        } else {
+            maxClasses
+        }
         val classes = mutableListOf<ClassDefinitionAndroid>()
         var currentIndex = 1
 
@@ -20,7 +26,7 @@ class ModuleClassPlannerAndroid : ModuleClassPlanner<ModuleClassDefinitionAndroi
             mutableListOf(ClassDependencyAndroid(type, moduleId))
         }
         val addClass = { type: ClassTypeAndroid, deps: MutableList<ClassDependencyAndroid> ->
-            if (classes.size < maxClasses) {
+            if (classes.size < effectiveMaxClasses) {
                 classes.add(ClassDefinitionAndroid(type = type, index = currentIndex++, dependencies = deps))
             }
         }
@@ -53,7 +59,7 @@ class ModuleClassPlannerAndroid : ModuleClassPlanner<ModuleClassDefinitionAndroi
             addClass(ClassTypeAndroid.FRAGMENT, mutableListOf())
         }
 
-        val remainingClasses = maxClasses - classes.size
+        val remainingClasses = effectiveMaxClasses - classes.size
         if (remainingClasses > 0) {
             for (i in 1..remainingClasses) {
                 val classType = when (i % 2) {
