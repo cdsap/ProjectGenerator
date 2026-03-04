@@ -41,6 +41,10 @@ class CompositeBuildBuildGradle {
             |            id = "awesome.androidlib.plugin"
             |            implementationClass = "com.logic.CompositeBuildPluginAndroidLib"
             |        }
+            |        register("androidKmpLibPlugin") {
+            |            id = "awesome.android.kmp.lib.plugin"
+            |            implementationClass = "com.logic.CompositeBuildPluginAndroidKmpLib"
+            |        }
             |    }
             |}
             |gradlePlugin {

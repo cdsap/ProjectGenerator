@@ -118,9 +118,10 @@ class BuildFilesGeneratorAndroidTest {
         val content = buildFile.readText()
 
         assertTrue(content.contains("kotlin {"))
+        assertTrue(content.contains("id(\"awesome.android.kmp.lib.plugin\")"))
         assertTrue(content.contains("androidMain.dependencies {"))
         assertTrue(content.contains("androidHostTest.dependencies {"))
         assertTrue(content.contains("implementation(project(\":${NameMappings.layerName(2)}:${NameMappings.moduleName("module_0_1")}\"))"))
-        assertTrue(content.contains("add(\"ksp\""))
+        assertTrue(content.contains("add(\"kspAndroid\""))
     }
 }

@@ -6,48 +6,7 @@ import io.github.cdsap.projectgenerator.model.Processor
 import io.github.cdsap.projectgenerator.model.Versions
 
 class CompositeBuildPluginAndroidLib {
-    fun get(versions: Versions, di: DependencyInjection) = if (versions.android.kotlinMultiplatformLibrary) {
-        """
-        |package com.logic
-        |
-        |import org.gradle.api.Plugin
-        |import org.gradle.api.Project
-        |import org.gradle.kotlin.dsl.configure
-        |import org.gradle.kotlin.dsl.dependencies
-        |import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
-        |import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-        |
-        |class CompositeBuildPluginAndroidLib : Plugin<Project> {
-        |    override fun apply(target: Project) {
-        |        with(target) {
-        |            with(pluginManager) {
-        |                apply("com.android.kotlin.multiplatform.library")
-        |                apply("org.jetbrains.kotlin.multiplatform")
-        |                ${provideKotlinProcessor(versions, di)}
-        |                ${applyDiPlugin(di, true)}
-        |                apply("org.jetbrains.kotlin.plugin.compose")
-        |            }
-        |
-        |            extensions.configure<KotlinMultiplatformExtension> {
-        |                targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java).configureEach {
-        |                    namespace = "com.awesomeapp." + target.name.replace(":","_").replace("-", "")
-        |                    compileSdk = 36
-        |                    minSdk = 24
-        |                    withJava()
-        |                    androidResources.enable = true
-        |                }
-        |
-        |                jvmToolchain(${versions.project.jdk})
-        |            }
-        |
-        |            dependencies {
-        |
-        |            }
-        |        }
-        |    }
-        |}
-        |""".trimMargin()
-    } else """
+    fun get(versions: Versions, di: DependencyInjection) = """
         |package com.logic
         |
         |import org.gradle.api.Plugin
@@ -55,21 +14,20 @@ class CompositeBuildPluginAndroidLib {
         |import org.gradle.api.Project
         |import org.gradle.kotlin.dsl.configure
         |import org.gradle.kotlin.dsl.dependencies
-        |import org.gradle.kotlin.dsl.withType
         |import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
         |
         |class CompositeBuildPluginAndroidLib : Plugin<Project> {
         |    override fun apply(target: Project) {
         |        with(target) {
         |            with(pluginManager) {
-        |                apply("${androidLibraryPluginId(versions)}")
+        |                apply("com.android.library")
         |                ${provideKgpBasedOnAgp(versions)}
-        |                ${provideKotlinProcessor(versions,di)}
-        |                ${applyDiPlugin(di, false)}
+        |                ${provideKotlinProcessor(versions, di)}
+        |                ${applyDiPlugin(di)}
         |                apply("org.jetbrains.kotlin.plugin.compose")
         |            }
         |
-        |            extensions.configure<com.android.build.api.dsl.LibraryExtension>  {
+        |            extensions.configure<com.android.build.api.dsl.LibraryExtension> {
         |                namespace = "com.awesomeapp." + target.name.replace(":","_").replace("-", "")
         |                compileSdk = 36
         |                defaultConfig {
@@ -90,8 +48,9 @@ class CompositeBuildPluginAndroidLib {
         |                    compose = true
         |                }
         |            }
+        |
         |            target.extensions.getByType(KotlinAndroidProjectExtension::class.java).apply {
-        |                    jvmToolchain(${versions.project.jdk})
+        |                jvmToolchain(${versions.project.jdk})
         |            }
         |
         |            target.extensions.getByType(org.gradle.api.plugins.JavaPluginExtension::class.java).apply {
@@ -114,24 +73,17 @@ class CompositeBuildPluginAndroidLib {
         return if (shouldApplyKsp) """apply("com.google.devtools.ksp")""" else ""
     }
 
-    fun provideKgpBasedOnAgp(versions: Versions) = if (!versions.android.agp.isAgp9())
+    fun provideKgpBasedOnAgp(versions: Versions) = if (!versions.android.agp.isAgp9()) {
         """apply("org.jetbrains.kotlin.android")"""
-    else
-        """"""
-
-    fun applyDiPlugin(di: DependencyInjection, kotlinMultiplatformLibrary: Boolean): String {
-        return when (di) {
-            DependencyInjection.HILT -> if (kotlinMultiplatformLibrary) "" else """apply("dagger.hilt.android.plugin")"""
-            DependencyInjection.METRO -> """apply("dev.zacsweers.metro")"""
-            DependencyInjection.NONE -> """"""
-        }
+    } else {
+        ""
     }
 
-    private fun androidLibraryPluginId(versions: Versions): String {
-        return if (versions.android.kotlinMultiplatformLibrary) {
-            "com.android.kotlin.multiplatform.library"
-        } else {
-            "com.android.library"
+    fun applyDiPlugin(di: DependencyInjection): String {
+        return when (di) {
+            DependencyInjection.HILT -> """apply("dagger.hilt.android.plugin")"""
+            DependencyInjection.METRO -> """apply("dev.zacsweers.metro")"""
+            DependencyInjection.NONE -> ""
         }
     }
 }

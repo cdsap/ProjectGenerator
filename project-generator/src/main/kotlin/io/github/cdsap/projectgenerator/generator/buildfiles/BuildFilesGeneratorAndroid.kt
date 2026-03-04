@@ -96,7 +96,7 @@ ${testImplementations.joinToString("\n").prependIndent("    ")}
         if (!versions.android.kotlinMultiplatformLibrary) {
             return """
             |plugins {
-            |    id("awesome.androidlib.plugin")
+            |    id("${androidLibraryPluginId()}")
             |}
             |
             |dependencies {
@@ -124,7 +124,7 @@ ${deps.prependIndent("    ")}
 
         return """
             |plugins {
-            |    id("awesome.androidlib.plugin")
+            |    id("${androidLibraryPluginId()}")
             |}
             |
             |kotlin {
@@ -146,4 +146,11 @@ ${processorDependencies.prependIndent("    ")}
         """.trimMargin()
     }
 
+    private fun androidLibraryPluginId(): String {
+        return if (versions.android.kotlinMultiplatformLibrary) {
+            "awesome.android.kmp.lib.plugin"
+        } else {
+            "awesome.androidlib.plugin"
+        }
+    }
 }

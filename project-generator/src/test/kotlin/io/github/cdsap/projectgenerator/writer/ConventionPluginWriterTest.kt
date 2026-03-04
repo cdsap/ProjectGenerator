@@ -3,6 +3,7 @@ package io.github.cdsap.projectgenerator.writer
 import io.github.cdsap.projectgenerator.generator.includedbuild.CompositeBuildBuildGradle
 import io.github.cdsap.projectgenerator.generator.includedbuild.CompositeBuildSettingsGradle
 import io.github.cdsap.projectgenerator.generator.plugins.android.CompositeBuildPluginAndroidApp
+import io.github.cdsap.projectgenerator.generator.plugins.android.CompositeBuildPluginAndroidKmpLib
 import io.github.cdsap.projectgenerator.generator.plugins.android.CompositeBuildPluginAndroidLib
 import io.github.cdsap.projectgenerator.generator.plugins.jvm.CompositeBuildJvmLib
 import io.github.cdsap.projectgenerator.model.Android
@@ -118,11 +119,15 @@ class ConventionPluginWriterTest {
 
         writer.write()
 
-        val libPluginFile = File("${language.projectName}/build-logic/convention/src/main/kotlin/com/logic/CompositeBuildPluginAndroidLib.kt")
-        assertTrue(libPluginFile.exists(), "Lib plugin missing for ${language.projectName}")
+        val libPluginFile = File("${language.projectName}/build-logic/convention/src/main/kotlin/com/logic/CompositeBuildPluginAndroidKmpLib.kt")
+        assertTrue(libPluginFile.exists(), "KMP lib plugin missing for ${language.projectName}")
         assertTrue(
             libPluginFile.readText().contains("apply(\"com.android.kotlin.multiplatform.library\")"),
             "Expected KMP Android library plugin application in lib convention plugin"
+        )
+        assertTrue(
+            libPluginFile.readText().contains("class CompositeBuildPluginAndroidKmpLib : Plugin<Project>"),
+            "Expected dedicated KMP lib convention plugin class"
         )
         assertTrue(
             libPluginFile.readText().contains("extensions.configure<KotlinMultiplatformExtension>"),
@@ -131,6 +136,10 @@ class ConventionPluginWriterTest {
         assertTrue(
             libPluginFile.readText().contains("targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java).configureEach"),
             "Expected KotlinMultiplatformAndroidLibraryTarget configuration in lib convention plugin"
+        )
+        assertTrue(
+            libPluginFile.readText().contains("dependsOn(\"kspAndroidMain\")"),
+            "Expected KSP androidMain task wiring in lib convention plugin"
         )
     }
 
@@ -168,6 +177,14 @@ class ConventionPluginWriterTest {
             CompositeBuildPluginAndroidLib().get(versions, versions.di).trim(),
             libPluginFile.readText().trim(),
             "Lib plugin content mismatch for $projectBasePath"
+        )
+
+        val kmpLibPluginFile = File("$projectBasePath/build-logic/convention/src/main/kotlin/com/logic/CompositeBuildPluginAndroidKmpLib.kt")
+        assertTrue(kmpLibPluginFile.exists(), "KMP lib plugin missing for $projectBasePath")
+        assertEquals(
+            CompositeBuildPluginAndroidKmpLib().get(versions, versions.di).trim(),
+            kmpLibPluginFile.readText().trim(),
+            "KMP lib plugin content mismatch for $projectBasePath"
         )
     }
 
