@@ -78,7 +78,8 @@ class ModuleClassPlannerAndroid : ModuleClassPlanner<ModuleClassDefinitionAndroi
             layer = layer,
             moduleNumber = moduleNumber,
             classes = classes,
-            dependencies = dependencies
+            dependencies = dependencies,
+            projectType = projectGraph.type
         )
     }
 

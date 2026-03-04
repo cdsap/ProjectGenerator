@@ -7,7 +7,8 @@ data class ModuleClassDefinition<TYPE, CLASS_DEF>(
     val layer: Int,
     val moduleNumber: Int,
     val classes: List<CLASS_DEF>,
-    val dependencies: List<String> = emptyList()
+    val dependencies: List<String> = emptyList(),
+    val projectType: TypeProject? = null
 )
 
 /**

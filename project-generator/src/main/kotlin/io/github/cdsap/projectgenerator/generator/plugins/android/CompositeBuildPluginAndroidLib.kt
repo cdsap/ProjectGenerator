@@ -14,21 +14,20 @@ class CompositeBuildPluginAndroidLib {
         |import org.gradle.api.Project
         |import org.gradle.kotlin.dsl.configure
         |import org.gradle.kotlin.dsl.dependencies
-        |import org.gradle.kotlin.dsl.withType
         |import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
         |
         |class CompositeBuildPluginAndroidLib : Plugin<Project> {
         |    override fun apply(target: Project) {
         |        with(target) {
         |            with(pluginManager) {
-        |                apply("${androidLibraryPluginId(versions)}")
+        |                apply("com.android.library")
         |                ${provideKgpBasedOnAgp(versions)}
-        |                ${provideKotlinProcessor(versions,di)}
+        |                ${provideKotlinProcessor(versions, di)}
         |                ${applyDiPlugin(di)}
         |                apply("org.jetbrains.kotlin.plugin.compose")
         |            }
         |
-        |            extensions.configure<com.android.build.api.dsl.LibraryExtension>  {
+        |            extensions.configure<com.android.build.api.dsl.LibraryExtension> {
         |                namespace = "com.awesomeapp." + target.name.replace(":","_").replace("-", "")
         |                compileSdk = 36
         |                defaultConfig {
@@ -49,8 +48,9 @@ class CompositeBuildPluginAndroidLib {
         |                    compose = true
         |                }
         |            }
+        |
         |            target.extensions.getByType(KotlinAndroidProjectExtension::class.java).apply {
-        |                    jvmToolchain(${versions.project.jdk})
+        |                jvmToolchain(${versions.project.jdk})
         |            }
         |
         |            target.extensions.getByType(org.gradle.api.plugins.JavaPluginExtension::class.java).apply {
@@ -73,24 +73,17 @@ class CompositeBuildPluginAndroidLib {
         return if (shouldApplyKsp) """apply("com.google.devtools.ksp")""" else ""
     }
 
-    fun provideKgpBasedOnAgp(versions: Versions) = if (!versions.android.agp.isAgp9())
+    fun provideKgpBasedOnAgp(versions: Versions) = if (!versions.android.agp.isAgp9()) {
         """apply("org.jetbrains.kotlin.android")"""
-    else
-        """"""
+    } else {
+        ""
+    }
 
     fun applyDiPlugin(di: DependencyInjection): String {
         return when (di) {
             DependencyInjection.HILT -> """apply("dagger.hilt.android.plugin")"""
             DependencyInjection.METRO -> """apply("dev.zacsweers.metro")"""
-            DependencyInjection.NONE -> """"""
-        }
-    }
-
-    private fun androidLibraryPluginId(versions: Versions): String {
-        return if (versions.android.kotlinMultiplatformLibrary) {
-            "com.android.kotlin.multiplatform.library"
-        } else {
-            "com.android.library"
+            DependencyInjection.NONE -> ""
         }
     }
 }
