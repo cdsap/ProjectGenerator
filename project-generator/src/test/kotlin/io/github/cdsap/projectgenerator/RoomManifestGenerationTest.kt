@@ -21,14 +21,17 @@ class RoomManifestGenerationTest {
     lateinit var tempDir: Path
 
     @Test
-    fun `room project with default class count generates valid launcher activity name`() {
+    fun `room project with minimum class count generates valid launcher activity name`() {
         val projectName = "room_manifest_low_classes"
         ProjectGenerator(
             modules = 20,
             shape = Shape.FLAT,
             language = Language.KTS,
             typeOfProjectRequested = TypeProjectRequested.ANDROID,
-            classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 5),
+            classesPerModule = ClassesPerModule(
+                ClassesPerModuleType.FIXED,
+                ClassesPerModule.MIN_CLASSES_PER_MODULE
+            ),
             versions = Versions(
                 project = Project(jdk = "17"),
                 android = Android(roomDatabase = true)
