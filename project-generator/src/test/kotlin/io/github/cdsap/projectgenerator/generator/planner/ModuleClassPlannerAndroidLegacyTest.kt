@@ -1,15 +1,23 @@
 package io.github.cdsap.projectgenerator.generator.planner
 
+import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.model.ClassTypeAndroid
 import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.TypeProject
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class ModuleClassPlannerAndroidLegacyTest {
 
     private val planner = ModuleClassPlannerAndroidLegacy()
+
+    @BeforeEach
+    fun resetNameMappings() {
+        NameMappings.layerNames = emptyMap()
+        NameMappings.moduleNames = emptyMap()
+    }
 
     @Test
     fun `viewmodel dependency stays in same module when repository exists`() {
