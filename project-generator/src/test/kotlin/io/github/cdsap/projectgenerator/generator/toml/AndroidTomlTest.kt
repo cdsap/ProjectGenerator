@@ -27,5 +27,15 @@ class AndroidTomlTest {
             toml.contains("junit4 = { group = \"junit\", name = \"junit\", version.ref = \"junit4\" }"),
             "Should contain junit4 library"
         )
+        Assertions.assertTrue(
+            toml.contains("hilt-androidx = \"${versions.android.hiltAandroidx}\""),
+            "Should contain hilt-androidx version"
+        )
+        Assertions.assertTrue(
+            toml.lines()
+                .filter { it.isNotBlank() }
+                .none { it.startsWith(" ") || it.startsWith("\t") },
+            "Generated TOML should not contain leading indentation"
+        )
     }
 }
