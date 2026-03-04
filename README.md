@@ -45,7 +45,7 @@ Then, you can use the versions.yaml in the `generate-project` command:
 - `--classes-module-type`: fixed (default), random
 - `--type-of-string-resources`: normal (default), large
 - `--generate-unit-test`: Generate unit tests (default: false)
-- `--gradle`: gradle_8_14_3, gradle_9_0_0, gradle_9_1_0, gradle_9_2_0, gradle_9_3_0, gradle_9_3_1 (default: gradle_9_3_1)
+- `--gradle`: gradle_8_14_3, gradle_9_1_0, gradle_9_2_0, gradle_9_3_0, gradle_9_3_1, gradle_9_4_0 (default: gradle_9_4_0)
 - `--develocity`: Enables the Develocity build scan plugin (default: false). If --develocity-url is not specified, the build scan will be published to Gradle Scans.
 - `--develocity-url`: Specify Develocity URL
 - `--versions-file`: Path to a custom YAML file with dependency versions
@@ -186,11 +186,12 @@ If enabled, each module will generate n unit tests, where n is the argument `cla
 ```
 ## Gradle
 Gradle used, versions supported:
-* Gradle 8.5
-* Gradle 8.9
-* Gradle 8.13
-* Gradle 8.14_2
-* Gradle 9.0.0 **default**
+* Gradle 8.14.3
+* Gradle 9.1.0
+* Gradle 9.2.0
+* Gradle 9.3.0
+* Gradle 9.3.1
+* Gradle 9.4.0 **default**
 
 ##### Example
 ```kotlin

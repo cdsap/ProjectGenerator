@@ -38,7 +38,7 @@ class ProjectGeneratorE2EAgp9Test {
             TypeOfStringResources.LARGE,
             5,
             true,
-            GradleWrapper(Gradle.GRADLE_9_3_1),
+            GradleWrapper(DefaultTestVersions.LATEST_GRADLE),
             path = tempDir.toFile().path,
             false,
             projectName = "${shape.name.lowercase().capitalize()}$modules"

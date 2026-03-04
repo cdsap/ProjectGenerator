@@ -5,6 +5,6 @@ import io.github.cdsap.projectgenerator.model.Versions
 
 class DefaultTestVersions {
     companion object {
-        val LATEST_GRADLE = Gradle.GRADLE_9_3_1
+        val LATEST_GRADLE = Gradle.GRADLE_9_4_0
     }
 }
