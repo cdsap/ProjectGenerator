@@ -23,4 +23,17 @@ class GenerateProjectsCliTest {
             error.message?.contains("--android-kotlin-multiplatform-library is only available when --type android.") == true
         )
     }
+
+    @Test
+    fun `classes module lower than minimum is rejected`() {
+        val error = assertThrows<UsageError> {
+            GenerateProjects().parse(
+                listOf(
+                    "--modules", "6",
+                    "--classes-module", "9"
+                )
+            )
+        }
+        assertTrue(error.message?.contains("classes per module must be >= 10") == true)
+    }
 }

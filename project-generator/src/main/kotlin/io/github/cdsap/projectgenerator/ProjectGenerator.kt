@@ -10,7 +10,7 @@ class ProjectGenerator(
     private val shape: Shape,
     private val language: Language = Language.KTS,
     private val typeOfProjectRequested: TypeProjectRequested = TypeProjectRequested.ANDROID,
-    private val classesPerModule: ClassesPerModule = ClassesPerModule(type = ClassesPerModuleType.FIXED, classes = 5),
+    private val classesPerModule: ClassesPerModule = ClassesPerModule(type = ClassesPerModuleType.FIXED, classes = 10),
     private val versions: Versions = Versions(),
     private val typeOfStringResources: TypeOfStringResources = TypeOfStringResources.NORMAL,
     private val layers: Int,
