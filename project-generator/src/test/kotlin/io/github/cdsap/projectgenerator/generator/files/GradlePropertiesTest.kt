@@ -1,6 +1,7 @@
 package io.github.cdsap.projectgenerator.generator.files
 
 import io.github.cdsap.projectgenerator.generator.rootproject.GradleProperties
+import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Android
 import io.github.cdsap.projectgenerator.model.Kotlin
 import io.github.cdsap.projectgenerator.model.KotlinProcessor
@@ -60,5 +61,29 @@ class GradlePropertiesTest {
         )
         val gradleProperties = GradleProperties().get(versions)
         Assertions.assertTrue(!gradleProperties.contains("ksp.useKSP2=false"))
+    }
+
+    @Test
+    fun `includes android newDsl override for hilt on agp9`() {
+        val versions = Versions(
+            android = Android(agp = "9.1.0"),
+            di = DependencyInjection.HILT
+        )
+
+        val gradleProperties = GradleProperties().get(versions)
+
+        Assertions.assertTrue(gradleProperties.contains("android.newDsl=false"))
+    }
+
+    @Test
+    fun `does not include android newDsl override for hilt on agp8`() {
+        val versions = Versions(
+            android = Android(agp = "8.10.0"),
+            di = DependencyInjection.HILT
+        )
+
+        val gradleProperties = GradleProperties().get(versions)
+
+        Assertions.assertFalse(gradleProperties.contains("android.newDsl=false"))
     }
 }
