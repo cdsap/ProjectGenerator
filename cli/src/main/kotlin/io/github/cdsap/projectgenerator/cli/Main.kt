@@ -58,6 +58,7 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
     private val versionsFile by option().file()
     private val projectName by option()
     private val develocityUrl by option()
+    // Kept for CLI backwards compatibility. AGP 9 is the default now.
     private val agp9 by option().flag(default = false)
     private val roomDatabase by option("--room-database").flag(default = false)
     private val kotlinMultiplatformLibrary by option("--android-kotlin-multiplatform-library").flag(default = false)
@@ -73,7 +74,6 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
         val versions = getVersions(
             fileVersions = versionsFile,
             develocityUrl = develocityUrl,
-            agp9 = agp9,
             roomDatabase = roomDatabase,
             kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
         ).copy(di = dependencyInjection)
@@ -118,21 +118,13 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
     private fun getVersions(
         fileVersions: File?,
         develocityUrl: String?,
-        agp9: Boolean,
         roomDatabase: Boolean,
         kotlinMultiplatformLibrary: Boolean
     ): Versions {
         val versions = if (fileVersions != null) {
             parseYaml(fileVersions)
         } else {
-            // We only support the injection of AGP 9 version via CLI with the `agp9` option
-            // if the version is provided by file this logic is not executed
-            if (agp9) {
-                val versions = Versions()
-                versions.copy(android = versions.android.copy(agp = versions.android.agp9))
-            } else {
-                Versions()
-            }
+            Versions()
         }
         var androidConfig = versions.android
         if (roomDatabase) {

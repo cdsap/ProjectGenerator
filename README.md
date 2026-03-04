@@ -50,9 +50,10 @@ Then, you can use the versions.yaml in the `generate-project` command:
 - `--develocity-url`: Specify Develocity URL
 - `--versions-file`: Path to a custom YAML file with dependency versions
 - `--project-name`: Name of the project
-- `--agp9`: Use AGP 9.x (default: false). Only for Android projects.
 - `--room-database`: Enable Room database generation (default: false). Only for Android projects.
 - `--android-kotlin-multiplatform-library`: For Android projects, generate Android library modules with `com.android.kotlin.multiplatform.library` instead of `com.android.library` (default: false).
+
+Android projects use the default AGP version from `Versions()` unless you override it in `--versions-file`.
 
 #### Example: Generate a project with custom options
 ```bash
