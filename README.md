@@ -41,7 +41,7 @@ Then, you can use the versions.yaml in the `generate-project` command:
 - `--language`: kts (default), groovy, both
 - `--type`: android (default), jvm
 - `--di`: hilt (default), metro, none
-- `--classes-module`: Number of classes per module (default: 5)
+- `--classes-module`: Number of classes per module (minimum/default: 10)
 - `--classes-module-type`: fixed (default), random
 - `--type-of-string-resources`: normal (default), large
 - `--generate-unit-test`: Generate unit tests (default: false)
@@ -154,10 +154,10 @@ Use the Android Kotlin Multiplatform library plugin for generated Android librar
 
 ## `Classes Module`
 Classes generated per module, options:
-* classes: Classes to generate per module. Default 5.
+* classes: Classes to generate per module. Minimum and default 10.
 * type:
   * Fixed(default): Each module will create n classes where n represents the argument `classes`.
-  * Random: Each module will create `Random.nextInt(2, classesPerModule.classes)` classes.
+  * Random: Each module will create between 10 and `classesPerModule.classes` classes.
 
 #### Example
 ```kotlin

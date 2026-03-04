@@ -64,6 +64,9 @@ app.post('/api/generate', upload.single('versions-file'), async (req, res) => {
             toBool(body.androidKotlinMultiplatformLibrary);
 
         // ✅ Build CLI args safely
+        const classesModuleInput = parseInt(body['classes-module']);
+        const classesModule = Math.max(10, Math.min(Number.isNaN(classesModuleInput) ? 15 : classesModuleInput, 15));
+
         const args = [
             `--shape`, body.shape || 'rectangle',
             `--modules`, modules,
@@ -71,7 +74,7 @@ app.post('/api/generate', upload.single('versions-file'), async (req, res) => {
             `--language`, body.language || 'kts',
             `--di`, di,
             `--type`, type,
-            `--classes-module`, Math.min(parseInt(body['classes-module']) || 15, 15),
+            `--classes-module`, classesModule,
             `--classes-module-type`, body['classes-module-type'] || 'fixed',
             `--type-of-string-resources`, body['type-of-string-resources'] || 'normal',
             `--gradle`, body.gradle || 'GRADLE_9_4_0'

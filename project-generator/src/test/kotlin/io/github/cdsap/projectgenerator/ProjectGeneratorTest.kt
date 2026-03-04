@@ -23,7 +23,7 @@ class ProjectGeneratorTest {
         ProjectGenerator(
             modules = 51,
             shape = shape,
-            classesPerModule = ClassesPerModule(ClassesPerModuleType.RANDOM, 8),
+            classesPerModule = ClassesPerModule(ClassesPerModuleType.RANDOM, 10),
             layers = 5,
             path = tempDir.toString(),
             projectName = "awesome_project${shape.name.capitalize()}",
