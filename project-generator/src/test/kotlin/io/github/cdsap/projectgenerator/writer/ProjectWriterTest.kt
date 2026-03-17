@@ -198,6 +198,47 @@ class ProjectWriterTest {
     }
 
     @Test
+    fun `does not include settings or build plugins when additionalSettingsPlugins and additionalBuildGradleRootPlugins are empty`() {
+        val nodes = listOf(
+            ProjectGraph("module_1_1", 1, emptyList(), TypeProject.ANDROID_APP, 10),
+        )
+        val language = LanguageAttributes("gradle.kts", "${tempDir}/project_no_plugins")
+        val versions = Versions(
+            additionalSettingsPlugins = emptyList(),
+            additionalBuildGradleRootPlugins = emptyList()
+        )
+        val projectWriter = ProjectWriter(
+            nodes,
+            listOf(language),
+            versions,
+            TypeProjectRequested.ANDROID,
+            TypeOfStringResources.NORMAL,
+            false,
+            GradleWrapper(LATEST_GRADLE),
+            false,
+            "no_plugins_project"
+        )
+
+        projectWriter.write()
+
+        val settingsFile = File("${language.projectName}/settings.gradle.kts")
+        assertTrue(settingsFile.exists(), "Expected settings.gradle.kts to exist")
+        val settingsContent = settingsFile.readText()
+        assertTrue(
+            !settingsContent.contains("spotlight") && !settingsContent.contains("com.fueledbycaffeine.spotlight"),
+            "settings.gradle.kts should not contain Spotlight plugin when additionalSettingsPlugins is empty, but contained: $settingsContent"
+        )
+
+        val buildFile = File("${language.projectName}/build.gradle.kts")
+        assertTrue(buildFile.exists(), "Expected build.gradle.kts to exist")
+        val buildContent = buildFile.readText()
+        assertTrue(
+            !buildContent.contains("dependency-analysis") && !buildContent.contains("com.autonomousapps.dependency-analysis"),
+            "build.gradle.kts should not contain dependency-analysis plugin when additionalBuildGradleRootPlugins is empty, but contained: $buildContent"
+        )
+    }
+
+    @Test
     fun `writes android library sources into androidMain when kotlin multiplatform library is enabled`() {
         val node = ProjectGraph("module_1_1", 1, emptyList(), TypeProject.ANDROID_LIB, 10)
         val language = LanguageAttributes("gradle.kts", "${tempDir}/project_kts_android_main")
