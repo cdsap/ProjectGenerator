@@ -42,7 +42,7 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
     private val typeOfStringResources: String by option().choice("large", "normal").default("normal")
     private val layers by option().int().default(5)
     private val generateUnitTest by option().flag(default = false)
-    private val gradle: String by option().choice(
+    private val gradle: String? by option().choice(
         "gradle_8_14_3",
         "gradle_9_1_0",
         "gradle_9_2_0",
@@ -50,7 +50,6 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
         "gradle_9_3_1",
         "gradle_9_4_0"
     )
-        .default("gradle_9_4_0")
     private val develocity by option().flag(default = false)
     private val versionsFile by option().file()
     private val projectName by option()
@@ -68,8 +67,9 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
         if (typeOfProjectRequested != TypeProjectRequested.ANDROID && kotlinMultiplatformLibrary) {
             throw UsageError("--android-kotlin-multiplatform-library is only available when --type android.")
         }
+        val versionsOverride = versionsFile?.let(VersionsParser::fromFile)
         val versions = getVersions(
-            fileVersions = versionsFile,
+            fileVersions = versionsOverride,
             develocityUrl = develocityUrl,
             roomDatabase = roomDatabase,
             kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
@@ -85,7 +85,7 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
             TypeOfStringResources.valueOf(typeOfStringResources.uppercase()),
             layers,
             generateUnitTest,
-            GradleWrapper(Gradle.valueOf(gradle.uppercase())),
+            GradleWrapper(resolveGradle(gradle, versionsOverride)),
             develocity = develocityEnabled,
             projectName = projectName ?: buildString {
                 append(typeOfProjectRequested.name.lowercase())
@@ -105,13 +105,13 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
     }
 
     private fun getVersions(
-        fileVersions: File?,
+        fileVersions: VersionsFile?,
         develocityUrl: String?,
         roomDatabase: Boolean,
         kotlinMultiplatformLibrary: Boolean
     ): Versions {
         val versions = if (fileVersions != null) {
-            VersionsParser.fromFile(fileVersions)
+            fileVersions.resolve()
         } else {
             Versions()
         }
@@ -130,6 +130,12 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
         }
 
     }
+}
+
+internal fun resolveGradle(cliGradle: String?, versionsFile: VersionsFile?): Gradle {
+    return cliGradle?.let { Gradle.valueOf(it.uppercase()) }
+        ?: versionsFile?.gradle
+        ?: Gradle.GRADLE_9_4_0
 }
 
 class GenerateYaml : CliktCommand(name = "generate-yaml-versions") {

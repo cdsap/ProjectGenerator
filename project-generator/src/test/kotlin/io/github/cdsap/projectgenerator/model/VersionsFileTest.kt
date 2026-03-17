@@ -35,4 +35,11 @@ class VersionsFileTest {
             versions.additionalBuildGradleRootPlugins
         )
     }
+
+    @Test
+    fun `gradle override is preserved in versions file`() {
+        val versionsFile = VersionsFile(gradle = Gradle.GRADLE_9_3_1)
+
+        assertEquals(Gradle.GRADLE_9_3_1, versionsFile.gradle)
+    }
 }

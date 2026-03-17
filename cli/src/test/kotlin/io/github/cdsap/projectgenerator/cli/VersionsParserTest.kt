@@ -1,6 +1,7 @@
 package io.github.cdsap.projectgenerator.cli
 
 import io.github.cdsap.projectgenerator.model.AdditionalPlugin
+import io.github.cdsap.projectgenerator.model.Gradle
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -23,7 +24,7 @@ class VersionsParserTest {
         """.trimIndent()
 
         val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
-        val versions = VersionsParser.fromFile(file)
+        val versions = VersionsParser.fromFile(file).resolve()
 
         assertTrue(versions.additionalSettingsPlugins.isEmpty())
         assertTrue(versions.additionalBuildGradleRootPlugins.isEmpty())
@@ -47,7 +48,7 @@ class VersionsParserTest {
         """.trimIndent()
 
         val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
-        val versions = VersionsParser.fromFile(file)
+        val versions = VersionsParser.fromFile(file).resolve()
 
         assertEquals(1, versions.additionalSettingsPlugins.size)
         assertEquals(AdditionalPlugin("com.fueledbycaffeine.spotlight", "1.4.1", true), versions.additionalSettingsPlugins.first())
@@ -66,7 +67,7 @@ class VersionsParserTest {
         """.trimIndent()
 
         val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
-        val versions = VersionsParser.fromFile(file)
+        val versions = VersionsParser.fromFile(file).resolve()
 
         assertTrue(versions.additionalSettingsPlugins.isEmpty())
         assertTrue(versions.additionalBuildGradleRootPlugins.isEmpty())
@@ -83,7 +84,7 @@ class VersionsParserTest {
         """.trimIndent()
 
         val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
-        val versions = VersionsParser.fromFile(file)
+        val versions = VersionsParser.fromFile(file).resolve()
 
         assertEquals(1, versions.additionalSettingsPlugins.size)
         assertTrue(versions.additionalBuildGradleRootPlugins.isEmpty())
@@ -100,7 +101,7 @@ class VersionsParserTest {
         """.trimIndent()
 
         val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
-        val versions = VersionsParser.fromFile(file)
+        val versions = VersionsParser.fromFile(file).resolve()
 
         assertTrue(versions.additionalSettingsPlugins.isEmpty())
         assertEquals(1, versions.additionalBuildGradleRootPlugins.size)
@@ -117,9 +118,21 @@ class VersionsParserTest {
         """.trimIndent()
 
         val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
-        val versions = VersionsParser.fromFile(file)
+        val versions = VersionsParser.fromFile(file).resolve()
 
         assertTrue(versions.additionalSettingsPlugins.isEmpty())
         assertTrue(versions.additionalBuildGradleRootPlugins.isEmpty())
+    }
+
+    @Test
+    fun `parses gradle from YAML case insensitively`() {
+        val yaml = """
+            gradle: gradle_9_3_1
+        """.trimIndent()
+
+        val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
+        val versionsFile = VersionsParser.fromFile(file)
+
+        assertEquals(Gradle.GRADLE_9_3_1, versionsFile.gradle)
     }
 }
