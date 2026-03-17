@@ -1,6 +1,7 @@
 package io.github.cdsap.projectgenerator.model
 
 data class VersionsFile(
+    val gradle: Gradle? = null,
     val kotlin: Kotlin = Kotlin(),
     val android: Android = Android(),
     val testing: Testing = Testing(),

@@ -2,6 +2,7 @@ package io.github.cdsap.projectgenerator.cli
 
 import io.github.cdsap.projectgenerator.model.AdditionalPlugin
 import io.github.cdsap.projectgenerator.model.Versions
+import io.github.cdsap.projectgenerator.model.Gradle
 import java.io.File
 
 class GenerateVersionsYaml {
@@ -9,6 +10,7 @@ class GenerateVersionsYaml {
         val file = File("versions.yaml")
         val versions = Versions()
         val content = """
+            |gradle: ${Gradle.GRADLE_9_4_0}
             |project:
             |  develocity: ${versions.project.develocity}
             |  develocityUrl: ${versions.project.develocityUrl}
