@@ -1,11 +1,5 @@
 package io.github.cdsap.projectgenerator.cli
 
-import com.fasterxml.jackson.annotation.JsonSetter
-import com.fasterxml.jackson.annotation.Nulls
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.UsageError
 import com.github.ajalt.clikt.core.main
@@ -102,14 +96,6 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
         ).write()
     }
 
-    private fun parseYaml(rules: File): Versions {
-        val mapper = ObjectMapper(YAMLFactory()).apply {
-            registerModule(KotlinModule())
-            configOverride(List::class.java).setterInfo = JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY)
-        }
-        return mapper.readValue(rules)
-    }
-
     private fun getDevelocityEnabled(develocity: Boolean, develocityUrl: String?): Boolean {
         return if (develocity) {
             return true
@@ -125,7 +111,7 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
         kotlinMultiplatformLibrary: Boolean
     ): Versions {
         val versions = if (fileVersions != null) {
-            parseYaml(fileVersions)
+            VersionsParser.fromFile(fileVersions)
         } else {
             Versions()
         }
