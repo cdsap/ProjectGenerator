@@ -37,8 +37,8 @@ class ProjectGeneratorE2EJdk21Test {
             5,
             true,
             GradleWrapper(LATEST_GRADLE),
-            path = tempDir.toFile().path,
-            false,
+            projectRootPath = "${tempDir.toFile().path}/${shape.name.lowercase().capitalize()}$modules/project_kts",
+            develocity = false,
             projectName = "${shape.name.lowercase().capitalize()}$modules"
 
         ).write()

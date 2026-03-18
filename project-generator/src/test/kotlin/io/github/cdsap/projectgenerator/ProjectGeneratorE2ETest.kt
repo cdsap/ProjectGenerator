@@ -40,8 +40,8 @@ class ProjectGeneratorE2ETest {
             5,
             true,
             GradleWrapper(LATEST_GRADLE),
-            path = tempDir.toFile().path,
-            false,
+            projectRootPath = "${tempDir.toFile().path}/${shape.name.lowercase().capitalize()}$modules/project_kts",
+            develocity = false,
             projectName = "${shape.name.lowercase().capitalize()}$modules"
 
         ).write()
@@ -89,8 +89,8 @@ class ProjectGeneratorE2ETest {
             5,
             true,
             GradleWrapper(Gradle.GRADLE_8_14_3),
-            path = tempDir.toFile().path,
-            false,
+            projectRootPath = "${tempDir.toFile().path}/${shape.name.lowercase().capitalize()}$modules/project_kts",
+            develocity = false,
             projectName = "${shape.name.lowercase().capitalize()}$modules"
         ).write()
 
@@ -135,8 +135,8 @@ class ProjectGeneratorE2ETest {
             5,
             true,
             GradleWrapper(LATEST_GRADLE),
-            path = tempDir.toFile().path,
-            false,
+            projectRootPath = "${tempDir.toFile().path}/${shape.name.lowercase().capitalize()}$modules/project_kts",
+            develocity = false,
             projectName = "${shape.name.lowercase().capitalize()}$modules"
         ).write()
         val toml = File(

@@ -16,7 +16,7 @@ class ProjectGenerator(
     private val layers: Int,
     private val generateUnitTest: Boolean = false,
     private val gradle: GradleWrapper = GradleWrapper(Gradle.GRADLE_9_4_0),
-    private val path: String = "projects_generated",
+    private val projectRootPath: String = "projects_generated/generated_project/project_kts",
     private val develocity: Boolean = false,
     private val layerNames: List<String> = DefaultNames.layerNames,
     private val moduleNameParts: List<String> = DefaultNames.moduleNames,
@@ -25,7 +25,7 @@ class ProjectGenerator(
 
     fun write() {
 
-        println("Creating project $projectName in $path")
+        println("Creating project $projectName in $projectRootPath")
         println("Calculating layer Distribution")
 
         // Generate name mappings for layers and modules
@@ -56,8 +56,7 @@ class ProjectGenerator(
                 }
             }.toMap()
 
-        val projectLanguageAttributes =
-            getProjectLanguageAttributes(language, "$path/$projectName")
+        val projectLanguageAttributes = getProjectLanguageAttributes()
         ProjectWriter(
             nodes,
             projectLanguageAttributes,
@@ -73,15 +72,21 @@ class ProjectGenerator(
         println("Project created in ${projectLanguageAttributes.first().projectName}")
     }
 
-    private fun getProjectLanguageAttributes(language: Language, labelProject: String) = when (language) {
-        Language.KTS -> listOf(LanguageAttributes("gradle.kts", "$labelProject/project_kts"))
+    private fun getProjectLanguageAttributes(): List<LanguageAttributes> {
+        return when (language) {
+            Language.KTS -> listOf(
+                LanguageAttributes("gradle.kts", projectRootPath)
+            )
 
-        Language.GROOVY -> listOf(LanguageAttributes("gradle", "$labelProject/project_groovy"))
+            Language.GROOVY -> listOf(
+                LanguageAttributes("gradle", projectRootPath)
+            )
 
-        Language.BOTH -> listOf(
-            LanguageAttributes("gradle", "$labelProject/project_groovy"),
-            LanguageAttributes("gradle.kts", "$labelProject/project_kts")
-        )
+            Language.BOTH -> listOf(
+                LanguageAttributes("gradle", "$projectRootPath/project_groovy"),
+                LanguageAttributes("gradle.kts", "$projectRootPath/project_kts")
+            )
+        }
     }
 
     private fun generateModuleName(index: Int): String {
