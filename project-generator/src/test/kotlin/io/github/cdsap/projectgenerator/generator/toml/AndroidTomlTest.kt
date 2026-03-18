@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator.generator.toml
 
+import io.github.cdsap.projectgenerator.model.Kotlin
 import io.github.cdsap.projectgenerator.model.Versions
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -36,6 +37,22 @@ class AndroidTomlTest {
                 .filter { it.isNotBlank() }
                 .none { it.startsWith(" ") || it.startsWith("\t") },
             "Generated TOML should not contain leading indentation"
+        )
+    }
+
+    @Test
+    fun `links kotlin test version to kgp when kotlin test is not overridden`() {
+        val versions = Versions(kotlin = Kotlin(kgp = "2.1.21"))
+
+        val toml = AndroidToml().toml(versions)
+
+        Assertions.assertTrue(
+            toml.contains("kotlin = \"2.1.21\""),
+            "Should contain configured Kotlin plugin version"
+        )
+        Assertions.assertTrue(
+            toml.contains("kotlin-test = \"2.1.21\""),
+            "Should link kotlin-test version to kgp by default"
         )
     }
 }
