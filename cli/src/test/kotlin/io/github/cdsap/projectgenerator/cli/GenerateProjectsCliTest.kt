@@ -3,6 +3,7 @@ package io.github.cdsap.projectgenerator.cli
 import com.github.ajalt.clikt.core.UsageError
 import com.github.ajalt.clikt.core.parse
 import io.github.cdsap.projectgenerator.model.Gradle
+import io.github.cdsap.projectgenerator.model.Language
 import io.github.cdsap.projectgenerator.model.VersionsFile
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -59,5 +60,26 @@ class GenerateProjectsCliTest {
         val resolved = resolveGradle(null, null)
 
         assertEquals(Gradle.GRADLE_9_4_0, resolved)
+    }
+
+    @Test
+    fun `default output path for kts nests project name and project_kts`() {
+        val resolved = resolveProjectRootPath(null, Language.KTS, "sample")
+
+        assertEquals("projects_generated/sample/project_kts", resolved)
+    }
+
+    @Test
+    fun `output dir is used directly for single language projects`() {
+        val resolved = resolveProjectRootPath(".", Language.KTS, "sample")
+
+        assertEquals(".", resolved)
+    }
+
+    @Test
+    fun `default output path for both languages nests project name only`() {
+        val resolved = resolveProjectRootPath(null, Language.BOTH, "sample")
+
+        assertEquals("projects_generated/sample", resolved)
     }
 }

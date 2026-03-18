@@ -52,6 +52,7 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
     )
     private val develocity by option().flag(default = false)
     private val versionsFile by option().file()
+    private val outputDir by option("--output-dir")
     private val projectName by option()
     private val develocityUrl by option()
     // Kept for CLI backwards compatibility. AGP 9 is the default now.
@@ -75,10 +76,17 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
             kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
         ).copy(di = dependencyInjection)
         val develocityEnabled = getDevelocityEnabled(develocity, develocityUrl)
+        val language = Language.valueOf(language.uppercase())
+        val resolvedProjectName = projectName ?: buildString {
+            append(typeOfProjectRequested.name.lowercase())
+            append(shape.name.lowercase().replaceFirstChar { it.uppercase() })
+            append(modules)
+            append("modules")
+        }
         ProjectGenerator(
             modules,
             shape,
-            Language.valueOf(language.uppercase()),
+            language,
             typeOfProjectRequested,
             ClassesPerModule(ClassesPerModuleType.valueOf(classesModuleType.uppercase()), classesModule),
             versions = versions,
@@ -86,13 +94,9 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
             layers,
             generateUnitTest,
             GradleWrapper(resolveGradle(gradle, versionsOverride)),
+            projectRootPath = resolveProjectRootPath(outputDir, language, resolvedProjectName),
             develocity = develocityEnabled,
-            projectName = projectName ?: buildString {
-                append(typeOfProjectRequested.name.lowercase())
-                append(shape.name.lowercase().replaceFirstChar { it.uppercase() })
-                append(modules)
-                append("modules")
-            }
+            projectName = resolvedProjectName
         ).write()
     }
 
@@ -129,6 +133,18 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
             withAndroidFlags
         }
 
+    }
+}
+
+internal fun resolveProjectRootPath(outputDir: String?, language: Language, projectName: String): String {
+    return if (outputDir != null) {
+        outputDir
+    } else {
+        when (language) {
+            Language.KTS -> "projects_generated/$projectName/project_kts"
+            Language.GROOVY -> "projects_generated/$projectName/project_groovy"
+            Language.BOTH -> "projects_generated/$projectName"
+        }
     }
 }
 

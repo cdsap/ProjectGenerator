@@ -44,7 +44,7 @@ class AndroidKotlinMultiplatformLibraryE2EValidationTest {
             layers = 2,
             generateUnitTest = false,
             gradle = GradleWrapper(LATEST_GRADLE),
-            path = tempDir.toFile().path,
+            projectRootPath = "${tempDir.toFile().path}/$projectName/project_kts",
             projectName = projectName
         ).write()
 
@@ -75,7 +75,7 @@ class AndroidKotlinMultiplatformLibraryE2EValidationTest {
             layers = 2,
             generateUnitTest = false,
             gradle = GradleWrapper(LATEST_GRADLE),
-            path = tempDir.toFile().path,
+            projectRootPath = "${tempDir.toFile().path}/$projectName/project_kts",
             projectName = projectName
         ).write()
 
