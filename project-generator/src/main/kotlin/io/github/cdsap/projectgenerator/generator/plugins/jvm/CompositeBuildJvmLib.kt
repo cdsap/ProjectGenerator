@@ -23,7 +23,7 @@ class CompositeBuildJvmLib {
         |            dependencies {
         |                add("implementation","org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
         |                add("testImplementation","junit:junit:4.13.2")
-        |                add("testImplementation","org.jetbrains.kotlin:kotlin-test:2.1.20")
+        |                add("testImplementation","org.jetbrains.kotlin:kotlin-test:${versions.kotlin.kotlinTest}")
         |                add("testImplementation", "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
         |                add("testImplementation","org.junit.vintage:junit-vintage-engine:5.10.1")
         |            }
