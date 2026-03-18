@@ -50,10 +50,13 @@ Then, you can use the versions.yaml in the `generate-project` command:
 - `--develocity-url`: Specify Develocity URL
 - `--versions-file`: Path to a custom YAML file with dependency versions
 - `--project-name`: Name of the project
+- `--output-dir`: Output directory for the generated project. For `kts` and `groovy`, files are written directly there. For `both`, `project_kts` and `project_groovy` subdirectories are created inside it.
 - `--room-database`: Enable Room database generation (default: false). Only for Android projects.
 - `--android-kotlin-multiplatform-library`: For Android projects, generate Android library modules with `com.android.kotlin.multiplatform.library` instead of `com.android.library` (default: false).
 
 Android projects use the default AGP version from `Versions()` unless you override it in `--versions-file`.
+
+By default, projects are generated under `projects_generated/<projectName>/project_kts` or `project_groovy`. When `--output-dir` is provided, single-language projects are written directly to that directory.
 
 #### Example: Generate a project with custom options
 ```bash
@@ -75,7 +78,7 @@ ProjectGenerator(
     layers = 5,
     generateUnitTest = true,
     gradle = GradleWrapper(Gradle.GRADLE_9_3_1),
-    path = file.path
+    projectRootPath = file.path
 ).write()
 
 ```
@@ -120,6 +123,17 @@ Two projects will be generated using Kotlin DSL and Groovy
 #### Example
 ```kotlin
 ./projectGenerator  generate-project  --shape triangle --layers 5 --modules 100 --language groovy
+```
+
+## `output-dir`
+Optional output directory for the generated project.
+
+- For `--language kts` and `--language groovy`, project files are written directly into the provided directory.
+- For `--language both`, two subdirectories are created inside the provided directory: `project_kts` and `project_groovy`.
+
+##### Example
+```kotlin
+./projectGenerator generate-project --modules 100 --output-dir .
 ```
 ## `type`
 Type of project generated:
@@ -202,6 +216,7 @@ Gradle used, versions supported:
 ## Versions
 Example output versions.yaml:
 ```yaml
+gradle: GRADLE_9_4_0
 project:
     develocity: 4.1
     jdk: 23
