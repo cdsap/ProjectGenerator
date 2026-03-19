@@ -216,7 +216,7 @@ Gradle used, versions supported:
 ## Versions
 Example output versions.yaml:
 ```yaml
-gradle: GRADLE_9_4_0
+gradle: 9.4.0
 project:
     develocity: 4.1
     jdk: 23

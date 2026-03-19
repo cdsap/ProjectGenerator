@@ -149,7 +149,7 @@ internal fun resolveProjectRootPath(outputDir: String?, language: Language, proj
 }
 
 internal fun resolveGradle(cliGradle: String?, versionsFile: VersionsFile?): Gradle {
-    return cliGradle?.let { Gradle.valueOf(it.uppercase()) }
+    return cliGradle?.let(Gradle::fromValue)
         ?: versionsFile?.gradle
         ?: Gradle.GRADLE_9_4_0
 }
