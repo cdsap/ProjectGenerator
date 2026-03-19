@@ -436,8 +436,8 @@
 
         <div class="description">
             <p>Generate <strong>Gradle Android modularized projects</strong> designed specifically for <strong>building purposes</strong>. Create customizable module architectures with build configurations and testing frameworks. Perfect for research, performance analysis, and testing build systems at scale.</p>
-            <p class="github-link">📦 Based on <a href="https://github.com/cdsap/ProjectGenerator" target="_blank" rel="noopener noreferrer">cdsap/ProjectGenerator</a> v0.5.0 - CLI for generating modularized Gradle projects in different logic layers</p>
-            <p class="github-link">🔧 <a href="https://github.com/cdsap/ProjectGenerator/blob/v0.5.0/project-generator/src/main/kotlin/io/github/cdsap/projectgenerator/model/Versions.kt" target="_blank" rel="noopener noreferrer">View supported versions</a> - Check the available Gradle, Kotlin, and plugin versions for your generated projects</p>
+            <p class="github-link">📦 Based on <a href="https://github.com/cdsap/ProjectGenerator" target="_blank" rel="noopener noreferrer">cdsap/ProjectGenerator</a> v0.6.0 - CLI for generating modularized Gradle projects in different logic layers</p>
+            <p class="github-link">🔧 <a href="https://github.com/cdsap/ProjectGenerator/blob/v0.6.0/project-generator/src/main/kotlin/io/github/cdsap/projectgenerator/model/Versions.kt" target="_blank" rel="noopener noreferrer">View supported versions</a> - Check the available Gradle, Kotlin, and plugin versions for your generated projects</p>
         </div>
 
         <form id="projectForm">
@@ -498,7 +498,7 @@
 
             <div class="form-group">
                 <label for="classes-module">Classes per Module:</label>
-                <input type="number" id="classes-module" name="classes-module" value="5" min="5" max="15">
+                <input type="number" id="classes-module" name="classes-module" value="10" min="10" max="15">
                 <small class="form-help">When using "Random" type, this value becomes the maximum number of classes per module</small>
             </div>
 
@@ -508,7 +508,7 @@
                     <option value="fixed">Fixed</option>
                     <option value="random">Random</option>
                 </select>
-                <small class="form-help">Fixed: Each module gets exactly the specified number of classes. Random: Each module gets a random number of classes (2 to the specified maximum)</small>
+                <small class="form-help">Fixed: Each module gets exactly the specified number of classes. Random: Each module gets a random number of classes (10 to the specified maximum)</small>
             </div>
 
             <div class="form-group">
@@ -527,7 +527,7 @@
                     <option value="gradle_9_3_0">Gradle 9.3.0</option>
                     <option value="gradle_9_2_0">Gradle 9.2.0</option>
                     <option value="gradle_9_1_0">Gradle 9.1.0</option>
-                    <option value="gradle_8_14_2">Gradle 8.14.2</option>
+                    <option value="gradle_8_14_3">Gradle 8.14.3</option>
                 </select>
             </div>
 
