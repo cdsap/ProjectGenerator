@@ -6,7 +6,6 @@ class SettingsGradle {
 
     fun get(versions: Versions, develocity: Boolean, projectName: String): String {
         val pluginLines = buildList {
-            add("""id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"""")
             if (develocity) {
                 add("""id("com.gradle.develocity") version "${versions.project.develocity}"""")
                 add("""id("com.gradle.common-custom-user-data-gradle-plugin") version "${versions.project.ccud}"""")
