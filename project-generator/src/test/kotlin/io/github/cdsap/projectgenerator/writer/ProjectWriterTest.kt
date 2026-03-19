@@ -228,6 +228,10 @@ class ProjectWriterTest {
             !settingsContent.contains("spotlight") && !settingsContent.contains("com.fueledbycaffeine.spotlight"),
             "settings.gradle.kts should not contain Spotlight plugin when additionalSettingsPlugins is empty, but contained: $settingsContent"
         )
+        assertTrue(
+            settingsContent.contains("org.gradle.toolchains.foojay-resolver-convention"),
+            "settings.gradle.kts should contain the Foojay toolchain resolver plugin, but contained: $settingsContent"
+        )
 
         val buildFile = File("${language.projectName}/build.gradle.kts")
         assertTrue(buildFile.exists(), "Expected build.gradle.kts to exist")

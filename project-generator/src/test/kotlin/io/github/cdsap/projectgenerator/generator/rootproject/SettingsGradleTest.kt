@@ -9,17 +9,17 @@ import org.junit.jupiter.api.Test
 class SettingsGradleTest {
 
     @Test
-    fun `does not include plugins block when additionalSettingsPlugins is empty and develocity is false`() {
+    fun `includes toolchain resolver plugin when additionalSettingsPlugins is empty and develocity is false`() {
         val versions = Versions(additionalSettingsPlugins = emptyList())
         val result = SettingsGradle().get(versions, develocity = false, projectName = "testProject")
 
-        assertFalse(
+        assertTrue(
             result.contains("plugins {"),
-            "settings.gradle.kts should not contain plugins block when additionalSettingsPlugins is empty and develocity is false"
+            "settings.gradle.kts should contain a plugins block for toolchain provisioning"
         )
-        assertFalse(
-            result.contains("spotlight") || result.contains("com.fueledbycaffeine.spotlight"),
-            "settings.gradle.kts should not contain Spotlight when additionalSettingsPlugins is empty"
+        assertTrue(
+            result.contains("org.gradle.toolchains.foojay-resolver-convention"),
+            "settings.gradle.kts should include the Foojay toolchain resolver plugin"
         )
     }
 
@@ -33,7 +33,20 @@ class SettingsGradleTest {
         val result = SettingsGradle().get(versions, develocity = false, projectName = "testProject")
 
         assertTrue(result.contains("plugins {"))
+        assertTrue(result.contains("org.gradle.toolchains.foojay-resolver-convention"))
         assertTrue(result.contains("com.fueledbycaffeine.spotlight"))
         assertTrue(result.contains("1.4.1"))
+    }
+
+    @Test
+    fun `does not include spotlight when additionalSettingsPlugins is empty`() {
+        val versions = Versions(additionalSettingsPlugins = emptyList())
+
+        val result = SettingsGradle().get(versions, develocity = false, projectName = "testProject")
+
+        assertFalse(
+            result.contains("spotlight") || result.contains("com.fueledbycaffeine.spotlight"),
+            "settings.gradle.kts should not contain Spotlight when additionalSettingsPlugins is empty"
+        )
     }
 }
