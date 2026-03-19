@@ -27,6 +27,7 @@ object VersionsParser {
     fun fromFile(file: File): VersionsFile {
         val tree = mapper.readTree(file)
         normalizeGradleVersion(tree)
+        normalizeProjectDefaults(tree)
         return mapper.treeToValue(tree, VersionsFile::class.java)
     }
 
@@ -37,5 +38,15 @@ object VersionsParser {
 
         val normalized = Gradle.fromValue(gradleNode.asText()).name
         tree.put("gradle", normalized)
+    }
+
+    private fun normalizeProjectDefaults(tree: com.fasterxml.jackson.databind.JsonNode) {
+        if (tree !is ObjectNode) return
+        val projectNode = tree.get("project")
+        if (projectNode !is ObjectNode) return
+
+        if (projectNode.get("develocityUrl")?.isNull == true) {
+            projectNode.put("develocityUrl", "")
+        }
     }
 }

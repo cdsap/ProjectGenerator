@@ -125,6 +125,27 @@ class VersionsParserTest {
     }
 
     @Test
+    fun `parses YAML with empty develocityUrl as blank string`() {
+        val yaml = """
+            project:
+              develocity: "4.1"
+              develocityUrl:
+              jdk: "23"
+            kotlin:
+              kgp: "2.2.10"
+              ksp: "2.2.10-2.0.2"
+              coroutines: "1.10.2"
+        """.trimIndent()
+
+        val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
+        val versions = VersionsParser.fromFile(file).resolve()
+
+        assertEquals("4.1", versions.project.develocity)
+        assertEquals("", versions.project.develocityUrl)
+        assertEquals("23", versions.project.jdk)
+    }
+
+    @Test
     fun `parses gradle from YAML case insensitively`() {
         val yaml = """
             gradle: 9.3.1
