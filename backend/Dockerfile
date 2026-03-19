@@ -18,7 +18,7 @@ RUN npm install
 COPY . .
 
 # Download CLI
-RUN curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.5.0/projectGenerator \
+RUN curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.6.0/projectGenerator \
   --output /usr/local/bin/projectGenerator && \
   chmod 0755 /usr/local/bin/projectGenerator
 
