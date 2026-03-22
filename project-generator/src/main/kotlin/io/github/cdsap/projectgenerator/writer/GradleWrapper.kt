@@ -8,7 +8,7 @@ import java.util.zip.ZipInputStream
 class GradleWrapper(val gradle: Gradle) {
 
     fun installGradleVersion(path: String) {
-        val zipFileName = "${gradle.name.lowercase()}.zip"
+        val zipFileName = gradle.resourceZipName
         val outputDir = path
         unzipResourceFile(zipFileName, outputDir)
 

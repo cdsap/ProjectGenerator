@@ -9,6 +9,7 @@ group = "io.github.cdsap"
 version = "0.6.0"
 
 dependencies {
+    implementation(libs.jackson.annotations)
     implementation(libs.kotlinx.coroutines.core)
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter)

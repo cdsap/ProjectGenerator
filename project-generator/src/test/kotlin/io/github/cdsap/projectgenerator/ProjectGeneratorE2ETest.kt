@@ -1,10 +1,10 @@
 package io.github.cdsap.projectgenerator
 
 import io.github.cdsap.projectgenerator.DefaultTestVersions.Companion.LATEST_GRADLE
+import io.github.cdsap.projectgenerator.DefaultTestVersions.Companion.OLDEST_SUPPORTED_GRADLE
 import io.github.cdsap.projectgenerator.model.Android
 import io.github.cdsap.projectgenerator.model.ClassesPerModule
 import io.github.cdsap.projectgenerator.model.ClassesPerModuleType
-import io.github.cdsap.projectgenerator.model.Gradle
 import io.github.cdsap.projectgenerator.model.Language
 import io.github.cdsap.projectgenerator.model.Project
 import io.github.cdsap.projectgenerator.model.Shape
@@ -88,7 +88,7 @@ class ProjectGeneratorE2ETest {
             TypeOfStringResources.LARGE,
             5,
             true,
-            GradleWrapper(Gradle.GRADLE_8_14_3),
+            GradleWrapper(OLDEST_SUPPORTED_GRADLE),
             projectRootPath = "${tempDir.toFile().path}/${shape.name.lowercase().capitalize()}$modules/project_kts",
             develocity = false,
             projectName = "${shape.name.lowercase().capitalize()}$modules"

@@ -1,6 +1,7 @@
 package io.github.cdsap.projectgenerator
 
 import io.github.cdsap.projectgenerator.DefaultTestVersions.Companion.LATEST_GRADLE
+import io.github.cdsap.projectgenerator.DefaultTestVersions.Companion.OLDEST_SUPPORTED_GRADLE
 import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
 import io.github.cdsap.projectgenerator.writer.ProjectWriter
@@ -39,7 +40,7 @@ class ProjectWriterTest {
             typeOfProjectRequested,
             TypeOfStringResources.NORMAL,
             false,
-            GradleWrapper(Gradle.GRADLE_8_14_3),
+            GradleWrapper(OLDEST_SUPPORTED_GRADLE),
             true,
             "awesomeapp"
         )
