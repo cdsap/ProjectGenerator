@@ -85,7 +85,7 @@ prune_removed_bundles() {
   while IFS= read -r existing; do
     local base
     base="$(basename "$existing")"
-    if [[ ! " ${keep_list[*]} " =~ [[:space:]]${base}[[:space:]] ]]; then
+    if [[ ! " ${keep_list[*]} " == *" ${base} "* ]]; then
       rm -f "$existing"
     fi
   done < <(find "$RESOURCES_DIR" -maxdepth 1 -name 'gradle_*.zip' -type f | sort)
