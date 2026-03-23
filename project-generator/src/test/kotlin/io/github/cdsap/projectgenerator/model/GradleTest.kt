@@ -1,7 +1,6 @@
 package io.github.cdsap.projectgenerator.model
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class GradleTest {
@@ -9,6 +8,7 @@ class GradleTest {
     @Test
     fun `supported gradle list is capped to six entries`() {
         assertEquals(6, Gradle.supported().size)
+    }
 
     @Test
     fun `latest gradle is the first supported entry`() {
