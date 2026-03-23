@@ -51,7 +51,9 @@ data class Gradle(val version: String) {
 
         fun fromValue(value: String): Gradle {
             return supportedLookup[value.lowercase()]
-                ?: throw IllegalArgumentException("Unknown Gradle version: $value")
+                ?: throw IllegalArgumentException(
+                    "Unknown Gradle version: $value. Supported versions: ${supportedDisplayValues()}"
+                )
         }
     }
 }
