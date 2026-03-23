@@ -76,10 +76,10 @@ app.post('/api/generate', upload.single('versions-file'), async (req, res) => {
             `--type`, type,
             `--classes-module`, classesModule,
             `--classes-module-type`, body['classes-module-type'] || 'fixed',
-            `--type-of-string-resources`, body['type-of-string-resources'] || 'normal',
-            `--gradle`, body.gradle || 'GRADLE_9_4_0'
+            `--type-of-string-resources`, body['type-of-string-resources'] || 'normal'
         ];
 
+        if (body.gradle) args.push('--gradle', body.gradle);
         // Add project name if provided
         if (body['project-name']) { args.push('--project-name', body['project-name']);}
         if (toBool(body['generate-unit-test']) || toBool(body.generateUnitTest)) args.push('--generate-unit-test');

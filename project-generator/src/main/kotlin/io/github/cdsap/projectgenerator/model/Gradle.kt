@@ -1,11 +1,6 @@
 package io.github.cdsap.projectgenerator.model
 
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonValue
-
-data class Gradle @JsonCreator(mode = JsonCreator.Mode.DELEGATING) constructor(
-    @get:JsonValue val version: String
-) {
+data class Gradle(val version: String) {
 
     val cliValue: String
         get() = "gradle_${version.replace('.', '_')}"

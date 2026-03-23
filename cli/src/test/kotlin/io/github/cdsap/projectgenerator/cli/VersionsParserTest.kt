@@ -148,24 +148,24 @@ class VersionsParserTest {
     @Test
     fun `parses gradle from YAML case insensitively`() {
         val yaml = """
-            gradle: 9.3.1
+            gradle: ${Gradle.supported()[1].version}
         """.trimIndent()
 
         val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
         val versionsFile = VersionsParser.fromFile(file)
 
-        assertEquals(Gradle.GRADLE_9_3_1, versionsFile.gradle)
+        assertEquals(Gradle.supported()[1], versionsFile.gradle)
     }
 
     @Test
     fun `parses legacy gradle enum name from YAML for backwards compatibility`() {
         val yaml = """
-            gradle: GRADLE_9_3_1
+            gradle: ${Gradle.supported()[1].legacyEnumName}
         """.trimIndent()
 
         val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
         val versionsFile = VersionsParser.fromFile(file)
 
-        assertEquals(Gradle.GRADLE_9_3_1, versionsFile.gradle)
+        assertEquals(Gradle.supported()[1], versionsFile.gradle)
     }
 }

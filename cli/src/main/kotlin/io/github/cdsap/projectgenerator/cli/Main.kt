@@ -42,14 +42,13 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
     private val typeOfStringResources: String by option().choice("large", "normal").default("normal")
     private val layers by option().int().default(5)
     private val generateUnitTest by option().flag(default = false)
-    private val gradle: String? by option().choice(
-        "gradle_8_14_3",
-        "gradle_9_1_0",
-        "gradle_9_2_0",
-        "gradle_9_3_0",
-        "gradle_9_3_1",
-        "gradle_9_4_0"
-    )
+    private val gradle: String? by option()
+        .convert {
+            if (!Gradle.isSupportedValue(it)) {
+                fail("Unknown Gradle version: $it. Supported versions: ${Gradle.supportedDisplayValues()}")
+            }
+            it
+        }
     private val develocity by option().flag(default = false)
     private val versionsFile by option().file()
     private val outputDir by option("--output-dir")
@@ -151,7 +150,7 @@ internal fun resolveProjectRootPath(outputDir: String?, language: Language, proj
 internal fun resolveGradle(cliGradle: String?, versionsFile: VersionsFile?): Gradle {
     return cliGradle?.let(Gradle::fromValue)
         ?: versionsFile?.gradle
-        ?: Gradle.GRADLE_9_4_0
+        ?: Gradle.latest()
 }
 
 class GenerateYaml : CliktCommand(name = "generate-yaml-versions") {
