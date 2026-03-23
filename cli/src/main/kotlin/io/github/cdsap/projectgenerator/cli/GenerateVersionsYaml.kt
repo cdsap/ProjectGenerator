@@ -10,7 +10,7 @@ class GenerateVersionsYaml {
         val file = File("versions.yaml")
         val versions = Versions()
         val content = """
-            |gradle: ${Gradle.GRADLE_9_4_0.version}
+            |gradle: ${Gradle.latest().version}
             |project:
             |  develocity: ${versions.project.develocity}
             |  develocityUrl: ${versions.project.develocityUrl}

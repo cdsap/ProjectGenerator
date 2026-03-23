@@ -45,7 +45,7 @@ Then, you can use the versions.yaml in the `generate-project` command:
 - `--classes-module-type`: fixed (default), random
 - `--type-of-string-resources`: normal (default), large
 - `--generate-unit-test`: Generate unit tests (default: false)
-- `--gradle`: gradle_8_14_3, gradle_9_1_0, gradle_9_2_0, gradle_9_3_0, gradle_9_3_1, gradle_9_4_0 (default: gradle_9_4_0)
+- `--gradle`: gradle_9_4_1, gradle_9_3_1, gradle_9_2_1, gradle_8_14_4, gradle_8_13, gradle_8_12_1 (default: gradle_9_4_1)
 - `--develocity`: Enables the Develocity build scan plugin (default: false). If --develocity-url is not specified, the build scan will be published to Gradle Scans.
 - `--develocity-url`: Specify Develocity URL
 - `--versions-file`: Path to a custom YAML file with dependency versions
@@ -77,7 +77,7 @@ ProjectGenerator(
     typeOfStringResources = TypeOfStringResources.LARGE,
     layers = 5,
     generateUnitTest = true,
-    gradle = GradleWrapper(Gradle.GRADLE_9_3_1),
+    gradle = GradleWrapper(Gradle.fromValue("9.3.1")),
     projectRootPath = file.path
 ).write()
 
@@ -200,12 +200,15 @@ If enabled, each module will generate n unit tests, where n is the argument `cla
 ```
 ## Gradle
 Gradle used, versions supported:
-* Gradle 8.14.3
-* Gradle 9.1.0
-* Gradle 9.2.0
-* Gradle 9.3.0
-* Gradle 9.3.1
-* Gradle 9.4.0 **default**
+* Gradle 9.x
+  * 9.4.1
+  * 9.3.1
+  * 9.2.1
+* Gradle 8.x
+  * 8.14.4
+  * 8.13
+  * 8.12.1
+* The newest bundled version is the default.
 
 ##### Example
 ```kotlin

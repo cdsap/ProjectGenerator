@@ -15,7 +15,7 @@ class ProjectGenerator(
     private val typeOfStringResources: TypeOfStringResources = TypeOfStringResources.NORMAL,
     private val layers: Int,
     private val generateUnitTest: Boolean = false,
-    private val gradle: GradleWrapper = GradleWrapper(Gradle.GRADLE_9_4_0),
+    private val gradle: GradleWrapper = GradleWrapper(Gradle.latest()),
     private val projectRootPath: String = "projects_generated/generated_project/project_kts",
     private val develocity: Boolean = false,
     private val layerNames: List<String> = DefaultNames.layerNames,

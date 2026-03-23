@@ -1,0 +1,41 @@
+name: Update Gradle Versions
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-gradle-versions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Update bundled Gradle wrappers
+        run: ./scripts/update_gradle_versions.sh
+
+      - name: Run tests
+        run: ./gradlew :project-generator:test :cli:test
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: Update bundled Gradle versions
+          title: Update bundled Gradle versions
+          body: |
+            Updates the bundled Gradle wrapper resources and README to the latest three minor lines for Gradle 9 and Gradle 8 from the official Gradle versions feed.
+          branch: codex/update-gradle-versions
+          delete-branch: true
