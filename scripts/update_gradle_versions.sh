@@ -25,7 +25,6 @@ import sys
 items = json.load(sys.stdin)
 target_majors = os.environ["TARGET_MAJORS"].split()
 minors_per_major = int(os.environ["MINORS_PER_MAJOR"])
-selected = []
 selected_by_minor = {major: [] for major in target_majors}
 seen_minor = {major: set() for major in target_majors}
 
