@@ -7,9 +7,8 @@ import org.junit.jupiter.api.Test
 class GradleTest {
 
     @Test
-    fun `supported gradle list is capped to five entries`() {
+    fun `supported gradle list is capped to six entries`() {
         assertEquals(6, Gradle.supported().size)
-    }
 
     @Test
     fun `latest gradle is the first supported entry`() {
