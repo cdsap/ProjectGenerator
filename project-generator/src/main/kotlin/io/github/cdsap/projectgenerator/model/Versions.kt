@@ -79,7 +79,7 @@ data class Android(
     val kotlinMultiplatformLibrary: Boolean = false,
     val hilt: String = "2.59.2",
     val hiltAandroidx: String = "1.3.0",
-    val metro: String = "0.12.0",
+    val metro: String = "0.12.1",
     val metroPlugin: String = "0.10.2",
     val composeBom: String = "2026.03.01",
     val robolectric: String = "4.16.1",
