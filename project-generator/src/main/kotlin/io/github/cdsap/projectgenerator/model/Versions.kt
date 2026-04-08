@@ -16,6 +16,10 @@ data class Versions(
     ),
     val additionalSettingsPlugins: List<AdditionalPlugin> = listOf(
         AdditionalPlugin(
+            "org.gradle.toolchains.foojay-resolver-convention",
+            "1.0.0"
+        ),
+        AdditionalPlugin(
             "com.fueledbycaffeine.spotlight",
             "1.4.1"
         )

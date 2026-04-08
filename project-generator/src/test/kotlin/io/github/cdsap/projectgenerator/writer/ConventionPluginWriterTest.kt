@@ -8,6 +8,7 @@ import io.github.cdsap.projectgenerator.generator.plugins.android.CompositeBuild
 import io.github.cdsap.projectgenerator.generator.plugins.jvm.CompositeBuildJvmLib
 import io.github.cdsap.projectgenerator.model.Android
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
+import io.github.cdsap.projectgenerator.model.Project
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
 import io.github.cdsap.projectgenerator.model.Versions
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -74,6 +75,50 @@ class ConventionPluginWriterTest {
         }
     }
 
+
+    @Test
+    fun `android convention plugins configure kotlin and java toolchains for requested jdk`() {
+        val versions = Versions(project = Project(jdk = "23"))
+        val projectName = "androidJdk23"
+        val language = LanguageAttributes(projectName = "${tempDir.path}/$projectName", extension = "gradle.kts")
+        val writer = ConventionPluginWriter(
+            languages = listOf(language),
+            versions = versions,
+            requested = TypeProjectRequested.ANDROID
+        )
+
+        writer.write()
+
+        val appPluginFile = File("${language.projectName}/build-logic/convention/src/main/kotlin/com/logic/CompositeBuildPluginAndroidApp.kt")
+        val libPluginFile = File("${language.projectName}/build-logic/convention/src/main/kotlin/com/logic/CompositeBuildPluginAndroidLib.kt")
+
+        val appContent = appPluginFile.readText()
+        assertTrue(appContent.contains("jvmToolchain(23)"))
+        assertTrue(appContent.contains("JavaLanguageVersion.of(23)"))
+
+        val libContent = libPluginFile.readText()
+        assertTrue(libContent.contains("jvmToolchain(23)"))
+        assertTrue(libContent.contains("JavaLanguageVersion.of(23)"))
+    }
+
+    @Test
+    fun `jvm convention plugin configures kotlin and java toolchains for requested jdk`() {
+        val versions = Versions(project = Project(jdk = "23"))
+        val projectName = "jvmJdk23"
+        val language = LanguageAttributes(projectName = "${tempDir.path}/$projectName", extension = "gradle.kts")
+        val writer = ConventionPluginWriter(
+            languages = listOf(language),
+            versions = versions,
+            requested = TypeProjectRequested.JVM
+        )
+
+        writer.write()
+
+        val jvmLibPluginFile = File("${language.projectName}/build-logic/convention/src/main/kotlin/com/logic/PluginJvmLib.kt")
+        val jvmContent = jvmLibPluginFile.readText()
+        assertTrue(jvmContent.contains("jvmToolchain(23)"))
+        assertTrue(jvmContent.contains("JavaLanguageVersion.of(23)"))
+    }
     @Test
     fun `write should create convention plugins for multiple JVM projects`() {
         val projectNames = listOf("multiJvm1", "multiJvm2")
