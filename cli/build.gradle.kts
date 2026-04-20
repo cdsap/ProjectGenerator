@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "org.example"
-version = "1.0-SNAPSHOT"
+version = project(":project-generator").version
 
 dependencies {
     implementation(libs.clikt)
