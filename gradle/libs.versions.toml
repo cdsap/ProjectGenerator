@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.3.20"
+kotlin = "2.3.21"
 ktlint = "14.2.0"
 mavenPublish = "0.36.0"
 fatbinary = "1.0"
