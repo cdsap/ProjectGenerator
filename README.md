@@ -34,7 +34,13 @@ Then, you can use the versions.yaml in the `generate-project` command:
 ./projectGenerator generate-project --shape triangle --layers 5 --modules 100 --versions-file versions.yaml
 ```
 
+#### 3. Show CLI Version
+```bash
+./projectGenerator --version
+```
+
 ### CLI Options
+- `--version`: Show the current CLI version sourced from the `project-generator` library
 - `--shape`: triangle, rhombus, flat, rectangle, middle_bottleneck, inverse_triangle (default: rectangle)
 - `--modules` (required): Number of modules to create
 - `--layers`: Number of layers (default: 5)

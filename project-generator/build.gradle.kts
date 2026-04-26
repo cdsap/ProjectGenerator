@@ -8,6 +8,13 @@ plugins {
 group = "io.github.cdsap"
 version = "0.6.2"
 
+tasks.processResources {
+    inputs.property("version", project.version)
+    filesMatching("project-generator-version.properties") {
+        expand("version" to project.version)
+    }
+}
+
 dependencies {
     implementation(libs.kotlinx.coroutines.core)
     testImplementation(platform(libs.junit.bom))

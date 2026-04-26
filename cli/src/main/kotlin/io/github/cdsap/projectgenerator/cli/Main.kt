@@ -9,6 +9,7 @@ import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.int
 import io.github.cdsap.projectgenerator.ProjectGenerator
+import io.github.cdsap.projectgenerator.ProjectGeneratorVersion
 import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
 import java.io.File
@@ -21,6 +22,10 @@ fun main(args: Array<String>) {
 }
 
 class ProjectReportCli : CliktCommand() {
+    init {
+        versionOption(ProjectGeneratorVersion.value)
+    }
+
     override fun run() = Unit // Root doesn't do anything itself
 }
 
