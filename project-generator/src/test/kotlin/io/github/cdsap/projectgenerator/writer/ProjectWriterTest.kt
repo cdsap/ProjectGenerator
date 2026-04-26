@@ -199,6 +199,39 @@ class ProjectWriterTest {
     }
 
     @Test
+    fun `includes default settings plugins in generated project`() {
+        val nodes = listOf(
+            ProjectGraph("module_1_1", 1, emptyList(), TypeProject.ANDROID_APP, 10),
+        )
+        val language = LanguageAttributes("gradle.kts", "${tempDir}/project_default_settings_plugins")
+        val projectWriter = ProjectWriter(
+            nodes,
+            listOf(language),
+            Versions(),
+            TypeProjectRequested.ANDROID,
+            TypeOfStringResources.NORMAL,
+            false,
+            GradleWrapper(LATEST_GRADLE),
+            false,
+            "default_settings_plugins_project"
+        )
+
+        projectWriter.write()
+
+        val settingsFile = File("${language.projectName}/settings.gradle.kts")
+        assertTrue(settingsFile.exists(), "Expected settings.gradle.kts to exist")
+        val settingsContent = settingsFile.readText()
+        assertTrue(
+            settingsContent.contains("org.gradle.toolchains.foojay-resolver-convention"),
+            "settings.gradle.kts should contain the Foojay toolchain resolver plugin by default, but contained: $settingsContent"
+        )
+        assertTrue(
+            settingsContent.contains("com.fueledbycaffeine.spotlight"),
+            "settings.gradle.kts should contain Spotlight by default, but contained: $settingsContent"
+        )
+    }
+
+    @Test
     fun `does not include settings or build plugins when additionalSettingsPlugins and additionalBuildGradleRootPlugins are empty`() {
         val nodes = listOf(
             ProjectGraph("module_1_1", 1, emptyList(), TypeProject.ANDROID_APP, 10),
@@ -228,6 +261,10 @@ class ProjectWriterTest {
         assertTrue(
             !settingsContent.contains("spotlight") && !settingsContent.contains("com.fueledbycaffeine.spotlight"),
             "settings.gradle.kts should not contain Spotlight plugin when additionalSettingsPlugins is empty, but contained: $settingsContent"
+        )
+        assertTrue(
+            !settingsContent.contains("org.gradle.toolchains.foojay-resolver-convention"),
+            "settings.gradle.kts should not contain the Foojay toolchain resolver plugin when additionalSettingsPlugins is empty, but contained: $settingsContent"
         )
 
         val buildFile = File("${language.projectName}/build.gradle.kts")
