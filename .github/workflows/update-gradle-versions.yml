@@ -10,10 +10,86 @@ permissions:
   pull-requests: write
 
 jobs:
-  update-gradle-versions:
+  unit-tests:
+    strategy:
+      matrix:
+        java:
+          - 17
+          - 21
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: 'Set up JDK ${{ matrix.java }}'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '${{ matrix.java }}'
+      - name: Update bundled Gradle wrappers
+        run: ./scripts/update_gradle_versions.sh
+      - name: Run unit tests (excluding E2E tests)
+        run: ./gradlew :project-generator:unitTest
 
+  cli-tests:
+    strategy:
+      matrix:
+        java:
+          - 17
+          - 21
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: 'Set up JDK ${{ matrix.java }}'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '${{ matrix.java }}'
+      - name: Update bundled Gradle wrappers
+        run: ./scripts/update_gradle_versions.sh
+      - name: Run CLI tests
+        run: ./gradlew :cli:test
+
+  e2e-tests:
+    strategy:
+      matrix:
+        java:
+          - 17
+          - 21
+        test-class:
+          - 'io.github.cdsap.projectgenerator.ProjectGeneratorE2ETest'
+          - 'io.github.cdsap.projectgenerator.ProjectGeneratorE2EJdk21Test'
+          - 'io.github.cdsap.projectgenerator.RoomDiVariantsAssembleE2EValidationTest'
+          - 'io.github.cdsap.projectgenerator.AndroidKotlinMultiplatformLibraryE2EValidationTest'
+          - 'io.github.cdsap.projectgenerator.SupportedGradleVersionsE2ETest'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Graphviz
+        uses: ts-graphviz/setup-graphviz@v2
+      - name: 'Set up JDK ${{ matrix.java }}'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '${{ matrix.java }}'
+      - name: Update bundled Gradle wrappers
+        run: ./scripts/update_gradle_versions.sh
+      - name: Run E2E test ${{ matrix.test-class }}
+        run: >
+          ./gradlew :project-generator:test
+          --tests "${{ matrix.test-class }}"
+
+  create-pull-request:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs:
+      - unit-tests
+      - cli-tests
+      - e2e-tests
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -26,9 +102,6 @@ jobs:
 
       - name: Update bundled Gradle wrappers
         run: ./scripts/update_gradle_versions.sh
-
-      - name: Run tests
-        run: ./gradlew :project-generator:test :cli:test
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v7
