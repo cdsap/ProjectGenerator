@@ -11,13 +11,13 @@ data class Versions(
     val additionalBuildGradleRootPlugins: List<AdditionalPlugin> = listOf(
         AdditionalPlugin(
             "com.autonomousapps.dependency-analysis",
-            "2.19.0"
+            "3.19.0"
         )
     ),
     val additionalSettingsPlugins: List<AdditionalPlugin> = listOf(
         AdditionalPlugin(
             "com.fueledbycaffeine.spotlight",
-            "1.4.1"
+            "1.6.10"
         )
     )
 )
@@ -37,7 +37,7 @@ data class AdditionalPlugin(
 
 data class Project(
     val jdk: String = "23",
-    val develocity: String = "4.3",
+    val develocity: String = "4.4.1",
     val ccud: String = "2.2",
     val develocityUrl: String = ""
 )
