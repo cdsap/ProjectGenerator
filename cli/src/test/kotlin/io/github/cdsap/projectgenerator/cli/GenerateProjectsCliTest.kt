@@ -1,7 +1,9 @@
 package io.github.cdsap.projectgenerator.cli
 
+import com.github.ajalt.clikt.core.PrintMessage
 import com.github.ajalt.clikt.core.UsageError
 import com.github.ajalt.clikt.core.parse
+import io.github.cdsap.projectgenerator.ProjectGeneratorVersion
 import io.github.cdsap.projectgenerator.model.Gradle
 import io.github.cdsap.projectgenerator.model.Language
 import io.github.cdsap.projectgenerator.model.VersionsFile
@@ -11,6 +13,15 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class GenerateProjectsCliTest {
+
+    @Test
+    fun `version flag prints the library version`() {
+        val message = assertThrows<PrintMessage> {
+            ProjectReportCli().parse(listOf("--version"))
+        }
+
+        assertEquals("${ProjectReportCli().commandName} version ${ProjectGeneratorVersion.value}", message.message)
+    }
 
     @Test
     fun `android kotlin multiplatform library flag is rejected for jvm type`() {
