@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator.generator.plugins.android
 
+import io.github.cdsap.projectgenerator.generator.extension.isAgp9
 import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Processor
 import io.github.cdsap.projectgenerator.model.Versions
@@ -56,7 +57,11 @@ class CompositeBuildPluginAndroidKmpLib {
 
     private fun provideKotlinProcessor(versions: Versions, di: DependencyInjection): String {
         if (versions.kotlin.kotlinProcessor.processor == Processor.KAPT) {
-            return """apply("kotlin-kapt")"""
+            return if (versions.android.agp.isAgp9()) {
+                """apply("com.android.legacy-kapt")"""
+            } else {
+                """apply("kotlin-kapt")"""
+            }
         }
         val shouldApplyKsp = di == DependencyInjection.HILT || versions.android.roomDatabase
         return if (shouldApplyKsp) """apply("com.google.devtools.ksp")""" else ""

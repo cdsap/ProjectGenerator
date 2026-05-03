@@ -12,9 +12,9 @@ class CompositeBuildPluginAndroidLib {
         |import org.gradle.api.Plugin
         |import org.gradle.api.JavaVersion
         |import org.gradle.api.Project
+        |import org.gradle.api.plugins.JavaPluginExtension
         |import org.gradle.kotlin.dsl.configure
         |import org.gradle.kotlin.dsl.dependencies
-        |import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
         |
         |class CompositeBuildPluginAndroidLib : Plugin<Project> {
         |    override fun apply(target: Project) {
@@ -49,11 +49,7 @@ class CompositeBuildPluginAndroidLib {
         |                }
         |            }
         |
-        |            target.extensions.getByType(KotlinAndroidProjectExtension::class.java).apply {
-        |                jvmToolchain(${versions.project.jdk})
-        |            }
-        |
-        |            target.extensions.getByType(org.gradle.api.plugins.JavaPluginExtension::class.java).apply {
+        |            target.extensions.getByType(JavaPluginExtension::class.java).apply {
         |                toolchain.languageVersion.set(org.gradle.jvm.toolchain.JavaLanguageVersion.of(${versions.project.jdk}))
         |            }
         |
@@ -67,7 +63,11 @@ class CompositeBuildPluginAndroidLib {
 
     fun provideKotlinProcessor(versions: Versions, di: DependencyInjection): String {
         if (versions.kotlin.kotlinProcessor.processor == Processor.KAPT) {
-            return """apply("kotlin-kapt")"""
+            return if (versions.android.agp.isAgp9()) {
+                """apply("com.android.legacy-kapt")"""
+            } else {
+                """apply("kotlin-kapt")"""
+            }
         }
         val shouldApplyKsp = di == DependencyInjection.HILT || versions.android.roomDatabase
         return if (shouldApplyKsp) """apply("com.google.devtools.ksp")""" else ""

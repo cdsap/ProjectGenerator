@@ -12,13 +12,13 @@ class CompositeBuildPluginAndroidApp {
         |import org.gradle.api.Plugin
         |import org.gradle.api.JavaVersion
         |import org.gradle.api.Project
+        |import org.gradle.api.plugins.JavaPluginExtension
         |import org.gradle.kotlin.dsl.configure
         |import org.gradle.api.tasks.compile.JavaCompile
         |import org.gradle.jvm.toolchain.JavaLanguageVersion
         |import org.gradle.jvm.toolchain.JavaToolchainService
         |import org.gradle.kotlin.dsl.dependencies
         |import org.gradle.kotlin.dsl.withType
-        |import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
         |
         |class CompositeBuildPluginAndroidApp : Plugin<Project> {
         |    override fun apply(target: Project) {
@@ -51,11 +51,12 @@ class CompositeBuildPluginAndroidApp {
         |                buildFeatures {
         |                    compose = true
         |                }
+        |                compileOptions {
+        |                    sourceCompatibility = JavaVersion.VERSION_${versions.project.jdk}
+        |                    targetCompatibility = JavaVersion.VERSION_${versions.project.jdk}
+        |                }
         |            }
-        |            target.extensions.getByType(KotlinAndroidProjectExtension::class.java).apply {
-        |                    jvmToolchain(${versions.project.jdk})
-        |            }
-        |            target.extensions.getByType(org.gradle.api.plugins.JavaPluginExtension::class.java).apply {
+        |            target.extensions.getByType(JavaPluginExtension::class.java).apply {
         |                toolchain.languageVersion.set(org.gradle.jvm.toolchain.JavaLanguageVersion.of(${versions.project.jdk}))
         |            }
         |            ${hiltToolchainFix(versions, di)}
@@ -70,7 +71,11 @@ class CompositeBuildPluginAndroidApp {
 
     fun provideKotlinProcessor(versions: Versions, di: DependencyInjection): String {
         if (versions.kotlin.kotlinProcessor.processor == Processor.KAPT) {
-            return """apply("kotlin-kapt")"""
+            return if (versions.android.agp.isAgp9()) {
+                """apply("com.android.legacy-kapt")"""
+            } else {
+                """apply("kotlin-kapt")"""
+            }
         }
         val shouldApplyKsp = di == DependencyInjection.HILT || versions.android.roomDatabase
         return if (shouldApplyKsp) """apply("com.google.devtools.ksp")""" else ""
