@@ -7,10 +7,14 @@ import io.github.cdsap.projectgenerator.generator.plugins.android.CompositeBuild
 import io.github.cdsap.projectgenerator.generator.plugins.android.CompositeBuildPluginAndroidLib
 import io.github.cdsap.projectgenerator.generator.plugins.jvm.CompositeBuildJvmLib
 import io.github.cdsap.projectgenerator.model.Android
+import io.github.cdsap.projectgenerator.model.Kotlin
+import io.github.cdsap.projectgenerator.model.KotlinProcessor
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
+import io.github.cdsap.projectgenerator.model.Processor
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
 import io.github.cdsap.projectgenerator.model.Versions
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -141,6 +145,28 @@ class ConventionPluginWriterTest {
             libPluginFile.readText().contains("dependsOn(\"kspAndroidMain\")"),
             "Expected KSP androidMain task wiring in lib convention plugin"
         )
+    }
+
+    @Test
+    fun `write should use legacy kapt plugin for agp9 built in kotlin`() {
+        val projectName = "androidKapt"
+        val language = LanguageAttributes(projectName = "${tempDir.path}/$projectName", extension = "gradle.kts")
+        val versions = Versions(kotlin = Kotlin(kotlinProcessor = KotlinProcessor(Processor.KAPT)))
+        val writer = ConventionPluginWriter(
+            languages = listOf(language),
+            versions = versions,
+            requested = TypeProjectRequested.ANDROID
+        )
+
+        writer.write()
+
+        val appPlugin = File("${language.projectName}/build-logic/convention/src/main/kotlin/com/logic/CompositeBuildPluginAndroidApp.kt")
+        val libPlugin = File("${language.projectName}/build-logic/convention/src/main/kotlin/com/logic/CompositeBuildPluginAndroidLib.kt")
+
+        assertTrue(appPlugin.readText().contains("apply(\"com.android.legacy-kapt\")"))
+        assertTrue(libPlugin.readText().contains("apply(\"com.android.legacy-kapt\")"))
+        assertFalse(appPlugin.readText().contains("apply(\"kotlin-kapt\")"))
+        assertFalse(libPlugin.readText().contains("apply(\"kotlin-kapt\")"))
     }
 
     private fun assertAndroidConventionFilesExist(projectBasePath: String, versions: Versions) {

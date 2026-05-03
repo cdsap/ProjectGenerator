@@ -85,7 +85,7 @@ class AndroidKotlinMultiplatformLibraryE2EValidationTest {
     }
 
     private fun assemble(projectName: String) = GradleRunner.create()
-        .withProjectDir(File("$tempDir/$projectName/project_kts"))
+        .withProjectDir(File("$tempDir/$projectName/project_kts").also(AndroidSdkTestSupport::writeLocalProperties))
         .withArguments("assemble")
         .build()
 }

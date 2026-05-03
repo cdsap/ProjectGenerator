@@ -49,6 +49,7 @@ class RoomDiVariantsAssembleE2EValidationTest {
         ).write()
 
         val projectDir = File("$tempDir/$projectName/project_kts")
+        AndroidSdkTestSupport.writeLocalProperties(projectDir)
         val assemble = GradleRunner.create()
             .withProjectDir(projectDir)
             .withArguments("clean", "assemble")
