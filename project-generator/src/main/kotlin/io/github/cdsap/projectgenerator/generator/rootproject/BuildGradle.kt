@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator.generator.rootproject
 
+import io.github.cdsap.projectgenerator.generator.extension.isAgp9
 import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Processor
 import io.github.cdsap.projectgenerator.model.Versions
@@ -9,7 +10,7 @@ class BuildGradle {
     fun getAndroid(versions: Versions, di: DependencyInjection) = """
         plugins {
             alias(libs.plugins.kotlin.jvm) apply false
-            alias(libs.plugins.kotlin.android) apply false
+            ${kotlinAndroidPlugin(versions)}
             alias(libs.plugins.kotlin.compose) apply false
             alias(libs.plugins.android.application) apply false
             ${androidLibraryRootPlugin(versions)}
@@ -53,6 +54,14 @@ class BuildGradle {
             "alias(libs.plugins.android.kotlin.multiplatform.library) apply false"
         } else {
             "alias(libs.plugins.android.library) apply false"
+        }
+    }
+
+    private fun kotlinAndroidPlugin(versions: Versions): String {
+        return if (versions.android.agp.isAgp9()) {
+            ""
+        } else {
+            "alias(libs.plugins.kotlin.android) apply false"
         }
     }
 
