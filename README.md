@@ -204,7 +204,6 @@ Gradle used, versions supported:
   * 9.5.0
   * 9.4.1
   * 9.3.1
-  * 9.2.1
 * Gradle 8.x
   * 8.14.4
   * 8.13
