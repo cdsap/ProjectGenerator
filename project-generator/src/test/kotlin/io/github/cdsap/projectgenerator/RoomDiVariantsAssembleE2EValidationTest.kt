@@ -15,6 +15,7 @@ import io.github.cdsap.projectgenerator.model.Versions
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assumptions.assumeFalse
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 import org.junit.jupiter.api.io.TempDir
@@ -28,6 +29,8 @@ class RoomDiVariantsAssembleE2EValidationTest {
     @ParameterizedTest
     @EnumSource(DependencyInjection::class)
     fun `room builds debug and release with assemble for all di modes`(di: DependencyInjection) {
+        val jdk = "17"
+        assumeFalse(di == DependencyInjection.METRO && jdk == "17", "Metro is not supported on JDK 17")
         val projectName = "room_assemble_${di.name.lowercase()}"
         ProjectGenerator(
             modules = 8,
@@ -36,7 +39,7 @@ class RoomDiVariantsAssembleE2EValidationTest {
             typeOfProjectRequested = TypeProjectRequested.ANDROID,
             classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 12),
             versions = Versions(
-                project = Project(jdk = "17"),
+                project = Project(jdk = jdk),
                 di = di,
                 android = Android(roomDatabase = true)
             ),
