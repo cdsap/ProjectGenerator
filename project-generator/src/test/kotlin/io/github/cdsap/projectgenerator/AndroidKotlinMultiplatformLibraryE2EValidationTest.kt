@@ -15,6 +15,7 @@ import io.github.cdsap.projectgenerator.model.Versions
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assumptions.assumeFalse
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
@@ -28,6 +29,8 @@ class AndroidKotlinMultiplatformLibraryE2EValidationTest {
     @ParameterizedTest
     @EnumSource(DependencyInjection::class)
     fun `android kotlin multiplatform library project assembles for all di modes`(di: DependencyInjection) {
+        val jdk = "17"
+        assumeFalse(di == DependencyInjection.METRO && jdk == "17", "Metro is not supported on JDK 17")
         val projectName = "android_kmp_library_e2e_${di.name.lowercase()}"
         ProjectGenerator(
             modules = 6,
@@ -36,7 +39,7 @@ class AndroidKotlinMultiplatformLibraryE2EValidationTest {
             typeOfProjectRequested = TypeProjectRequested.ANDROID,
             classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 10),
             versions = Versions(
-                project = Project(jdk = "17"),
+                project = Project(jdk = jdk),
                 di = di,
                 android = Android(kotlinMultiplatformLibrary = true)
             ),
@@ -56,6 +59,8 @@ class AndroidKotlinMultiplatformLibraryE2EValidationTest {
     @ParameterizedTest
     @EnumSource(DependencyInjection::class)
     fun `android kotlin multiplatform library with room project assembles for all di modes`(di: DependencyInjection) {
+        val jdk = "17"
+        assumeFalse(di == DependencyInjection.METRO && jdk == "17", "Metro is not supported on JDK 17")
         val projectName = "android_kmp_library_room_e2e_${di.name.lowercase()}"
         ProjectGenerator(
             modules = 6,
@@ -64,7 +69,7 @@ class AndroidKotlinMultiplatformLibraryE2EValidationTest {
             typeOfProjectRequested = TypeProjectRequested.ANDROID,
             classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 10),
             versions = Versions(
-                project = Project(jdk = "17"),
+                project = Project(jdk = jdk),
                 di = di,
                 android = Android(
                     kotlinMultiplatformLibrary = true,
