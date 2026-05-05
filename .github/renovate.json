@@ -91,7 +91,19 @@
         {
             "fileMatch": ["^.*Versions\\.kt$"],
             "matchStrings": ["val metro: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""],
+            "depNameTemplate": "dev.zacsweers.metro:runtime",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": ["^.*Versions\\.kt$"],
+            "matchStrings": ["val metroPlugin: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""],
             "depNameTemplate": "dev.zacsweers.metro:dev.zacsweers.metro.gradle.plugin",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": ["^.*Versions\\.kt$"],
+            "matchStrings": ["val room: String = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""],
+            "depNameTemplate": "androidx.room:room-runtime",
             "datasourceTemplate": "maven"
         },
         {
@@ -188,6 +200,12 @@
             "fileMatch": ["^.*Versions\\.kt$"],
             "matchStrings": ["AdditionalPlugin\\(\"com\\.autonomousapps\\.dependency-analysis\",\\s*\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""],
             "depNameTemplate": "com.autonomousapps:dependency-analysis-gradle-plugin",
+            "datasourceTemplate": "maven"
+        },
+        {
+            "fileMatch": ["^.*Versions\\.kt$"],
+            "matchStrings": ["AdditionalPlugin\\(\\s*\"com\\.fueledbycaffeine\\.spotlight\",\\s*\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""],
+            "depNameTemplate": "com.fueledbycaffeine.spotlight:com.fueledbycaffeine.spotlight.gradle.plugin",
             "datasourceTemplate": "maven"
         }
     ]
