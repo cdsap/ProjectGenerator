@@ -81,7 +81,7 @@ data class Android(
     val hiltAandroidx: String = "1.3.0",
     val metro: String = "1.0.0",
     val metroPlugin: String = "1.0.0",
-    val composeBom: String = "2026.04.01",
+    val composeBom: String = "2026.05.00",
     val robolectric: String = "4.16.1",
     val espresso: String = "3.7.0",
 )
