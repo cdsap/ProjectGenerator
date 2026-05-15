@@ -24,6 +24,11 @@ jobs:
         with:
           distribution: temurin
           java-version: '${{ matrix.java }}'
+      - name: Build Process Watcher
+        uses: cdsap/build-process-watcher@v0.6.1
+        with:
+          remote_monitoring: 'true'
+          export_to_bigquery: 'true'
       - name: Run unit tests (excluding E2E tests)
         run: >
           ./gradlew :project-generator:unitTest
@@ -54,6 +59,11 @@ jobs:
         with:
           distribution: temurin
           java-version: '${{ matrix.java }}'
+      - name: Build Process Watcher
+        uses: cdsap/build-process-watcher@v0.6.1
+        with:
+          remote_monitoring: 'true'
+          export_to_bigquery: 'true'
       - name: Run E2E test ${{ matrix.test-class }}
         run: >
           ./gradlew :project-generator:test
@@ -80,6 +90,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '${{ matrix.java }}'
+          
       - name: Build CLI and generate projects
         run: >
           ./gradlew :cli:fatBinary
