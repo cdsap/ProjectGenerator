@@ -104,7 +104,7 @@ jobs:
         run: ./scripts/update_gradle_versions.sh
 
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: Update bundled Gradle versions
           title: Update bundled Gradle versions
