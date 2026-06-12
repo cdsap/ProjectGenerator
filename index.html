@@ -4,28 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Generator</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%2300d8a4' d='M12 2 2 22h20L12 2z'/></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%230a7d5d' d='M12 2 2 22h20L12 2z'/></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0a0a0a;
-            --bg-elevated: #111111;
-            --bg-input: #0f0f0f;
-            --bg-hover: #161616;
-            --border: rgba(255, 255, 255, 0.08);
-            --border-strong: rgba(255, 255, 255, 0.14);
-            --border-focus: rgba(0, 216, 164, 0.5);
-            --text: #ededed;
-            --text-secondary: #a1a1aa;
+            --bg: #fafafa;
+            --bg-elevated: #ffffff;
+            --bg-input: #ffffff;
+            --bg-hover: #f4f4f5;
+            --bg-subtle: #f4f4f5;
+            --border: rgba(0, 0, 0, 0.08);
+            --border-strong: rgba(0, 0, 0, 0.14);
+            --border-focus: #0a7d5d;
+            --text: #0a0a0a;
+            --text-secondary: #52525b;
             --text-muted: #71717a;
-            --accent: #00d8a4;
-            --accent-hover: #00b88c;
-            --accent-glow: rgba(0, 216, 164, 0.15);
-            --danger: #f87171;
-            --warning: #fbbf24;
-            --info: #60a5fa;
+            --accent: #0a7d5d;
+            --accent-hover: #086548;
+            --accent-soft: rgba(10, 125, 93, 0.08);
+            --accent-glow: rgba(10, 125, 93, 0.12);
+            --danger: #dc2626;
+            --warning: #b45309;
+            --info: #2563eb;
             --radius-sm: 6px;
             --radius: 8px;
             --radius-md: 10px;
@@ -51,8 +53,8 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             background-image:
-                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 216, 164, 0.08), transparent),
-                radial-gradient(ellipse 60% 40% at 50% 110%, rgba(0, 216, 164, 0.04), transparent);
+                radial-gradient(ellipse 80% 50% at 50% -10%, rgba(10, 125, 93, 0.06), transparent 60%),
+                radial-gradient(ellipse 60% 40% at 50% 110%, rgba(10, 125, 93, 0.03), transparent);
         }
 
         code, .mono {
@@ -63,9 +65,9 @@
             position: sticky;
             top: 0;
             z-index: 10;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            background: rgba(250, 250, 250, 0.8);
             border-bottom: 1px solid var(--border);
         }
 
@@ -143,7 +145,7 @@
             height: 5px;
             border-radius: 50%;
             background: var(--accent);
-            box-shadow: 0 0 8px var(--accent);
+            box-shadow: 0 0 6px var(--accent-glow);
         }
 
         .container {
@@ -181,7 +183,8 @@
             font-weight: 700;
             letter-spacing: -0.03em;
             line-height: 1.1;
-            background: linear-gradient(180deg, #fafafa 0%, #a1a1aa 100%);
+            color: #0a0a0a;
+            background: linear-gradient(180deg, #0a0a0a 0%, #3f3f46 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -353,7 +356,7 @@
             align-items: flex-start;
             gap: 10px;
             padding: 12px 14px;
-            background: var(--bg-input);
+            background: var(--bg-subtle);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             cursor: pointer;
@@ -374,7 +377,7 @@
             margin: 2px 0 0;
             border: 1px solid var(--border-strong);
             border-radius: 4px;
-            background: var(--bg);
+            background: #ffffff;
             cursor: pointer;
             position: relative;
             transition: all 0.15s ease;
@@ -396,7 +399,7 @@
             left: 4px;
             width: 5px;
             height: 9px;
-            border: solid #0a0a0a;
+            border: solid #ffffff;
             border-width: 0 2px 2px 0;
             transform: rotate(45deg);
         }
@@ -421,7 +424,7 @@
         .shape-preview {
             margin-top: 4px;
             padding: 16px;
-            background: var(--bg-input);
+            background: var(--bg-subtle);
             border: 1px solid var(--border);
             border-radius: var(--radius);
         }
@@ -446,8 +449,8 @@
             place-items: center;
             min-height: 180px;
             background:
-                linear-gradient(var(--bg) 1px, transparent 1px) 0 0 / 16px 16px,
-                linear-gradient(90deg, var(--bg) 1px, transparent 1px) 0 0 / 16px 16px,
+                linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px) 0 0 / 16px 16px,
+                linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px) 0 0 / 16px 16px,
                 var(--bg-elevated);
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
@@ -458,7 +461,6 @@
         .shape-diagram object {
             max-width: 100%;
             max-height: 180px;
-            filter: invert(0.92) hue-rotate(180deg);
         }
 
         .develocity-url-container {
@@ -481,7 +483,7 @@
             width: 100%;
             padding: 12px 20px;
             background: var(--accent);
-            color: #0a0a0a;
+            color: #ffffff;
             border: 1px solid var(--accent);
             border-radius: var(--radius);
             font-size: 14px;
@@ -536,23 +538,23 @@
         }
 
         .banner-warning {
-            background: rgba(251, 191, 36, 0.06);
-            border-color: rgba(251, 191, 36, 0.2);
-            color: #fcd34d;
+            background: #fffbeb;
+            border-color: #fde68a;
+            color: #854d0e;
         }
 
         .banner-warning code {
-            background: rgba(251, 191, 36, 0.12);
-            color: #fde68a;
+            background: #fef3c7;
+            color: #713f12;
             padding: 2px 6px;
             border-radius: 4px;
             font-size: 12px;
         }
 
         .banner-info {
-            background: rgba(96, 165, 250, 0.06);
-            border-color: rgba(96, 165, 250, 0.2);
-            color: #93c5fd;
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1e40af;
         }
 
         .status {
@@ -576,16 +578,16 @@
 
         .status.success {
             display: flex;
-            background: rgba(0, 216, 164, 0.06);
-            border-color: rgba(0, 216, 164, 0.25);
-            color: #6ee7b7;
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+            color: #065f46;
         }
 
         .status.error {
             display: flex;
-            background: rgba(248, 113, 113, 0.06);
-            border-color: rgba(248, 113, 113, 0.25);
-            color: #fca5a5;
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #991b1b;
         }
 
         .loading {
@@ -594,7 +596,7 @@
             gap: 12px;
             padding: 12px 14px;
             border-radius: var(--radius);
-            background: var(--bg-input);
+            background: var(--bg-subtle);
             border: 1px solid var(--border);
             font-size: 13px;
             color: var(--text-secondary);
@@ -709,7 +711,7 @@
             <div class="brand">
                 <span class="brand-mark">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2 2 22h20L12 2z" fill="#00d8a4"/>
+                        <path d="M12 2 2 22h20L12 2z" fill="#0a7d5d"/>
                     </svg>
                 </span>
                 <span>Project Generator</span>
