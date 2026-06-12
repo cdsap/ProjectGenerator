@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cdsap.github.io/ProjectGenerator/sitemap.xml

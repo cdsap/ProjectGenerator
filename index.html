@@ -3,8 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Generator</title>
+    <title>Project Generator — Modularized Gradle projects for Android &amp; JVM benchmarking</title>
+    <meta name="description" content="Generate large modularized Gradle projects (Android &amp; JVM) with custom shapes, layers, dependencies, Hilt or Metro DI, Jetpack Compose, Room, and Develocity. Built for Gradle build benchmarking and AGP performance research.">
+    <meta name="keywords" content="Gradle project generator, Android Gradle benchmark, Gradle build performance, modularized Android project, multi-module Gradle, Kotlin DSL, Jetpack Compose, Hilt, Metro DI, Room, Develocity, build cache, AGP benchmark, Gradle dependencies, KSP, KAPT, build benchmarking, configuration cache">
+    <meta name="author" content="Iñaki Villar (cdsap)">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="theme-color" content="#0a7d5d">
+    <link rel="canonical" href="https://cdsap.github.io/ProjectGenerator/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Project Generator — Modularized Gradle projects for benchmarking">
+    <meta property="og:description" content="Generate large modularized Gradle Android &amp; JVM projects with custom shapes, layers, and dependencies. Built for Gradle build benchmarking and AGP performance research.">
+    <meta property="og:url" content="https://cdsap.github.io/ProjectGenerator/">
+    <meta property="og:site_name" content="Project Generator">
+    <meta property="og:image" content="https://cdsap.github.io/ProjectGenerator/og-image.svg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Project Generator — Gradle projects for benchmarking">
+    <meta name="twitter:description" content="Generate large modularized Gradle Android &amp; JVM projects with custom shapes, layers, and dependencies. Built for build benchmarking.">
+    <meta name="twitter:image" content="https://cdsap.github.io/ProjectGenerator/og-image.svg">
+
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%230a7d5d' d='M12 2 2 22h20L12 2z'/></svg>">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Project Generator",
+      "applicationCategory": "DeveloperApplication",
+      "applicationSubCategory": "Build tools",
+      "operatingSystem": "Linux, macOS, Windows",
+      "description": "Generate large modularized Gradle projects (Android & JVM) with custom shapes, layers, and dependencies for build-system benchmarking and AGP performance research.",
+      "url": "https://cdsap.github.io/ProjectGenerator/",
+      "downloadUrl": "https://github.com/cdsap/ProjectGenerator/releases",
+      "softwareVersion": "0.6.3",
+      "license": "https://opensource.org/licenses/MIT",
+      "codeRepository": "https://github.com/cdsap/ProjectGenerator",
+      "image": "https://cdsap.github.io/ProjectGenerator/og-image.svg",
+      "author": {
+        "@type": "Person",
+        "name": "Iñaki Villar",
+        "url": "https://github.com/cdsap"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "keywords": "Gradle, Android, AGP, benchmark, build performance, multi-module, Kotlin DSL, Jetpack Compose, Hilt, Metro, Develocity, build cache, configuration cache, KSP, KAPT, dependency graph"
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -266,6 +319,91 @@
             font-size: 12px;
             color: var(--text-muted);
             font-family: 'Geist Mono', monospace;
+        }
+
+        .section {
+            margin-top: 48px;
+        }
+
+        .section-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Geist Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 12px;
+        }
+
+        .section-eyebrow::before {
+            content: '';
+            width: 16px;
+            height: 1px;
+            background: var(--border-strong);
+        }
+
+        .section h2 {
+            margin: 0 0 8px;
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--text);
+        }
+
+        .section-intro {
+            margin: 0 0 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+            max-width: 640px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .feature {
+            padding: 16px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+
+        .feature h3 {
+            margin: 0 0 4px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .feature p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        .tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 9px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-family: 'Geist Mono', monospace;
+            font-size: 11px;
+            color: var(--text-secondary);
         }
 
         .form-grid {
@@ -694,6 +832,14 @@
                 gap: 16px;
             }
 
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section h2 {
+                font-size: 20px;
+            }
+
             .nav-inner {
                 padding: 12px 16px;
             }
@@ -918,7 +1064,66 @@
             </form>
         </div>
 
-        <div class="banner banner-warning" style="margin-top: 20px;">
+        <section class="section" aria-labelledby="use-cases-heading">
+            <div class="section-eyebrow">Built for</div>
+            <h2 id="use-cases-heading">Gradle build benchmarking &amp; performance research</h2>
+            <p class="section-intro">
+                Project Generator is the tool behind Android and Gradle build-performance experiments — synthetic, reproducible projects you can throw at the Android Gradle Plugin (AGP), the Gradle daemon, Kotlin compilation, KSP, KAPT, or Develocity to isolate exactly what changes.
+            </p>
+            <div class="feature-grid">
+                <article class="feature">
+                    <h3>AGP &amp; Gradle benchmarks</h3>
+                    <p>Compare clean and incremental build times across Android Gradle Plugin versions, Gradle releases, and JDK upgrades on identical project shapes.</p>
+                </article>
+                <article class="feature">
+                    <h3>Build cache &amp; configuration cache</h3>
+                    <p>Stress remote and local build caches, validate configuration-cache compatibility, and measure cache hit rates across module graphs.</p>
+                </article>
+                <article class="feature">
+                    <h3>Kotlin, KSP &amp; KAPT</h3>
+                    <p>Generate Kotlin-heavy modules with Hilt or Metro DI, Room database scaffolding, and Jetpack Compose to benchmark compiler and annotation-processing pipelines.</p>
+                </article>
+                <article class="feature">
+                    <h3>Dependency graph experiments</h3>
+                    <p>Tune the project shape — rectangle, triangle, rhombus, flat, bottleneck — to model real-world dependency graphs and study parallelism, classpath bloat, and module isolation.</p>
+                </article>
+                <article class="feature">
+                    <h3>Develocity / Build Scan</h3>
+                    <p>Wire up Develocity, Common Custom User Data Plugin, and Build Scan publishing in one click to capture cache, performance, and dependency telemetry.</p>
+                </article>
+                <article class="feature">
+                    <h3>Repeatable at scale</h3>
+                    <p>Drive the same project from a CLI in CI — generate hundreds or thousands of modules deterministically for regression testing and SLA monitoring.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="section" aria-labelledby="stack-heading">
+            <div class="section-eyebrow">Stack</div>
+            <h2 id="stack-heading">Tech generated out of the box</h2>
+            <p class="section-intro">
+                Every generated project uses up-to-date defaults so your benchmarks reflect the current Android and JVM ecosystem.
+            </p>
+            <div class="tag-row">
+                <span class="tag">Gradle 9.5</span>
+                <span class="tag">AGP 9.2.1</span>
+                <span class="tag">Kotlin 2.4.0</span>
+                <span class="tag">Jetpack Compose</span>
+                <span class="tag">Hilt</span>
+                <span class="tag">Metro DI</span>
+                <span class="tag">Room</span>
+                <span class="tag">KSP</span>
+                <span class="tag">JUnit 5</span>
+                <span class="tag">Robolectric</span>
+                <span class="tag">Coroutines</span>
+                <span class="tag">Develocity 4.4</span>
+                <span class="tag">Kotlin DSL</span>
+                <span class="tag">Groovy DSL</span>
+                <span class="tag">JVM &amp; Android</span>
+            </div>
+        </section>
+
+        <div class="banner banner-warning" style="margin-top: 32px;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             <span>
                 <strong>Hosted limit:</strong> the web UI caps projects at 300 modules due to GCP runtime constraints. For larger projects, use the CLI:

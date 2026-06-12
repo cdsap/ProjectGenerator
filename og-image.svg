@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fafafa"/>
+      <stop offset="100%" stop-color="#f4f4f5"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="0%" r="60%">
+      <stop offset="0%" stop-color="#0a7d5d" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#0a7d5d" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#000" stroke-opacity="0.04" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- Brand mark -->
+  <g transform="translate(96 104)">
+    <path d="M28 0 0 56h56L28 0z" fill="#0a7d5d"/>
+  </g>
+  <text x="148" y="148" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="28" font-weight="600" fill="#0a0a0a" letter-spacing="-0.5">
+    Project Generator
+  </text>
+  <text x="148" y="178" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+        font-size="16" fill="#52525b">v0.6.3 · open source · MIT</text>
+
+  <!-- Headline -->
+  <text x="96" y="306" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="76" font-weight="700" fill="#0a0a0a" letter-spacing="-2">
+    Generate Gradle projects
+  </text>
+  <text x="96" y="386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="76" font-weight="700" fill="#0a0a0a" letter-spacing="-2">
+    at any scale.
+  </text>
+
+  <!-- Subhead -->
+  <text x="96" y="444" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="26" font-weight="400" fill="#52525b" letter-spacing="-0.4">
+    Modularized Android &amp; JVM projects for build-system benchmarking.
+  </text>
+
+  <!-- Tag row -->
+  <g transform="translate(96 504)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" fill="#52525b">
+    <g>
+      <rect x="0" y="0" width="98" height="36" rx="18" fill="#ffffff" stroke="#000" stroke-opacity="0.08"/>
+      <text x="49" y="23" text-anchor="middle">Gradle</text>
+    </g>
+    <g transform="translate(110 0)">
+      <rect width="92" height="36" rx="18" fill="#ffffff" stroke="#000" stroke-opacity="0.08"/>
+      <text x="46" y="23" text-anchor="middle">Android</text>
+    </g>
+    <g transform="translate(214 0)">
+      <rect width="98" height="36" rx="18" fill="#ffffff" stroke="#000" stroke-opacity="0.08"/>
+      <text x="49" y="23" text-anchor="middle">AGP 9.2</text>
+    </g>
+    <g transform="translate(324 0)">
+      <rect width="118" height="36" rx="18" fill="#ffffff" stroke="#000" stroke-opacity="0.08"/>
+      <text x="59" y="23" text-anchor="middle">Kotlin 2.4</text>
+    </g>
+    <g transform="translate(454 0)">
+      <rect width="120" height="36" rx="18" fill="#ffffff" stroke="#000" stroke-opacity="0.08"/>
+      <text x="60" y="23" text-anchor="middle">Develocity</text>
+    </g>
+    <g transform="translate(586 0)">
+      <rect width="124" height="36" rx="18" fill="#ffffff" stroke="#000" stroke-opacity="0.08"/>
+      <text x="62" y="23" text-anchor="middle">Benchmark</text>
+    </g>
+  </g>
+
+  <!-- URL -->
+  <text x="1104" y="584" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+        font-size="16" fill="#71717a">cdsap.github.io/ProjectGenerator</text>
+</svg>
