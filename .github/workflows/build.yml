@@ -106,7 +106,7 @@ jobs:
 
           ./projectGenerator generate-project --shape triangle --language kts --modules 150
           --type android --classes-module 10 --classes-module-type random
-          --layers 11
+          --layers 12
 
           dot -Tpng projects_generated/androidTriangle150modules/project_kts/graph.dot > triangle.png
 
