@@ -33,7 +33,7 @@ class CompositeBuildPluginAndroidApp {
         |
         |            extensions.configure<com.android.build.api.dsl.ApplicationExtension> {
         |                namespace = "com.awesomeapp." + target.name.replace(":","_").replace("-", "")
-        |                compileSdk = 36
+        |                compileSdk = 37
         |                defaultConfig {
         |                    applicationId = "com.awesomeapp." + target.name.replace(":","_").replace("-", "")
         |                    minSdk = 24

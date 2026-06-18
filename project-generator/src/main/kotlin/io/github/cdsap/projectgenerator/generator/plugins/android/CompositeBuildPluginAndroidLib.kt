@@ -29,7 +29,7 @@ class CompositeBuildPluginAndroidLib {
         |
         |            extensions.configure<com.android.build.api.dsl.LibraryExtension> {
         |                namespace = "com.awesomeapp." + target.name.replace(":","_").replace("-", "")
-        |                compileSdk = 36
+        |                compileSdk = 37
         |                defaultConfig {
         |                    minSdk = 24
         |                    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
