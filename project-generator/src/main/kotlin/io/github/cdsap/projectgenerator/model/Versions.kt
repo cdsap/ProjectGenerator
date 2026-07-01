@@ -78,7 +78,7 @@ data class Android(
     val roomDatabase: Boolean = false,
     val kotlinMultiplatformLibrary: Boolean = false,
     val hilt: String = "2.59.2",
-    val hiltAandroidx: String = "1.3.0",
+    val hiltAandroidx: String = "1.4.0",
     val metro: String = "1.2.1",
     val metroPlugin: String = "1.2.1",
     val composeBom: String = "2026.06.01",
