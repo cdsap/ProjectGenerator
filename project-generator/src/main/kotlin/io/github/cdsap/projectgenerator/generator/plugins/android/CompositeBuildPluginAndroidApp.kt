@@ -32,10 +32,10 @@ class CompositeBuildPluginAndroidApp {
         |            }
         |
         |            extensions.configure<com.android.build.api.dsl.ApplicationExtension> {
-        |                namespace = "com.awesomeapp." + target.name.replace(":","_").replace("-", "")
+        |                namespace = "com.awesomeapp." + target.name.replace(":", "_").replace("-", "")
         |                compileSdk = 37
         |                defaultConfig {
-        |                    applicationId = "com.awesomeapp." + target.name.replace(":","_").replace("-", "")
+        |                    applicationId = "com.awesomeapp." + target.name.replace(":", "_").replace("-", "")
         |                    minSdk = 24
         |                    targetSdk = 36
         |                    versionCode = 1
@@ -59,7 +59,7 @@ class CompositeBuildPluginAndroidApp {
         |            target.extensions.getByType(JavaPluginExtension::class.java).apply {
         |                toolchain.languageVersion.set(org.gradle.jvm.toolchain.JavaLanguageVersion.of(${versions.project.jdk}))
         |            }
-        |            ${hiltToolchainFix(versions, di)}
+        |${hiltToolchainFix(versions, di).prependIndent("            ")}
         |
         |            dependencies {
         |

@@ -52,6 +52,7 @@ class ProjectWriter(
         createToml(languages)
         writeSettingsGradle(nodes, languages, versions, develocity, projectName)
         createProjectBuildGradle(languages)
+        normalizeKotlinFiles(languages)
     }
 
     private fun createGitignore(languages: List<LanguageAttributes>) {
@@ -108,6 +109,17 @@ class ProjectWriter(
         val gradleProperties = GradleProperties().get(versions)
         languages.forEach {
             File("${it.projectName}/gradle.properties").projectFile(gradleProperties)
+        }
+    }
+
+    private fun normalizeKotlinFiles(languages: List<LanguageAttributes>) {
+        languages.forEach { language ->
+            File(language.projectName).walkTopDown()
+                .filter { it.isFile && it.extension in setOf("kt", "kts") }
+                .forEach { file ->
+                    val lines = file.readLines().map(String::trimEnd).dropLastWhile(String::isEmpty)
+                    file.writeText(lines.joinToString(separator = "\n", postfix = "\n"))
+                }
         }
     }
 }
