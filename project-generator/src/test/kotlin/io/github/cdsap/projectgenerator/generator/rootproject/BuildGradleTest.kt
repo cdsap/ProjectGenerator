@@ -11,6 +11,21 @@ import org.junit.jupiter.api.Test
 
 class BuildGradleTest {
     @Test
+    fun `jvm groovy root build file uses groovy plugin syntax`() {
+        val result = BuildGradle().getJvm(Versions(), "gradle")
+
+        assertTrue(result.contains("id 'org.jetbrains.kotlin.jvm' version '${Versions().kotlin.kgp}' apply false"))
+        assertFalse(result.contains("kotlin(\"jvm\")"))
+    }
+
+    @Test
+    fun `jvm kotlin root build file uses kotlin plugin syntax`() {
+        val result = BuildGradle().getJvm(Versions(), "gradle.kts")
+
+        assertTrue(result.contains("kotlin(\"jvm\") version(\"${Versions().kotlin.kgp}\") apply false"))
+    }
+
+    @Test
     fun `android root build file omits kotlin android plugin for agp9 built in kotlin`() {
         val result = BuildGradle().getAndroid(Versions(), Versions().di)
 
