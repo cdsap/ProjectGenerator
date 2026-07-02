@@ -21,18 +21,18 @@ class CompositeBuildJvmLib {
         |                apply("org.jetbrains.kotlin.jvm")
         |            }
         |            dependencies {
-        |                add("implementation","org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-        |                add("testImplementation","junit:junit:4.13.2")
-        |                add("testImplementation","org.jetbrains.kotlin:kotlin-test:${versions.kotlin.kotlinTest}")
+        |                add("implementation", "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+        |                add("testImplementation", "junit:junit:4.13.2")
+        |                add("testImplementation", "org.jetbrains.kotlin:kotlin-test:${versions.kotlin.kotlinTest}")
         |                add("testImplementation", "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-        |                add("testImplementation","org.junit.vintage:junit-vintage-engine:5.10.1")
+        |                add("testImplementation", "org.junit.vintage:junit-vintage-engine:5.10.1")
         |            }
         |        }
         |        target.extensions.getByType(KotlinJvmProjectExtension::class.java).apply {
         |            jvmToolchain(${versions.project.jdk})
         |        }
         |        target.extensions.getByType(org.gradle.api.plugins.JavaPluginExtension::class.java).apply {
-        |           toolchain.languageVersion.set(org.gradle.jvm.toolchain.JavaLanguageVersion.of(${versions.project.jdk}))
+        |            toolchain.languageVersion.set(org.gradle.jvm.toolchain.JavaLanguageVersion.of(${versions.project.jdk}))
         |        }
         |
         |    }

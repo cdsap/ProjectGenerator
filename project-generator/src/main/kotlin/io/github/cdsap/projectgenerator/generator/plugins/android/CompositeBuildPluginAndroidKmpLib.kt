@@ -29,7 +29,7 @@ class CompositeBuildPluginAndroidKmpLib {
         |
         |            extensions.configure<KotlinMultiplatformExtension> {
         |                targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java).configureEach {
-        |                    namespace = "com.awesomeapp." + target.name.replace(":","_").replace("-", "")
+        |                    namespace = "com.awesomeapp." + target.name.replace(":", "_").replace("-", "")
         |                    compileSdk = 37
         |                    minSdk = 24
         |                    withHostTestBuilder {}
@@ -49,7 +49,7 @@ class CompositeBuildPluginAndroidKmpLib {
         |
         |            }
         |
-        |            ${wireKspAndroidMainForReleaseChecks(versions, di)}
+        |${wireKspAndroidMainForReleaseChecks(versions, di).prependIndent("            ")}
         |        }
         |    }
         |}

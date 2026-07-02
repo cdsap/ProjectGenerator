@@ -47,7 +47,7 @@ class AndroidApplication(
                 | * Main application class with Hilt support
                 | */
                 |@HiltAndroidApp
-                |class MainApplication : Application(){
+                |class MainApplication : Application() {
                 |
                 |    override fun onCreate() {
                 |        super.onCreate()

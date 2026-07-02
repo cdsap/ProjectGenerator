@@ -28,7 +28,7 @@ class CompositeBuildPluginAndroidLib {
         |            }
         |
         |            extensions.configure<com.android.build.api.dsl.LibraryExtension> {
-        |                namespace = "com.awesomeapp." + target.name.replace(":","_").replace("-", "")
+        |                namespace = "com.awesomeapp." + target.name.replace(":", "_").replace("-", "")
         |                compileSdk = 37
         |                defaultConfig {
         |                    minSdk = 24
