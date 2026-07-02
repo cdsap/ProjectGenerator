@@ -13,6 +13,20 @@ import org.junit.jupiter.api.assertThrows
 class GenerateProjectsCliTest {
 
     @Test
+    fun `room database flag is rejected for jvm type`() {
+        val error = assertThrows<UsageError> {
+            GenerateProjects().parse(
+                listOf(
+                    "--modules", "6",
+                    "--type", "jvm",
+                    "--room-database"
+                )
+            )
+        }
+        assertTrue(error.message?.contains("--room-database is only available when --type android.") == true)
+    }
+
+    @Test
     fun `android kotlin multiplatform library flag is rejected for jvm type`() {
         val error = assertThrows<UsageError> {
             GenerateProjects().parse(
