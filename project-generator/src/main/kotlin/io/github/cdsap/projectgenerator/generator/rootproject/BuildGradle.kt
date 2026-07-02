@@ -21,12 +21,20 @@ class BuildGradle {
         """.trimIndent()
 
 
-    fun getJvm(versions: Versions) = """
+    fun getJvm(versions: Versions, extension: String) = """
         plugins {
-            kotlin("jvm") version("${versions.kotlin.kgp}") apply false
+            ${jvmPlugin(versions, extension)}
             ${additionalBuildGradlePlugins(versions)}
         }
         """.trimIndent()
+
+    private fun jvmPlugin(versions: Versions, extension: String): String {
+        return if (extension == "gradle") {
+            "id 'org.jetbrains.kotlin.jvm' version '${versions.kotlin.kgp}' apply false"
+        } else {
+            "kotlin(\"jvm\") version(\"${versions.kotlin.kgp}\") apply false"
+        }
+    }
 
     fun provideKotlinProcessor(versions: Versions) = if (versions.kotlin.kotlinProcessor.processor == Processor.KAPT)
         """"""
