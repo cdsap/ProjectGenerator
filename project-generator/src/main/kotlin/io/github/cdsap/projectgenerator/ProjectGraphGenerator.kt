@@ -112,8 +112,8 @@ class ProjectGraphGenerator(
         } else {
 
             for (i in 0 until numberModules) {
-                if (numberModulesUpperLayer == 1) {
-                    listOfModules.add(1)
+                if (numberModulesUpperLayer <= 1) {
+                    listOfModules.add(numberModulesUpperLayer)
                 } else {
                     var next = Random.nextInt(1, numberModulesUpperLayer)
                     listOfModules.add(next)

@@ -48,6 +48,14 @@ class Distributions {
             layer++
         }
 
+        distribution.indices.filter { distribution[it] == 0 }.forEach { emptyLayer ->
+            val donorLayer = distribution.indices.maxByOrNull { distribution[it] }
+            if (donorLayer != null && distribution[donorLayer] > 1) {
+                distribution[donorLayer]--
+                distribution[emptyLayer]++
+            }
+        }
+
         return distribution
     }
 
