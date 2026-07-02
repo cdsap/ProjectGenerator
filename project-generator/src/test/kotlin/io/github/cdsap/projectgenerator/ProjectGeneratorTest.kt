@@ -69,5 +69,7 @@ class ProjectGeneratorTest {
 
         assert(File("$tempDir/project_kts/build.gradle.kts").exists())
         assert(File("$tempDir/project_groovy/build.gradle").exists())
+        assert(File("$tempDir/project_kts/graph.dot").exists())
+        assert(File("$tempDir/project_groovy/graph.dot").exists())
     }
 }
