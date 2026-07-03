@@ -68,7 +68,9 @@ class ProjectGenerator(
             develocity,
             projectName
         ).write()
-        GraphWriter(nodes, projectLanguageAttributes.first().projectName).write()
+        projectLanguageAttributes.forEach { attributes ->
+            GraphWriter(nodes, attributes.projectName).write()
+        }
         println("Project created in ${projectLanguageAttributes.first().projectName}")
     }
 
