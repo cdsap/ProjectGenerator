@@ -50,12 +50,11 @@ class TestGeneratorAndroidLegacy(
         val testContent = when (classDefinition.type) {
             ClassTypeAndroid.REPOSITORY -> generateRepositoryTest(moduleDefinition, classDefinition, classesDictionary)
             ClassTypeAndroid.API -> generateApiTest(className)
-            // todo generate correct tests for viewModel
-//            ClassTypeAndroid.VIEWMODEL -> generateViewModelTest(
-//                className,
-//                classDefinition.dependencies,
-//                classesDictionary
-//            )
+            ClassTypeAndroid.VIEWMODEL -> generateViewModelTest(
+                className,
+                classDefinition.dependencies,
+                classesDictionary
+            )
 
             ClassTypeAndroid.WORKER -> generateWorkerTest(className)
             ClassTypeAndroid.ACTIVITY -> generateActivityTest(className)
@@ -98,19 +97,17 @@ class TestGeneratorAndroidLegacy(
                     appendLine("import kotlinx.coroutines.flow.first")
                 }
 
-               // ClassTypeAndroid.VIEWMODEL -> {
-                    // todo generate correct tests for viewModel
-//                    classDefinition.dependencies.forEach { dep ->
-//                        val s = classesDictionary.filter { it.key == dep.sourceModuleId }
-//                        if (s.isNotEmpty()) {
-//                            val x = s.values.flatten().first { it.type == ClassTypeAndroid.REPOSITORY }
-//                            if (x != null) {
-//                                val repository = x.className
-//                                appendLine("import com.awesomeapp.${NameMappings.modulePackageName(dep.sourceModuleId)}.$repository")
-//                            }
-//                        }
-//                    }
-             //   }
+                ClassTypeAndroid.VIEWMODEL -> {
+                    classDefinition.dependencies.forEach { dep ->
+                        val dependency = classesDictionary[dep.sourceModuleId]
+                            ?.firstOrNull { it.type == dep.type }
+                        if (dependency != null) {
+                            appendLine(
+                                "import com.awesomeapp.${NameMappings.modulePackageName(dep.sourceModuleId)}.${dependency.className}"
+                            )
+                        }
+                    }
+                }
 
                 ClassTypeAndroid.REPOSITORY -> {
                     classDefinition.dependencies.forEach { dep ->
@@ -199,60 +196,21 @@ class TestGeneratorAndroidLegacy(
         dependencies: List<ClassDependencyAndroid>,
         a: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ): String {
-        val xa = mutableListOf<String>()
-        val xc = mutableListOf<String>()
-        dependencies.mapIndexed { index, dep ->
-            val s = a.filter { it.key == dep.sourceModuleId }
-            if (s.isNotEmpty()) {
-                val x = s.values.flatten().first { it.type == ClassTypeAndroid.REPOSITORY }
-                if (x != null) {
-                    val repository = x.className
-                    xa.add("repository$index: $repository")
-                }
+        val resolvedDependencies = dependencies.map { dependency ->
+            dependency to a.getValue(dependency.sourceModuleId).first { it.type == dependency.type }
+        }
+        val mockRepositories = resolvedDependencies.mapIndexed { index, (_, dependency) ->
+            "private lateinit var repository$index: ${dependency.className}"
+        }.joinToString("\n        ")
+        val repositoryInitializers = resolvedDependencies.mapIndexed { index, (_, dependency) ->
+            val constructorArguments = dependency.dependencies.joinToString(", ") { innerDependency ->
+                val innerClass = a.getValue(innerDependency.sourceModuleId).first { it.type == innerDependency.type }
+                "com.awesomeapp.${NameMappings.modulePackageName(innerDependency.sourceModuleId)}.${innerClass.className}()"
             }
+            "repository$index = ${dependency.className}($constructorArguments)"
         }
 
-        val constructorParams = xa.joinToString(",\n        ")
-
-        val xb = mutableListOf<String>()
-        dependencies.mapIndexed { index, dep ->
-            val s = a.filter { it.key == dep.sourceModuleId }
-            if (s.isNotEmpty()) {
-                val x = s.values.flatten().first { it.type == ClassTypeAndroid.REPOSITORY }
-                if (x != null) {
-                    val repository = x.className
-                    xb.add("private lateinit var repository$index: $repository")
-                }
-            }
-        }
-        val mockRepositories = xb.joinToString("\n        ")
-
-        dependencies.mapIndexed { index, dep ->
-
-            val s = a.filter { it.key == dep.sourceModuleId }
-            if (s.isNotEmpty()) {
-                val x = s.values.flatten().first { it.type == ClassTypeAndroid.REPOSITORY }
-                if (x != null) {
-                    val repository = x.className
-                    xc.add(
-                        "repository$index = $repository(${
-                            x.dependencies.mapIndexed { depIndex, innerDep ->
-                                val innerS = a.filter { it.key == innerDep.sourceModuleId }
-                                if (innerS.isNotEmpty()) {
-                                    val innerX = innerS.values.flatten().first { it.type == ClassTypeAndroid.API }
-                                    if (innerX != null) {
-                                        "com.awesomeapp.${NameMappings.modulePackageName(innerDep.sourceModuleId)}.${innerX.className}()"
-                                    } else ""
-                                } else ""
-                            }.joinToString(", ")
-                        })"
-                    )
-
-                }
-            }
-        }
-
-        val testContent = if (constructorParams.isNotEmpty()) {
+        val testContent = if (resolvedDependencies.isNotEmpty()) {
             """
             |    $mockRepositories
             |
@@ -260,9 +218,9 @@ class TestGeneratorAndroidLegacy(
             |
             |    @Before
             |    fun setup() {
-            |       ${xc.joinToString("\n        ")}
+            |       ${repositoryInitializers.joinToString("\n        ")}
             |        viewModel = $className(
-            |            ${dependencies.mapIndexed { index, _ -> "repository$index" }.joinToString(",\n            ")}
+            |            ${resolvedDependencies.indices.joinToString(",\n            ") { "repository$it" }}
             |        )
             |    }
             |
