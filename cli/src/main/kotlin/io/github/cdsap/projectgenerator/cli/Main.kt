@@ -64,6 +64,9 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
         val typeOfProjectRequested = TypeProjectRequested.valueOf(type.uppercase())
         val shape = Shape.valueOf(shape.uppercase())
         val dependencyInjection = DependencyInjection.valueOf(di.uppercase())
+        if (typeOfProjectRequested != TypeProjectRequested.ANDROID && roomDatabase) {
+            throw UsageError("--room-database is only available when --type android.")
+        }
         if (typeOfProjectRequested != TypeProjectRequested.ANDROID && kotlinMultiplatformLibrary) {
             throw UsageError("--android-kotlin-multiplatform-library is only available when --type android.")
         }
