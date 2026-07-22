@@ -77,7 +77,7 @@ ProjectGenerator(
     typeOfStringResources = TypeOfStringResources.LARGE,
     layers = 5,
     generateUnitTest = true,
-    gradle = GradleWrapper(Gradle.fromValue("9.6.0")),
+    gradle = GradleWrapper(Gradle.fromValue("9.6.1")),
     projectRootPath = file.path
 ).write()
 
@@ -201,11 +201,11 @@ If enabled, each module will generate n unit tests, where n is the argument `cla
 ## Gradle
 Gradle used, versions supported:
 * Gradle 9.x
-  * 9.6.0
-  * 9.5.0
+  * 9.6.1
+  * 9.5.1
   * 9.4.1
 * Gradle 8.x
-  * 8.14.4
+  * 8.14.5
   * 8.13
   * 8.12.1
 * The newest bundled version is the default.
@@ -219,7 +219,7 @@ Gradle used, versions supported:
 ## Versions
 Example output versions.yaml:
 ```yaml
-gradle: 9.6.0
+gradle: 9.6.1
 project:
     develocity: 4.1
     jdk: 23
