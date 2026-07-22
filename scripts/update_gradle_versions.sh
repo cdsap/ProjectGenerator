@@ -120,7 +120,10 @@ PY
 }
 
 export TARGET_MAJORS MINORS_PER_MAJOR VERSIONS_FILE
-mapfile -t versions < <(fetch_versions)
+versions=()
+while IFS= read -r version; do
+  versions+=("$version")
+done < <(fetch_versions)
 
 if [[ "${#versions[@]}" -eq 0 ]]; then
   echo "No stable Gradle versions found from $VERSIONS_ENDPOINT" >&2
