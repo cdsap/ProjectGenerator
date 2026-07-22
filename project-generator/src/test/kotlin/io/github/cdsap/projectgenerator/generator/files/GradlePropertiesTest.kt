@@ -27,6 +27,7 @@ class GradlePropertiesTest {
         Assertions.assertTrue(gradleProperties.contains("org.gradle.jvmargs"))
         Assertions.assertTrue(gradleProperties.contains("android.useAndroidX=true"))
         Assertions.assertTrue(gradleProperties.contains("org.gradle.caching=true"))
+        Assertions.assertTrue(gradleProperties.contains("org.gradle.unsafe.isolated-projects=true"))
         Assertions.assertTrue(gradleProperties.contains("ksp.useKSP2=false"))
     }
 

@@ -10,6 +10,7 @@ class GradleProperties {
         org.gradle.jvmargs=-Xmx5g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
         android.useAndroidX=true
         org.gradle.caching=true
+        org.gradle.unsafe.isolated-projects=true
         dependency.analysis.compatibility=NONE
         ${k2usage(versions)}
         ${disableNewDslInAGP9BecauseHilt(versions)}
