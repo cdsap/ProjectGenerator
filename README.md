@@ -60,7 +60,7 @@ By default, projects are generated under `projects_generated/<projectName>/proje
 
 #### Example: Generate a project with custom options
 ```bash
-./projectGenerator generate-project --shape rhombus --modules 50 --layers 4 --language both --type jvm --classesModule 10 --classesModuleType random --typeOfStringResources large --generateUnitTest --gradle gradle_8_9 --develocity --versionsFile ./my_versions.yaml
+./projectGenerator generate-project --shape rhombus --modules 50 --layers 4 --language both --type jvm --classes-module 10 --classes-module-type random --type-of-string-resources large --generate-unit-test --gradle gradle_8_14_4 --develocity
 ```
 
 ## Library
@@ -195,8 +195,8 @@ Each module generated includes 900 string resources in the file `strings.xml`
 If enabled, each module will generate n unit tests, where n is the argument `classes`
 
 ##### Example
-```kotlin
-./projectGenerator  generate-project  --shape triangle --layers 5 --modules 100 --generate-unit-test true
+```bash
+./projectGenerator  generate-project  --shape triangle --layers 5 --modules 100 --generate-unit-test
 ```
 ## Gradle
 Gradle used, versions supported:
