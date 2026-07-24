@@ -120,6 +120,36 @@ class ProjectGeneratorE2ETest {
         assert(result.output.contains("BUILD SUCCESSFUL"))
     }
 
+    @ParameterizedTest
+    @EnumSource(value = Language::class, names = ["GROOVY", "BOTH"])
+    fun `jvm groovy projects build`(language: Language) {
+        val projectRoot = tempDir.resolve("jvm-${language.name.lowercase()}").toFile()
+        ProjectGenerator(
+            modules = 6,
+            shape = Shape.RECTANGLE,
+            language = language,
+            typeOfProjectRequested = TypeProjectRequested.JVM,
+            layers = 5,
+            gradle = GradleWrapper(LATEST_GRADLE),
+            projectRootPath = projectRoot.path,
+            projectName = "jvm-groovy"
+        ).write()
+
+        val generatedProjects = if (language == Language.BOTH) {
+            listOf(File(projectRoot, "project_groovy"), File(projectRoot, "project_kts"))
+        } else {
+            listOf(projectRoot)
+        }
+        generatedProjects.forEach { generatedProject ->
+            val result = GradleRunner.create()
+                .withProjectDir(generatedProject)
+                .withArguments("build")
+                .build()
+
+            assert(result.output.contains("BUILD SUCCESSFUL"))
+        }
+    }
+
     @Test
     fun changedVersionReflectsInTomlFile() {
         val modules = 30

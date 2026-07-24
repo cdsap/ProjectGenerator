@@ -78,9 +78,12 @@ class ProjectWriter(
     private fun createProjectBuildGradle(
         languages: List<LanguageAttributes>
     ) {
-        val plugins = if (typeOfProjectRequested == TypeProjectRequested.JVM) BuildGradle().getJvm(versions)
-        else BuildGradle().getAndroid(versions, versions.di)
         languages.forEach {
+            val plugins = if (typeOfProjectRequested == TypeProjectRequested.JVM) {
+                BuildGradle().getJvm(versions, it.extension)
+            } else {
+                BuildGradle().getAndroid(versions, versions.di)
+            }
             File("${it.projectName}/build.${it.extension}").projectFile(plugins)
         }
     }
