@@ -45,7 +45,7 @@ Then, you can use the versions.yaml in the `generate-project` command:
 - `--classes-module-type`: fixed (default), random
 - `--type-of-string-resources`: normal (default), large
 - `--generate-unit-test`: Generate unit tests (default: false)
-- `--gradle`: gradle_9_6_0, gradle_9_5_0, gradle_9_4_1, gradle_8_14_4, gradle_8_13, gradle_8_12_1 (default: gradle_9_6_0)
+- `--gradle`: gradle_9_7_0, gradle_9_6_1, gradle_9_5_1, gradle_8_14_5, gradle_8_13, gradle_8_12_1 (default: gradle_9_7_0)
 - `--develocity`: Enables the Develocity build scan plugin (default: false). If --develocity-url is not specified, the build scan will be published to Gradle Scans.
 - `--develocity-url`: Specify Develocity URL
 - `--versions-file`: Path to a custom YAML file with dependency versions
@@ -77,7 +77,7 @@ ProjectGenerator(
     typeOfStringResources = TypeOfStringResources.LARGE,
     layers = 5,
     generateUnitTest = true,
-    gradle = GradleWrapper(Gradle.fromValue("9.6.1")),
+    gradle = GradleWrapper(Gradle.fromValue("9.7.0")),
     projectRootPath = file.path
 ).write()
 
@@ -201,9 +201,9 @@ If enabled, each module will generate n unit tests, where n is the argument `cla
 ## Gradle
 Gradle used, versions supported:
 * Gradle 9.x
+  * 9.7.0
   * 9.6.1
   * 9.5.1
-  * 9.4.1
 * Gradle 8.x
   * 8.14.5
   * 8.13
@@ -219,7 +219,7 @@ Gradle used, versions supported:
 ## Versions
 Example output versions.yaml:
 ```yaml
-gradle: 9.6.1
+gradle: 9.7.0
 project:
     develocity: 4.1
     jdk: 23
