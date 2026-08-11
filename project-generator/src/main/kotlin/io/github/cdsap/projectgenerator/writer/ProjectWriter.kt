@@ -106,7 +106,7 @@ class ProjectWriter(
     }
 
     private fun createGradleProperties(languages: List<LanguageAttributes>) {
-        val gradleProperties = GradleProperties().get(versions)
+        val gradleProperties = GradleProperties().get(versions, gradle.gradle)
         languages.forEach {
             File("${it.projectName}/gradle.properties").projectFile(gradleProperties)
         }
