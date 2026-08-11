@@ -3,6 +3,7 @@ package io.github.cdsap.projectgenerator.generator.files
 import io.github.cdsap.projectgenerator.generator.rootproject.GradleProperties
 import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Android
+import io.github.cdsap.projectgenerator.model.Gradle
 import io.github.cdsap.projectgenerator.model.Kotlin
 import io.github.cdsap.projectgenerator.model.KotlinProcessor
 import io.github.cdsap.projectgenerator.model.Processor
@@ -23,7 +24,7 @@ class GradlePropertiesTest {
             android = Android(agp = "8.0.0", hilt = "2.44"),
             project = Project(jdk = "17")
         )
-        val gradleProperties = GradleProperties().get(versions)
+        val gradleProperties = GradleProperties().get(versions, Gradle("9.6.1"))
         Assertions.assertTrue(gradleProperties.contains("org.gradle.jvmargs"))
         Assertions.assertTrue(gradleProperties.contains("android.useAndroidX=true"))
         Assertions.assertTrue(gradleProperties.contains("org.gradle.caching=true"))
@@ -41,7 +42,7 @@ class GradlePropertiesTest {
             android = Android(agp = "8.0.0", hilt = "2.44"),
             project = Project(jdk = "17")
         )
-        val gradleProperties = GradleProperties().get(versions)
+        val gradleProperties = GradleProperties().get(versions, Gradle("9.6.1"))
         Assertions.assertTrue(gradleProperties.contains("org.gradle.jvmargs"))
         Assertions.assertTrue(gradleProperties.contains("android.useAndroidX=true"))
         Assertions.assertTrue(gradleProperties.contains("org.gradle.caching=true"))
@@ -59,7 +60,7 @@ class GradlePropertiesTest {
             android = Android(agp = "8.0.0", hilt = "2.44"),
             project = Project(jdk = "17")
         )
-        val gradleProperties = GradleProperties().get(versions)
+        val gradleProperties = GradleProperties().get(versions, Gradle("9.6.1"))
         Assertions.assertTrue(!gradleProperties.contains("ksp.useKSP2=false"))
     }
 
@@ -70,7 +71,7 @@ class GradlePropertiesTest {
             di = DependencyInjection.HILT
         )
 
-        val gradleProperties = GradleProperties().get(versions)
+        val gradleProperties = GradleProperties().get(versions, Gradle("9.6.1"))
 
         Assertions.assertTrue(gradleProperties.contains("android.newDsl=false"))
     }
@@ -82,8 +83,24 @@ class GradlePropertiesTest {
             di = DependencyInjection.HILT
         )
 
-        val gradleProperties = GradleProperties().get(versions)
+        val gradleProperties = GradleProperties().get(versions, Gradle("9.6.1"))
 
         Assertions.assertFalse(gradleProperties.contains("android.newDsl=false"))
+    }
+
+    @Test
+    fun `includes isolated projects properties for Gradle 9_7`() {
+        val gradleProperties = GradleProperties().get(Versions(), Gradle("9.7.0"))
+
+        Assertions.assertTrue(gradleProperties.contains("org.gradle.unsafe.isolated-projects=true"))
+        Assertions.assertTrue(gradleProperties.contains("ksp.project.isolation.enabled=true"))
+    }
+
+    @Test
+    fun `does not include isolated projects properties for Gradle before 9_7`() {
+        val gradleProperties = GradleProperties().get(Versions(), Gradle("9.6.1"))
+
+        Assertions.assertFalse(gradleProperties.contains("org.gradle.unsafe.isolated-projects=true"))
+        Assertions.assertFalse(gradleProperties.contains("ksp.project.isolation.enabled=true"))
     }
 }

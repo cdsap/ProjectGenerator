@@ -2,30 +2,35 @@ package io.github.cdsap.projectgenerator.generator.rootproject
 
 import io.github.cdsap.projectgenerator.generator.extension.isAgp9
 import io.github.cdsap.projectgenerator.model.DependencyInjection
+import io.github.cdsap.projectgenerator.model.Gradle
 import io.github.cdsap.projectgenerator.model.Processor
 import io.github.cdsap.projectgenerator.model.Versions
 
 class GradleProperties {
-    fun get(versions: Versions) = """
-        org.gradle.jvmargs=-Xmx5g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
-        android.useAndroidX=true
-        org.gradle.caching=true
-        dependency.analysis.compatibility=NONE
-        ${k2usage(versions)}
-        ${disableNewDslInAGP9BecauseHilt(versions)}
-    """.trimIndent()
-
-    // Disable K2 for KSP 2.0
-    private fun k2usage(versions: Versions): String {
-        return if (versions.kotlin.kotlinProcessor.processor == Processor.KSP) {
-            "ksp.useKSP2=false"
-        } else ""
+    fun get(versions: Versions, gradle: Gradle = Gradle.latest()): String {
+        return buildList {
+            add("org.gradle.jvmargs=-Xmx5g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8")
+            add("android.useAndroidX=true")
+            add("org.gradle.caching=true")
+            add("dependency.analysis.compatibility=NONE")
+            if (versions.kotlin.kotlinProcessor.processor == Processor.KSP) {
+                // Disable K2 for KSP 2.0
+                add("ksp.useKSP2=false")
+            }
+            if (versions.di == DependencyInjection.HILT && versions.android.agp.isAgp9()) {
+                // Hilt is not compatible with AGP9 new DSL
+                add("android.newDsl=false")
+            }
+            if (isGradle97(gradle)) {
+                // Isolated Projects + KSP IP-compatible task wiring (Gradle 9.7 only)
+                add("org.gradle.unsafe.isolated-projects=true")
+                add("ksp.project.isolation.enabled=true")
+            }
+        }.joinToString("\n")
     }
 
-    // Hilt is not compatible with AGP9, if AGP9 is enabled we need to disable android.newDsl=false
-    private fun disableNewDslInAGP9BecauseHilt(versions: Versions): String {
-        return if (versions.di == DependencyInjection.HILT && versions.android.agp.isAgp9()) {
-            "android.newDsl=false"
-        } else ""
+    private fun isGradle97(gradle: Gradle): Boolean {
+        val parts = gradle.version.split('.')
+        return parts.size >= 2 && parts[0] == "9" && parts[1] == "7"
     }
 }
