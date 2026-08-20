@@ -1,16 +1,20 @@
 package io.github.cdsap.projectgenerator.cli
 
 import io.github.cdsap.projectgenerator.model.AdditionalPlugin
-import io.github.cdsap.projectgenerator.model.Versions
 import io.github.cdsap.projectgenerator.model.Gradle
+import io.github.cdsap.projectgenerator.model.Versions
 import java.io.File
 
 class GenerateVersionsYaml {
     fun generate() {
         val file = File("versions.yaml")
-        val versions = Versions()
-        val content = """
-            |gradle: ${Gradle.latest().version}
+        file.writeText(render())
+        if (file.exists()) println("file versions.yaml created ")
+    }
+
+    fun render(versions: Versions = Versions(), gradle: Gradle = Gradle.latest()): String {
+        return """
+            |gradle: ${gradle.version}
             |project:
             |  develocity: ${versions.project.develocity}
             |  develocityUrl: ${versions.project.develocityUrl}
@@ -52,8 +56,6 @@ class GenerateVersionsYaml {
             |additionalBuildGradleRootPlugins:
             |  ${additionalPlugins(versions.additionalBuildGradleRootPlugins)}
         """.trimMargin()
-        file.writeText(content)
-        if (file.exists()) println("file versions.yaml created ")
     }
 
     fun additionalPlugins(plugins: List<AdditionalPlugin>): String {

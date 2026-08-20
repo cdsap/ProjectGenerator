@@ -1,7 +1,9 @@
 package io.github.cdsap.projectgenerator.cli
 
 import io.github.cdsap.projectgenerator.model.AdditionalPlugin
+import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Gradle
+import io.github.cdsap.projectgenerator.model.Versions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -13,6 +15,32 @@ class VersionsParserTest {
 
     @TempDir
     lateinit var tempDir: Path
+
+    @Test
+    fun `rendered default versions YAML is parseable including plugin list sections`() {
+        val versions = Versions()
+        val gradle = Gradle.latest()
+        val yaml = GenerateVersionsYaml().render(versions, gradle)
+        val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
+
+        val versionsFile = VersionsParser.fromFile(file)
+        val parsed = versionsFile.resolve()
+
+        assertEquals(gradle, versionsFile.gradle)
+        assertEquals(versions.project.develocity, parsed.project.develocity)
+        assertEquals(versions.project.develocityUrl, parsed.project.develocityUrl)
+        assertEquals(versions.project.jdk, parsed.project.jdk)
+        assertEquals(DependencyInjection.HILT, parsed.di)
+        assertEquals(versions.kotlin.kgp, parsed.kotlin.kgp)
+        assertEquals(versions.kotlin.ksp, parsed.kotlin.ksp)
+        assertEquals(versions.kotlin.coroutines, parsed.kotlin.coroutines)
+        assertEquals(versions.kotlin.kotlinProcessor.processor, parsed.kotlin.kotlinProcessor.processor)
+        assertEquals(versions.android.agp, parsed.android.agp)
+        assertEquals(versions.android.composeBom, parsed.android.composeBom)
+        assertEquals(versions.testing.junit4, parsed.testing.junit4)
+        assertEquals(versions.additionalSettingsPlugins, parsed.additionalSettingsPlugins)
+        assertEquals(versions.additionalBuildGradleRootPlugins, parsed.additionalBuildGradleRootPlugins)
+    }
 
     @Test
     fun `parses YAML without additionalSettingsPlugins and additionalBuildGradleRootPlugins as empty lists`() {
