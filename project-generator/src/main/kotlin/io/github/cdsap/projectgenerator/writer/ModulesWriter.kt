@@ -40,11 +40,9 @@ abstract class ModulesWrite<MODULE_DEF, DICT>(
                     val moduleDefinition = classPlanner.planModuleClasses(module)
                     classGenerator.obtainClassesGenerated(moduleDefinition, classesDictionary)
 
-                    val plan = classPlanner.planModuleClasses(module)
-
                     languages.forEach { lang ->
                         createModuleStructure(module, lang)
-                        classGenerator.generate(plan, lang.projectName, classesDictionary)
+                        classGenerator.generate(moduleDefinition, lang.projectName, classesDictionary)
                         buildFilesGenerator.generateBuildFiles(module, lang, generateUnitTest)
                         resourceGeneratorA?.generate(module, lang, resources!!, classesDictionary)
                     }
