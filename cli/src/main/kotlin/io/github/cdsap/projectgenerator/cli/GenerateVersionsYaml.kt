@@ -12,7 +12,7 @@ class GenerateVersionsYaml {
         if (file.exists()) println("file versions.yaml created ")
     }
 
-    fun render(versions: Versions = Versions(), gradle: Gradle = Gradle.latest()): String {
+    internal fun render(versions: Versions = Versions(), gradle: Gradle = Gradle.latest()): String {
         return """
             |gradle: ${gradle.version}
             |project:
@@ -58,7 +58,7 @@ class GenerateVersionsYaml {
         """.trimMargin()
     }
 
-    fun additionalPlugins(plugins: List<AdditionalPlugin>): String {
+    private fun additionalPlugins(plugins: List<AdditionalPlugin>): String {
         return plugins.joinToString("\n") { plugin ->
             "  - id: ${plugin.id}\n" +
                 "      version: ${plugin.version}\n" +
