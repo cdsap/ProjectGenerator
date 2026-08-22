@@ -71,12 +71,13 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
             throw UsageError("--android-kotlin-multiplatform-library is only available when --type android.")
         }
         val versionsOverride = versionsFile?.let(VersionsParser::fromFile)
-        val versions = getVersions(
+        val versions = resolveVersions(
             fileVersions = versionsOverride,
+            dependencyInjection = dependencyInjection,
             develocityUrl = develocityUrl,
             roomDatabase = roomDatabase,
             kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
-        ).copy(di = dependencyInjection)
+        )
         val develocityEnabled = getDevelocityEnabled(develocity, develocityUrl)
         val language = Language.valueOf(language.uppercase())
         val resolvedProjectName = projectName ?: buildString {
@@ -109,32 +110,32 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
             develocityUrl != null
         }
     }
+}
 
-    private fun getVersions(
-        fileVersions: VersionsFile?,
-        develocityUrl: String?,
-        roomDatabase: Boolean,
-        kotlinMultiplatformLibrary: Boolean
-    ): Versions {
-        val versions = if (fileVersions != null) {
-            fileVersions.resolve()
-        } else {
-            Versions()
-        }
-        var androidConfig = versions.android
-        if (roomDatabase) {
-            androidConfig = androidConfig.copy(roomDatabase = true)
-        }
-        if (kotlinMultiplatformLibrary) {
-            androidConfig = androidConfig.copy(kotlinMultiplatformLibrary = true)
-        }
-        val withAndroidFlags = versions.copy(android = androidConfig)
-        return if (develocityUrl != null) {
-            withAndroidFlags.copy(project = withAndroidFlags.project.copy(develocityUrl = develocityUrl))
-        } else {
-            withAndroidFlags
-        }
-
+internal fun resolveVersions(
+    fileVersions: VersionsFile?,
+    dependencyInjection: DependencyInjection,
+    develocityUrl: String?,
+    roomDatabase: Boolean,
+    kotlinMultiplatformLibrary: Boolean
+): Versions {
+    val versions = if (fileVersions != null) {
+        fileVersions.resolve()
+    } else {
+        Versions()
+    }
+    var androidConfig = versions.android
+    if (roomDatabase) {
+        androidConfig = androidConfig.copy(roomDatabase = true)
+    }
+    if (kotlinMultiplatformLibrary) {
+        androidConfig = androidConfig.copy(kotlinMultiplatformLibrary = true)
+    }
+    val withAndroidFlags = versions.copy(android = androidConfig, di = dependencyInjection)
+    return if (develocityUrl != null) {
+        withAndroidFlags.copy(project = withAndroidFlags.project.copy(develocityUrl = develocityUrl))
+    } else {
+        withAndroidFlags
     }
 }
 
