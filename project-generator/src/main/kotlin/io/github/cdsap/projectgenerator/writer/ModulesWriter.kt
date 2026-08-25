@@ -2,19 +2,15 @@ package io.github.cdsap.projectgenerator.writer
 
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.NameMappings
-import io.github.cdsap.projectgenerator.generator.android.AndroidSourceSetLayout
 import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.TypeOfStringResources
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.Executors
 
 abstract class ModulesWrite<MODULE_DEF, DICT>(
     private val classGenerator: ClassGenerator<MODULE_DEF, DICT>,
@@ -26,7 +22,7 @@ abstract class ModulesWrite<MODULE_DEF, DICT>(
     private val resources: TypeOfStringResources? = null,
     private val nodes: List<ProjectGraph>,
     private val languages: List<LanguageAttributes>,
-    private val androidKotlinMultiplatformLibrary: Boolean = false
+    private val sourceSetLayout: ModuleSourceSetLayout = JvmModuleSourceSetLayout
 ) {
     suspend fun write() = coroutineScope {
         val classesDictionary = ConcurrentHashMap<String, CopyOnWriteArrayList<DICT>>()
@@ -67,18 +63,15 @@ abstract class ModulesWrite<MODULE_DEF, DICT>(
         }
     }
 
-
-        private fun createModuleStructure(node: ProjectGraph, lang: LanguageAttributes) {
-        // Create main source directory
+    private fun createModuleStructure(node: ProjectGraph, lang: LanguageAttributes) {
         val layerDir = NameMappings.layerName(node.layer)
         val moduleDir = NameMappings.moduleName(node.id)
         val packageDir = NameMappings.modulePackageName(node.id)
-        val mainSourceDir = AndroidSourceSetLayout.kotlinMainSourceDir(node.type, androidKotlinMultiplatformLibrary)
+        val mainSourceDir = sourceSetLayout.mainKotlinDir(node)
         File("${lang.projectName}/$layerDir/$moduleDir/$mainSourceDir/com/awesomeapp/$packageDir/").mkdirs()
 
-        // Create test directory if needed
         if (generateUnitTest) {
-            val testSourceDir = AndroidSourceSetLayout.kotlinTestSourceDir(node.type, androidKotlinMultiplatformLibrary)
+            val testSourceDir = sourceSetLayout.testKotlinDir(node)
             File("${lang.projectName}/$layerDir/$moduleDir/$testSourceDir/com/awesomeapp/$packageDir/").mkdirs()
         }
     }

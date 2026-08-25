@@ -36,5 +36,5 @@ class AndroidModulesWriter(
     resources = typeOfStringResources,
     nodes = nodes,
     languages = languages,
-    androidKotlinMultiplatformLibrary = versions.android.kotlinMultiplatformLibrary
+    sourceSetLayout = AndroidModuleSourceSetLayout(versions.android.kotlinMultiplatformLibrary)
 )
