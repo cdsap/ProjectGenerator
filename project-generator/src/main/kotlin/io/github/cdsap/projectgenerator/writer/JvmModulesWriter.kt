@@ -23,5 +23,6 @@ class JvmModulesWriter(
     generateUnitTest = generateUnitTest,
     buildFilesGenerator = BuildFilesGeneratorJvm(),
     nodes = nodes,
-    languages = languages
+    languages = languages,
+    sourceSetLayout = JvmModuleSourceSetLayout
 )

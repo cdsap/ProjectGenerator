@@ -1,13 +1,16 @@
 package io.github.cdsap.projectgenerator.writer
 
+import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.TypeProject
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertSame
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import java.io.File
 import java.nio.file.Path
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicInteger
@@ -48,6 +51,38 @@ class ModulesWriterTest {
                 "obtainClassesGenerated and generate must receive the same planned definition"
             )
         }
+    }
+
+    @Test
+    fun `createModuleStructure uses injected source set layout for main and test kotlin dirs`() = runBlocking {
+        val module = ProjectGraph("module_1_1", 1, emptyList(), TypeProject.LIB, 1)
+        val projectRoot = tempDir.resolve("project").toString()
+        val languages = listOf(LanguageAttributes("gradle.kts", projectRoot))
+        val layout = RecordingSourceSetLayout()
+
+        TestModulesWrite(
+            classGenerator = RecordingClassGenerator(),
+            classPlanner = CountingPlanner(),
+            testGenerator = NoOpTestGenerator(),
+            generateUnitTest = true,
+            buildFilesGenerator = NoOpBuildFilesGenerator(),
+            nodes = listOf(module),
+            languages = languages,
+            sourceSetLayout = layout
+        ).write()
+
+        assertEquals(listOf(module), layout.mainKotlinCalls)
+        assertEquals(listOf(module), layout.testKotlinCalls)
+
+        val layerDir = NameMappings.layerName(module.layer)
+        val moduleDir = NameMappings.moduleName(module.id)
+        val packageDir = NameMappings.modulePackageName(module.id)
+        assertTrue(
+            File("$projectRoot/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$packageDir").isDirectory
+        )
+        assertTrue(
+            File("$projectRoot/$layerDir/$moduleDir/src/test/kotlin/com/awesomeapp/$packageDir").isDirectory
+        )
     }
 
     private class ModulePlan(val moduleId: String)
@@ -98,6 +133,21 @@ class ModulesWriterTest {
         ) = Unit
     }
 
+    private class RecordingSourceSetLayout : ModuleSourceSetLayout {
+        val mainKotlinCalls = CopyOnWriteArrayList<ProjectGraph>()
+        val testKotlinCalls = CopyOnWriteArrayList<ProjectGraph>()
+
+        override fun mainKotlinDir(node: ProjectGraph): String {
+            mainKotlinCalls.add(node)
+            return JvmModuleSourceSetLayout.mainKotlinDir(node)
+        }
+
+        override fun testKotlinDir(node: ProjectGraph): String {
+            testKotlinCalls.add(node)
+            return JvmModuleSourceSetLayout.testKotlinDir(node)
+        }
+    }
+
     private class TestModulesWrite(
         classGenerator: ClassGenerator<ModulePlan, String>,
         classPlanner: ModuleClassPlanner<ModulePlan>,
@@ -105,7 +155,8 @@ class ModulesWriterTest {
         generateUnitTest: Boolean,
         buildFilesGenerator: BuildFilesGenerator,
         nodes: List<ProjectGraph>,
-        languages: List<LanguageAttributes>
+        languages: List<LanguageAttributes>,
+        sourceSetLayout: ModuleSourceSetLayout = JvmModuleSourceSetLayout
     ) : ModulesWrite<ModulePlan, String>(
         classGenerator = classGenerator,
         classPlanner = classPlanner,
@@ -115,6 +166,7 @@ class ModulesWriterTest {
         buildFilesGenerator = buildFilesGenerator,
         resources = null,
         nodes = nodes,
-        languages = languages
+        languages = languages,
+        sourceSetLayout = sourceSetLayout
     )
 }
