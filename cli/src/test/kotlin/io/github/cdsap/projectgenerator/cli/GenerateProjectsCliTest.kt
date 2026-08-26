@@ -3,13 +3,19 @@ package io.github.cdsap.projectgenerator.cli
 import com.github.ajalt.clikt.core.UsageError
 import com.github.ajalt.clikt.core.parse
 import io.github.cdsap.projectgenerator.model.Android
+import io.github.cdsap.projectgenerator.model.ClassesPerModule
+import io.github.cdsap.projectgenerator.model.ClassesPerModuleType
 import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Gradle
 import io.github.cdsap.projectgenerator.model.Language
 import io.github.cdsap.projectgenerator.model.Project
+import io.github.cdsap.projectgenerator.model.Shape
+import io.github.cdsap.projectgenerator.model.TypeOfStringResources
+import io.github.cdsap.projectgenerator.model.TypeProjectRequested
 import io.github.cdsap.projectgenerator.model.Versions
 import io.github.cdsap.projectgenerator.model.VersionsFile
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -192,5 +198,62 @@ class GenerateProjectsCliTest {
         val resolved = resolveProjectRootPath(null, Language.BOTH, "sample")
 
         assertEquals("projects_generated/sample", resolved)
+    }
+
+    @Test
+    fun `develocity url enables develocity when develocity flag is absent`() {
+        val request = GenerateProjectRequest.resolve(
+            modules = 6,
+            shape = Shape.RECTANGLE,
+            language = Language.KTS,
+            typeOfProjectRequested = TypeProjectRequested.ANDROID,
+            classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 10),
+            typeOfStringResources = TypeOfStringResources.NORMAL,
+            layers = 5,
+            generateUnitTest = false,
+            cliGradle = null,
+            develocityFlag = false,
+            develocityUrl = "https://develocity.example",
+            versionsFile = null,
+            outputDir = null,
+            projectName = "named",
+            dependencyInjection = DependencyInjection.HILT,
+            roomDatabase = false,
+            kotlinMultiplatformLibrary = false
+        )
+
+        assertTrue(request.develocity)
+        assertEquals("https://develocity.example", request.versions.project.develocityUrl)
+    }
+
+    @Test
+    fun `develocity stays disabled when flag and url are both absent`() {
+        assertFalse(resolveDevelocityEnabled(develocity = false, develocityUrl = null))
+    }
+
+    @Test
+    fun `resolve builds default project name and nested root path`() {
+        val request = GenerateProjectRequest.resolve(
+            modules = 12,
+            shape = Shape.TRIANGLE,
+            language = Language.KTS,
+            typeOfProjectRequested = TypeProjectRequested.JVM,
+            classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 10),
+            typeOfStringResources = TypeOfStringResources.NORMAL,
+            layers = 5,
+            generateUnitTest = false,
+            cliGradle = null,
+            develocityFlag = false,
+            develocityUrl = null,
+            versionsFile = null,
+            outputDir = null,
+            projectName = null,
+            dependencyInjection = DependencyInjection.HILT,
+            roomDatabase = false,
+            kotlinMultiplatformLibrary = false
+        )
+
+        assertEquals("jvmTriangle12modules", request.projectName)
+        assertEquals("projects_generated/jvmTriangle12modules/project_kts", request.projectRootPath)
     }
 }
