@@ -8,11 +8,7 @@ import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.int
-import io.github.cdsap.projectgenerator.ProjectGenerator
 import io.github.cdsap.projectgenerator.model.*
-import io.github.cdsap.projectgenerator.writer.GradleWrapper
-import java.io.File
-import kotlin.text.buildString
 
 fun main(args: Array<String>) {
     ProjectReportCli()
@@ -59,7 +55,6 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
     private val roomDatabase by option("--room-database").flag(default = false)
     private val kotlinMultiplatformLibrary by option("--android-kotlin-multiplatform-library").flag(default = false)
 
-
     override fun run() {
         val typeOfProjectRequested = TypeProjectRequested.valueOf(type.uppercase())
         val shape = Shape.valueOf(shape.uppercase())
@@ -70,91 +65,29 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
         if (typeOfProjectRequested != TypeProjectRequested.ANDROID && kotlinMultiplatformLibrary) {
             throw UsageError("--android-kotlin-multiplatform-library is only available when --type android.")
         }
-        val versionsOverride = versionsFile?.let(VersionsParser::fromFile)
-        val versions = resolveVersions(
-            fileVersions = versionsOverride,
-            dependencyInjection = dependencyInjection,
+        GenerateProjectRequest.resolve(
+            modules = modules,
+            shape = shape,
+            language = Language.valueOf(language.uppercase()),
+            typeOfProjectRequested = typeOfProjectRequested,
+            classesPerModule = ClassesPerModule(
+                ClassesPerModuleType.valueOf(classesModuleType.uppercase()),
+                classesModule
+            ),
+            typeOfStringResources = TypeOfStringResources.valueOf(typeOfStringResources.uppercase()),
+            layers = layers,
+            generateUnitTest = generateUnitTest,
+            cliGradle = gradle,
+            develocityFlag = develocity,
             develocityUrl = develocityUrl,
+            versionsFile = versionsFile?.let(VersionsParser::fromFile),
+            outputDir = outputDir,
+            projectName = projectName,
+            dependencyInjection = dependencyInjection,
             roomDatabase = roomDatabase,
             kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
-        )
-        val develocityEnabled = getDevelocityEnabled(develocity, develocityUrl)
-        val language = Language.valueOf(language.uppercase())
-        val resolvedProjectName = projectName ?: buildString {
-            append(typeOfProjectRequested.name.lowercase())
-            append(shape.name.lowercase().replaceFirstChar { it.uppercase() })
-            append(modules)
-            append("modules")
-        }
-        ProjectGenerator(
-            modules,
-            shape,
-            language,
-            typeOfProjectRequested,
-            ClassesPerModule(ClassesPerModuleType.valueOf(classesModuleType.uppercase()), classesModule),
-            versions = versions,
-            TypeOfStringResources.valueOf(typeOfStringResources.uppercase()),
-            layers,
-            generateUnitTest,
-            GradleWrapper(resolveGradle(gradle, versionsOverride)),
-            projectRootPath = resolveProjectRootPath(outputDir, language, resolvedProjectName),
-            develocity = develocityEnabled,
-            projectName = resolvedProjectName
-        ).write()
+        ).toProjectGenerator().write()
     }
-
-    private fun getDevelocityEnabled(develocity: Boolean, develocityUrl: String?): Boolean {
-        return if (develocity) {
-            return true
-        } else {
-            develocityUrl != null
-        }
-    }
-}
-
-internal fun resolveVersions(
-    fileVersions: VersionsFile?,
-    dependencyInjection: DependencyInjection,
-    develocityUrl: String?,
-    roomDatabase: Boolean,
-    kotlinMultiplatformLibrary: Boolean
-): Versions {
-    val versions = if (fileVersions != null) {
-        fileVersions.resolve()
-    } else {
-        Versions()
-    }
-    var androidConfig = versions.android
-    if (roomDatabase) {
-        androidConfig = androidConfig.copy(roomDatabase = true)
-    }
-    if (kotlinMultiplatformLibrary) {
-        androidConfig = androidConfig.copy(kotlinMultiplatformLibrary = true)
-    }
-    val withAndroidFlags = versions.copy(android = androidConfig, di = dependencyInjection)
-    return if (develocityUrl != null) {
-        withAndroidFlags.copy(project = withAndroidFlags.project.copy(develocityUrl = develocityUrl))
-    } else {
-        withAndroidFlags
-    }
-}
-
-internal fun resolveProjectRootPath(outputDir: String?, language: Language, projectName: String): String {
-    return if (outputDir != null) {
-        outputDir
-    } else {
-        when (language) {
-            Language.KTS -> "projects_generated/$projectName/project_kts"
-            Language.GROOVY -> "projects_generated/$projectName/project_groovy"
-            Language.BOTH -> "projects_generated/$projectName"
-        }
-    }
-}
-
-internal fun resolveGradle(cliGradle: String?, versionsFile: VersionsFile?): Gradle {
-    return cliGradle?.let(Gradle::fromValue)
-        ?: versionsFile?.gradle
-        ?: Gradle.latest()
 }
 
 class GenerateYaml : CliktCommand(name = "generate-yaml-versions") {
