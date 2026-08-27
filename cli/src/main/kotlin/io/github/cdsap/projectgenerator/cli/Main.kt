@@ -1,7 +1,6 @@
 package io.github.cdsap.projectgenerator.cli
 
 import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.core.UsageError
 import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.options.*
@@ -56,20 +55,11 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
     private val kotlinMultiplatformLibrary by option("--android-kotlin-multiplatform-library").flag(default = false)
 
     override fun run() {
-        val typeOfProjectRequested = TypeProjectRequested.valueOf(type.uppercase())
-        val shape = Shape.valueOf(shape.uppercase())
-        val dependencyInjection = DependencyInjection.valueOf(di.uppercase())
-        if (typeOfProjectRequested != TypeProjectRequested.ANDROID && roomDatabase) {
-            throw UsageError("--room-database is only available when --type android.")
-        }
-        if (typeOfProjectRequested != TypeProjectRequested.ANDROID && kotlinMultiplatformLibrary) {
-            throw UsageError("--android-kotlin-multiplatform-library is only available when --type android.")
-        }
         GenerateProjectRequest.resolve(
             modules = modules,
-            shape = shape,
+            shape = Shape.valueOf(shape.uppercase()),
             language = Language.valueOf(language.uppercase()),
-            typeOfProjectRequested = typeOfProjectRequested,
+            typeOfProjectRequested = TypeProjectRequested.valueOf(type.uppercase()),
             classesPerModule = ClassesPerModule(
                 ClassesPerModuleType.valueOf(classesModuleType.uppercase()),
                 classesModule
@@ -83,7 +73,7 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
             versionsFile = versionsFile?.let(VersionsParser::fromFile),
             outputDir = outputDir,
             projectName = projectName,
-            dependencyInjection = dependencyInjection,
+            dependencyInjection = DependencyInjection.valueOf(di.uppercase()),
             roomDatabase = roomDatabase,
             kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
         ).toProjectGenerator().write()

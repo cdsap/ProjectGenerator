@@ -130,6 +130,60 @@ class GenerateProjectsCliTest {
     }
 
     @Test
+    fun `resolve rejects room database for jvm type`() {
+        val error = assertThrows<UsageError> {
+            GenerateProjectRequest.resolve(
+                modules = 6,
+                shape = Shape.RECTANGLE,
+                language = Language.KTS,
+                typeOfProjectRequested = TypeProjectRequested.JVM,
+                classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 10),
+                typeOfStringResources = TypeOfStringResources.NORMAL,
+                layers = 5,
+                generateUnitTest = false,
+                cliGradle = null,
+                develocityFlag = false,
+                develocityUrl = null,
+                versionsFile = null,
+                outputDir = null,
+                projectName = null,
+                dependencyInjection = DependencyInjection.HILT,
+                roomDatabase = true,
+                kotlinMultiplatformLibrary = false
+            )
+        }
+        assertTrue(error.message?.contains("--room-database is only available when --type android.") == true)
+    }
+
+    @Test
+    fun `resolve rejects android kotlin multiplatform library for jvm type`() {
+        val error = assertThrows<UsageError> {
+            GenerateProjectRequest.resolve(
+                modules = 6,
+                shape = Shape.RECTANGLE,
+                language = Language.KTS,
+                typeOfProjectRequested = TypeProjectRequested.JVM,
+                classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 10),
+                typeOfStringResources = TypeOfStringResources.NORMAL,
+                layers = 5,
+                generateUnitTest = false,
+                cliGradle = null,
+                develocityFlag = false,
+                develocityUrl = null,
+                versionsFile = null,
+                outputDir = null,
+                projectName = null,
+                dependencyInjection = DependencyInjection.HILT,
+                roomDatabase = false,
+                kotlinMultiplatformLibrary = true
+            )
+        }
+        assertTrue(
+            error.message?.contains("--android-kotlin-multiplatform-library is only available when --type android.") == true
+        )
+    }
+
+    @Test
     fun `classes module lower than minimum is rejected`() {
         val error = assertThrows<UsageError> {
             GenerateProjects().parse(
