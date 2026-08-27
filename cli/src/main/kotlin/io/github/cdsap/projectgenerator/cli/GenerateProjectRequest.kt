@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator.cli
 
+import com.github.ajalt.clikt.core.UsageError
 import io.github.cdsap.projectgenerator.ProjectGenerator
 import io.github.cdsap.projectgenerator.model.ClassesPerModule
 import io.github.cdsap.projectgenerator.model.DependencyInjection
@@ -63,6 +64,11 @@ data class GenerateProjectRequest(
             roomDatabase: Boolean,
             kotlinMultiplatformLibrary: Boolean
         ): GenerateProjectRequest {
+            validateAndroidOnlyFeatures(
+                typeOfProjectRequested = typeOfProjectRequested,
+                roomDatabase = roomDatabase,
+                kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
+            )
             val resolvedProjectName = resolveProjectName(
                 projectName,
                 typeOfProjectRequested,
@@ -91,6 +97,19 @@ data class GenerateProjectRequest(
                 projectName = resolvedProjectName
             )
         }
+    }
+}
+
+internal fun validateAndroidOnlyFeatures(
+    typeOfProjectRequested: TypeProjectRequested,
+    roomDatabase: Boolean,
+    kotlinMultiplatformLibrary: Boolean
+) {
+    if (typeOfProjectRequested != TypeProjectRequested.ANDROID && roomDatabase) {
+        throw UsageError("--room-database is only available when --type android.")
+    }
+    if (typeOfProjectRequested != TypeProjectRequested.ANDROID && kotlinMultiplatformLibrary) {
+        throw UsageError("--android-kotlin-multiplatform-library is only available when --type android.")
     }
 }
 
