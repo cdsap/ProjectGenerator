@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator.generator.classes
 
+import io.github.cdsap.projectgenerator.generator.GeneratedModuleLayout
 import io.github.cdsap.projectgenerator.generator.android.AndroidSourceSetLayout
 import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.NameMappings
@@ -749,15 +750,11 @@ class ClassGeneratorAndroid(
         moduleDefinition: ModuleClassDefinitionAndroid,
         projectName: String
     ) {
-        val layerDir = NameMappings.layerName(moduleDefinition.layer)
-        val moduleDir = NameMappings.moduleName(moduleDefinition.moduleId)
-        val packageDir = NameMappings.modulePackageName(moduleDefinition.moduleId)
-        val mainSourceDir = AndroidSourceSetLayout.kotlinMainSourceDir(
-            moduleDefinition.projectType ?: TypeProject.ANDROID_LIB,
+        val directory = GeneratedModuleLayout.of(
+            projectName,
+            moduleDefinition,
             kotlinMultiplatformLibrary
-        )
-        val directory =
-            File("$projectName/$layerDir/$moduleDir/$mainSourceDir/com/awesomeapp/$packageDir/")
+        ).mainKotlinPackageDir()
         directory.mkdirs()
 
         val fileName = "${classDefinition.type.className()}${moduleDefinition.moduleNumber}_${classDefinition.index}.kt"
