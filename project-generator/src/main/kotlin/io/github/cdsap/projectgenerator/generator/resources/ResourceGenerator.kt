@@ -1,8 +1,8 @@
 package io.github.cdsap.projectgenerator.generator.resources
 
+import io.github.cdsap.projectgenerator.generator.GeneratedModuleLayout
 import io.github.cdsap.projectgenerator.generator.android.ActivityLayout
 import io.github.cdsap.projectgenerator.generator.android.AndroidApplication
-import io.github.cdsap.projectgenerator.generator.android.AndroidSourceSetLayout
 import io.github.cdsap.projectgenerator.generator.android.ClassTheme
 import io.github.cdsap.projectgenerator.generator.android.FragmentLayout
 import io.github.cdsap.projectgenerator.generator.android.Manifest
@@ -30,12 +30,9 @@ class ResourceGenerator(
         typeOfStringResources: TypeOfStringResources,
         classesDictionary: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ) {
-        // Create resource directories
-        val layerDir = NameMappings.layerName(node.layer)
-        val moduleDir = NameMappings.moduleName(node.id)
-        val resourcesSourceDir = AndroidSourceSetLayout.resourcesSourceDir(node.type, kotlinMultiplatformLibrary)
-        File("${lang.projectName}/$layerDir/$moduleDir/$resourcesSourceDir/layout").mkdirs()
-        File("${lang.projectName}/$layerDir/$moduleDir/$resourcesSourceDir/values").mkdirs()
+        val layout = GeneratedModuleLayout.of(lang.projectName, node, kotlinMultiplatformLibrary)
+        layout.resourcesLayoutDir().mkdirs()
+        layout.resourcesValuesDir().mkdirs()
         ClassTheme(kotlinMultiplatformLibrary).createThemeFile(node, lang)
 
         when (node.type) {
@@ -75,14 +72,8 @@ class ResourceGenerator(
         lang: LanguageAttributes,
         node: ProjectGraph
     ): Triple<File, File, File> {
-        val layerDir = NameMappings.layerName(node.layer)
-        val moduleDir = NameMappings.moduleName(node.id)
-        val resourcesSourceDir = AndroidSourceSetLayout.resourcesSourceDir(node.type, kotlinMultiplatformLibrary)
-        val manifestSourceDir = AndroidSourceSetLayout.manifestSourceDir(node.type, kotlinMultiplatformLibrary)
-        val layoutDir = File("${lang.projectName}/$layerDir/$moduleDir/$resourcesSourceDir/layout")
-        val valuesDir = File("${lang.projectName}/$layerDir/$moduleDir/$resourcesSourceDir/values")
-        val manifestDir = File("${lang.projectName}/$layerDir/$moduleDir/$manifestSourceDir/")
-        return Triple(layoutDir, valuesDir, manifestDir)
+        val layout = GeneratedModuleLayout.of(lang.projectName, node, kotlinMultiplatformLibrary)
+        return Triple(layout.resourcesLayoutDir(), layout.resourcesValuesDir(), layout.manifestDir())
     }
 
     private fun createLayoutFiles(layoutDir: File, moduleId: String) {

@@ -1,14 +1,13 @@
 package io.github.cdsap.projectgenerator.writer
 
+import io.github.cdsap.projectgenerator.generator.GeneratedModuleLayout
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
-import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.TypeOfStringResources
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -64,15 +63,16 @@ abstract class ModulesWrite<MODULE_DEF, DICT>(
     }
 
     private fun createModuleStructure(node: ProjectGraph, lang: LanguageAttributes) {
-        val layerDir = NameMappings.layerName(node.layer)
-        val moduleDir = NameMappings.moduleName(node.id)
-        val packageDir = NameMappings.modulePackageName(node.id)
-        val mainSourceDir = sourceSetLayout.mainKotlinDir(node)
-        File("${lang.projectName}/$layerDir/$moduleDir/$mainSourceDir/com/awesomeapp/$packageDir/").mkdirs()
+        val layout = GeneratedModuleLayout.of(
+            projectName = lang.projectName,
+            node = node,
+            mainKotlinSourceDir = sourceSetLayout.mainKotlinDir(node),
+            testKotlinSourceDir = sourceSetLayout.testKotlinDir(node)
+        )
+        layout.mainKotlinPackageDir().mkdirs()
 
         if (generateUnitTest) {
-            val testSourceDir = sourceSetLayout.testKotlinDir(node)
-            File("${lang.projectName}/$layerDir/$moduleDir/$testSourceDir/com/awesomeapp/$packageDir/").mkdirs()
+            layout.testKotlinPackageDir().mkdirs()
         }
     }
 }

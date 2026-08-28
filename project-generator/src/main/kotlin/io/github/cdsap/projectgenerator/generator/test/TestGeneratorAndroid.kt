@@ -1,6 +1,6 @@
 package io.github.cdsap.projectgenerator.generator.test
 
-import io.github.cdsap.projectgenerator.generator.android.AndroidSourceSetLayout
+import io.github.cdsap.projectgenerator.generator.GeneratedModuleLayout
 import io.github.cdsap.projectgenerator.generator.classes.GenerateDictionaryAndroid
 import io.github.cdsap.projectgenerator.writer.TestGenerator
 import io.github.cdsap.projectgenerator.model.ClassDefinitionAndroid
@@ -22,15 +22,11 @@ class TestGeneratorAndroid(
         projectName: String,
         classesDictionary: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ) {
-        val layerDir = NameMappings.layerName(moduleDefinition.layer)
-        val moduleDir = NameMappings.moduleName(moduleDefinition.moduleId)
-        val packageDir = NameMappings.modulePackageName(moduleDefinition.moduleId)
-        val testSourceDir = AndroidSourceSetLayout.kotlinTestSourceDir(
-            moduleDefinition.projectType ?: io.github.cdsap.projectgenerator.model.TypeProject.ANDROID_LIB,
+        val testDir = GeneratedModuleLayout.of(
+            projectName,
+            moduleDefinition,
             kotlinMultiplatformLibrary
-        )
-        val testDir =
-            File("$projectName/$layerDir/$moduleDir/$testSourceDir/com/awesomeapp/$packageDir/")
+        ).testKotlinPackageDir()
         testDir.mkdirs()
 
         moduleDefinition.classes.forEach { classDefinition ->
