@@ -81,7 +81,7 @@ data class GenerateProjectRequest(
                 language = language,
                 typeOfProjectRequested = typeOfProjectRequested,
                 classesPerModule = classesPerModule,
-                versions = resolveVersions(
+                versions = VersionsResolver.resolve(
                     fileVersions = versionsFile,
                     dependencyInjection = dependencyInjection,
                     develocityUrl = develocityUrl,
@@ -129,33 +129,6 @@ internal fun resolveProjectName(
 
 internal fun resolveDevelocityEnabled(develocity: Boolean, develocityUrl: String?): Boolean {
     return develocity || develocityUrl != null
-}
-
-internal fun resolveVersions(
-    fileVersions: VersionsFile?,
-    dependencyInjection: DependencyInjection,
-    develocityUrl: String?,
-    roomDatabase: Boolean,
-    kotlinMultiplatformLibrary: Boolean
-): Versions {
-    val versions = if (fileVersions != null) {
-        fileVersions.resolve()
-    } else {
-        Versions()
-    }
-    var androidConfig = versions.android
-    if (roomDatabase) {
-        androidConfig = androidConfig.copy(roomDatabase = true)
-    }
-    if (kotlinMultiplatformLibrary) {
-        androidConfig = androidConfig.copy(kotlinMultiplatformLibrary = true)
-    }
-    val withAndroidFlags = versions.copy(android = androidConfig, di = dependencyInjection)
-    return if (develocityUrl != null) {
-        withAndroidFlags.copy(project = withAndroidFlags.project.copy(develocityUrl = develocityUrl))
-    } else {
-        withAndroidFlags
-    }
 }
 
 internal fun resolveProjectRootPath(outputDir: String?, language: Language, projectName: String): String {
