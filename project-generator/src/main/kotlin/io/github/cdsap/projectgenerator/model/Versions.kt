@@ -17,7 +17,7 @@ data class Versions(
     val additionalSettingsPlugins: List<AdditionalPlugin> = listOf(
         AdditionalPlugin(
             "com.fueledbycaffeine.spotlight",
-            "1.7.0"
+            "1.7.1"
         )
     )
 )
