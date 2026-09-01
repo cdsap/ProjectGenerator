@@ -28,15 +28,6 @@ class ProjectGenerator(
         println("Creating project $projectName in $projectRootPath")
         println("Calculating layer Distribution")
 
-        // Generate name mappings for layers and modules
-        NameMappings.layerNames = (0..layers).associateWith { index ->
-            if (index == layers) {
-                "app"
-            } else {
-                layerNames.getOrNull(index) ?: "layer_$index"
-            }
-        }
-
         val distributions = LayerDistribution(modules, layers).get(shape)
         println("Generating Project Dependency Graph")
         val nodes = ProjectGraphGenerator(
@@ -46,15 +37,14 @@ class ProjectGenerator(
             classesPerModule
         ).generate()
 
-        NameMappings.moduleNames = nodes
-            .sortedBy { it.id.substringAfterLast("_").toInt() }
-            .mapIndexed { index, node ->
-                if (node.layer == layers) {
-                    node.id to "app"
-                } else {
-                    node.id to generateModuleName(index)
-                }
-            }.toMap()
+        NameMappings.configure(
+            ProjectNameMappingFactory.create(
+                layers = layers,
+                nodes = nodes,
+                layerNames = layerNames,
+                moduleNameParts = moduleNameParts
+            )
+        )
 
         val projectLanguageAttributes = getProjectLanguageAttributes()
         ProjectWriter(
@@ -89,16 +79,5 @@ class ProjectGenerator(
                 LanguageAttributes("gradle.kts", "$projectRootPath/project_kts")
             )
         }
-    }
-
-    private fun generateModuleName(index: Int): String {
-        var remaining = index
-        val base = moduleNameParts.size
-        val parts = mutableListOf<String>()
-        do {
-            parts.add(moduleNameParts[remaining % base])
-            remaining /= base
-        } while (remaining > 0)
-        return parts.joinToString("-")
     }
 }

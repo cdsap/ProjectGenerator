@@ -72,4 +72,27 @@ class ProjectGeneratorTest {
         assert(File("$tempDir/project_kts/graph.dot").exists())
         assert(File("$tempDir/project_groovy/graph.dot").exists())
     }
+
+    @Test
+    fun `projectGenerator configures NameMappings before writing project files`() {
+        val layers = 2
+        ProjectGenerator(
+            modules = 6,
+            shape = Shape.RECTANGLE,
+            language = Language.KTS,
+            classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 10),
+            layers = layers,
+            layerNames = listOf("platform"),
+            moduleNameParts = listOf("alpha", "beta"),
+            projectRootPath = tempDir.toString(),
+            projectName = "named_project"
+        ).write()
+
+        assert(NameMappings.layerName(0) == "platform")
+        assert(NameMappings.layerName(1) == "layer_1")
+        assert(NameMappings.layerName(layers) == "app")
+        assert(NameMappings.moduleNames.values.contains("app"))
+        assert(NameMappings.moduleNames.values.any { it == "alpha" || it == "beta" || it.contains("-") })
+        assert(File("$tempDir/settings.gradle.kts").readText().contains(":app:app"))
+    }
 }
