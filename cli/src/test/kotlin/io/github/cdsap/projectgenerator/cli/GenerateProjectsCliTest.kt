@@ -63,13 +63,15 @@ class GenerateProjectsCliTest {
                 generateUnitTest = false,
                 cliGradle = null,
                 develocityFlag = false,
-                develocityUrl = null,
                 versionsFile = null,
                 outputDir = null,
                 projectName = null,
-                dependencyInjection = DependencyInjection.HILT,
-                roomDatabase = true,
-                kotlinMultiplatformLibrary = false
+                versionsOverrides = VersionsOverrides(
+                    dependencyInjection = DependencyInjection.HILT,
+                    develocityUrl = null,
+                    roomDatabase = true,
+                    kotlinMultiplatformLibrary = false
+                )
             )
         }
         assertTrue(error.message?.contains("--room-database is only available when --type android.") == true)
@@ -89,13 +91,15 @@ class GenerateProjectsCliTest {
                 generateUnitTest = false,
                 cliGradle = null,
                 develocityFlag = false,
-                develocityUrl = null,
                 versionsFile = null,
                 outputDir = null,
                 projectName = null,
-                dependencyInjection = DependencyInjection.HILT,
-                roomDatabase = false,
-                kotlinMultiplatformLibrary = true
+                versionsOverrides = VersionsOverrides(
+                    dependencyInjection = DependencyInjection.HILT,
+                    develocityUrl = null,
+                    roomDatabase = false,
+                    kotlinMultiplatformLibrary = true
+                )
             )
         }
         assertTrue(
@@ -187,13 +191,15 @@ class GenerateProjectsCliTest {
             generateUnitTest = false,
             cliGradle = null,
             develocityFlag = false,
-            develocityUrl = "https://develocity.example",
             versionsFile = null,
             outputDir = null,
             projectName = "named",
-            dependencyInjection = DependencyInjection.HILT,
-            roomDatabase = false,
-            kotlinMultiplatformLibrary = false
+            versionsOverrides = VersionsOverrides(
+                dependencyInjection = DependencyInjection.HILT,
+                develocityUrl = "https://develocity.example",
+                roomDatabase = false,
+                kotlinMultiplatformLibrary = false
+            )
         )
 
         assertTrue(request.develocity)
@@ -218,13 +224,15 @@ class GenerateProjectsCliTest {
             generateUnitTest = false,
             cliGradle = null,
             develocityFlag = false,
-            develocityUrl = null,
             versionsFile = null,
             outputDir = null,
             projectName = null,
-            dependencyInjection = DependencyInjection.HILT,
-            roomDatabase = false,
-            kotlinMultiplatformLibrary = false
+            versionsOverrides = VersionsOverrides(
+                dependencyInjection = DependencyInjection.HILT,
+                develocityUrl = null,
+                roomDatabase = false,
+                kotlinMultiplatformLibrary = false
+            )
         )
 
         assertEquals("jvmTriangle12modules", request.projectName)
