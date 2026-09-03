@@ -3,7 +3,7 @@ package io.github.cdsap.projectgenerator.generator.classes
 import io.github.cdsap.projectgenerator.generator.android.AndroidSourceSetLayout
 import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.NameMappings
-import io.github.cdsap.projectgenerator.writer.ClassGenerator
+import io.github.cdsap.projectgenerator.generator.ClassGenerator
 import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.text.appendLine
