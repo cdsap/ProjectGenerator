@@ -3,7 +3,6 @@ package io.github.cdsap.projectgenerator.cli
 import com.github.ajalt.clikt.core.UsageError
 import io.github.cdsap.projectgenerator.ProjectGenerator
 import io.github.cdsap.projectgenerator.model.ClassesPerModule
-import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Gradle
 import io.github.cdsap.projectgenerator.model.Language
 import io.github.cdsap.projectgenerator.model.Shape
@@ -56,18 +55,15 @@ data class GenerateProjectRequest(
             generateUnitTest: Boolean,
             cliGradle: String?,
             develocityFlag: Boolean,
-            develocityUrl: String?,
             versionsFile: VersionsFile?,
             outputDir: String?,
             projectName: String?,
-            dependencyInjection: DependencyInjection,
-            roomDatabase: Boolean,
-            kotlinMultiplatformLibrary: Boolean
+            versionsOverrides: VersionsOverrides
         ): GenerateProjectRequest {
             validateAndroidOnlyFeatures(
                 typeOfProjectRequested = typeOfProjectRequested,
-                roomDatabase = roomDatabase,
-                kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
+                roomDatabase = versionsOverrides.roomDatabase,
+                kotlinMultiplatformLibrary = versionsOverrides.kotlinMultiplatformLibrary
             )
             val resolvedProjectName = resolveProjectName(
                 projectName,
@@ -83,17 +79,14 @@ data class GenerateProjectRequest(
                 classesPerModule = classesPerModule,
                 versions = VersionsResolver.resolve(
                     fileVersions = versionsFile,
-                    dependencyInjection = dependencyInjection,
-                    develocityUrl = develocityUrl,
-                    roomDatabase = roomDatabase,
-                    kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
+                    overrides = versionsOverrides
                 ),
                 typeOfStringResources = typeOfStringResources,
                 layers = layers,
                 generateUnitTest = generateUnitTest,
                 gradle = resolveGradle(cliGradle, versionsFile),
                 projectRootPath = resolveProjectRootPath(outputDir, language, resolvedProjectName),
-                develocity = resolveDevelocityEnabled(develocityFlag, develocityUrl),
+                develocity = resolveDevelocityEnabled(develocityFlag, versionsOverrides.develocityUrl),
                 projectName = resolvedProjectName
             )
         }

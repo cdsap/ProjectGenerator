@@ -69,13 +69,15 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
             generateUnitTest = generateUnitTest,
             cliGradle = gradle,
             develocityFlag = develocity,
-            develocityUrl = develocityUrl,
             versionsFile = versionsFile?.let(VersionsParser::fromFile),
             outputDir = outputDir,
             projectName = projectName,
-            dependencyInjection = DependencyInjection.valueOf(di.uppercase()),
-            roomDatabase = roomDatabase,
-            kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
+            versionsOverrides = VersionsOverrides(
+                dependencyInjection = DependencyInjection.valueOf(di.uppercase()),
+                develocityUrl = develocityUrl,
+                roomDatabase = roomDatabase,
+                kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
+            )
         ).toProjectGenerator().write()
     }
 }

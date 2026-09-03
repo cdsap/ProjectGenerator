@@ -15,30 +15,31 @@ class VersionsResolverTest {
     fun `resolve uses defaults when versions file is absent`() {
         val resolved = VersionsResolver.resolve(
             fileVersions = null,
-            dependencyInjection = DependencyInjection.HILT,
-            develocityUrl = null,
-            roomDatabase = false,
-            kotlinMultiplatformLibrary = false
+            overrides = VersionsOverrides(
+                dependencyInjection = DependencyInjection.HILT,
+                develocityUrl = null,
+                roomDatabase = false,
+                kotlinMultiplatformLibrary = false
+            )
         )
 
         assertEquals(Versions(), resolved)
     }
 
     @Test
-    fun `resolve keeps versions-file values when cli overrides are absent`() {
-        val fileVersions = VersionsFile(
+    fun `applyTo keeps versions-file values when cli overrides are absent`() {
+        val base = VersionsFile(
             project = Project(develocityUrl = "https://develocity.example"),
             android = Android(roomDatabase = true, kotlinMultiplatformLibrary = true),
             di = DependencyInjection.METRO
-        )
+        ).resolve()
 
-        val resolved = VersionsResolver.resolve(
-            fileVersions = fileVersions,
+        val resolved = VersionsOverrides(
             dependencyInjection = DependencyInjection.HILT,
             develocityUrl = null,
             roomDatabase = false,
             kotlinMultiplatformLibrary = false
-        )
+        ).applyTo(base)
 
         assertEquals("https://develocity.example", resolved.project.develocityUrl)
         assertTrue(resolved.android.roomDatabase)
@@ -47,20 +48,19 @@ class VersionsResolverTest {
     }
 
     @Test
-    fun `resolve applies cli overrides for develocity room kmp and di`() {
-        val fileVersions = VersionsFile(
+    fun `applyTo applies cli overrides for develocity room kmp and di`() {
+        val base = VersionsFile(
             project = Project(develocityUrl = "https://from-file.example"),
             android = Android(roomDatabase = false, kotlinMultiplatformLibrary = false),
             di = DependencyInjection.HILT
-        )
+        ).resolve()
 
-        val resolved = VersionsResolver.resolve(
-            fileVersions = fileVersions,
+        val resolved = VersionsOverrides(
             dependencyInjection = DependencyInjection.NONE,
             develocityUrl = "https://from-cli.example",
             roomDatabase = true,
             kotlinMultiplatformLibrary = true
-        )
+        ).applyTo(base)
 
         assertEquals("https://from-cli.example", resolved.project.develocityUrl)
         assertTrue(resolved.android.roomDatabase)
@@ -69,18 +69,17 @@ class VersionsResolverTest {
     }
 
     @Test
-    fun `resolve does not clear file android flags when cli flags are false`() {
-        val fileVersions = VersionsFile(
+    fun `applyTo does not clear file android flags when cli flags are false`() {
+        val base = VersionsFile(
             android = Android(roomDatabase = true, kotlinMultiplatformLibrary = true)
-        )
+        ).resolve()
 
-        val resolved = VersionsResolver.resolve(
-            fileVersions = fileVersions,
+        val resolved = VersionsOverrides(
             dependencyInjection = DependencyInjection.METRO,
             develocityUrl = null,
             roomDatabase = false,
             kotlinMultiplatformLibrary = false
-        )
+        ).applyTo(base)
 
         assertTrue(resolved.android.roomDatabase)
         assertTrue(resolved.android.kotlinMultiplatformLibrary)
