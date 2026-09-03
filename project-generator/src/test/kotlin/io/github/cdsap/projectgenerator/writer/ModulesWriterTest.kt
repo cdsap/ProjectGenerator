@@ -1,6 +1,10 @@
 package io.github.cdsap.projectgenerator.writer
 
 import io.github.cdsap.projectgenerator.NameMappings
+import io.github.cdsap.projectgenerator.generator.BuildFilesGenerator
+import io.github.cdsap.projectgenerator.generator.ClassGenerator
+import io.github.cdsap.projectgenerator.generator.ModuleClassPlanner
+import io.github.cdsap.projectgenerator.generator.TestGenerator
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.TypeProject

@@ -7,7 +7,7 @@ import io.github.cdsap.projectgenerator.generator.android.ClassTheme
 import io.github.cdsap.projectgenerator.generator.android.FragmentLayout
 import io.github.cdsap.projectgenerator.generator.android.Manifest
 import io.github.cdsap.projectgenerator.generator.android.ValuesStrings
-import io.github.cdsap.projectgenerator.writer.ResourceGeneratorA
+import io.github.cdsap.projectgenerator.generator.ResourceGeneratorA
 import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.generator.classes.GenerateDictionaryAndroid
 import io.github.cdsap.projectgenerator.model.DependencyInjection
