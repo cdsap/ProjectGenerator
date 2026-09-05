@@ -10,18 +10,25 @@ class GraphWriter(private val nodes: List<ProjectGraph>, val path: String) {
         println("Creating graph file")
         val file = File("$path/graph.dot")
         file.createNewFile()
+        file.writeText(render(nodes))
+    }
 
-        val content = StringBuilder()
-        content.appendLine("digraph G {")
+    companion object {
+        fun render(nodes: List<ProjectGraph>): String {
+            val content = StringBuilder()
+            content.appendLine("digraph G {")
 
-        for (nodeGraph in nodes) {
-            val node = "${NameMappings.layerName(nodeGraph.layer)}:${NameMappings.moduleName(nodeGraph.id)}"
-            for (dep in nodeGraph.nodes) {
-                content.appendLine("\"$node\" -> \"${NameMappings.layerName(dep.layer)}:${NameMappings.moduleName(dep.id)}\";")
+            for (nodeGraph in nodes) {
+                val node = "${NameMappings.layerName(nodeGraph.layer)}:${NameMappings.moduleName(nodeGraph.id)}"
+                for (dep in nodeGraph.nodes) {
+                    content.appendLine(
+                        "\"$node\" -> \"${NameMappings.layerName(dep.layer)}:${NameMappings.moduleName(dep.id)}\";"
+                    )
+                }
             }
-        }
 
-        content.appendLine("}")
-        file.writeText(content.toString())
+            content.appendLine("}")
+            return content.toString()
+        }
     }
 }
