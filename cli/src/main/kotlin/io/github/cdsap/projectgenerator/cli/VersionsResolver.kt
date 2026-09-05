@@ -1,6 +1,7 @@
 package io.github.cdsap.projectgenerator.cli
 
 import io.github.cdsap.projectgenerator.model.DependencyInjection
+import io.github.cdsap.projectgenerator.model.Gradle
 import io.github.cdsap.projectgenerator.model.Versions
 import io.github.cdsap.projectgenerator.model.VersionsFile
 
@@ -36,5 +37,11 @@ object VersionsResolver {
     ): Versions {
         val base = fileVersions?.resolve() ?: Versions()
         return overrides.applyTo(base)
+    }
+
+    fun resolveGradle(cliGradle: String?, fileVersions: VersionsFile?): Gradle {
+        return cliGradle?.let(Gradle::fromValue)
+            ?: fileVersions?.gradle
+            ?: Gradle.latest()
     }
 }
