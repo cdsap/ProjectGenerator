@@ -84,7 +84,7 @@ data class GenerateProjectRequest(
                 typeOfStringResources = typeOfStringResources,
                 layers = layers,
                 generateUnitTest = generateUnitTest,
-                gradle = resolveGradle(cliGradle, versionsFile),
+                gradle = VersionsResolver.resolveGradle(cliGradle, versionsFile),
                 projectRootPath = resolveProjectRootPath(outputDir, language, resolvedProjectName),
                 develocity = resolveDevelocityEnabled(develocityFlag, versionsOverrides.develocityUrl),
                 projectName = resolvedProjectName
@@ -134,10 +134,4 @@ internal fun resolveProjectRootPath(outputDir: String?, language: Language, proj
             Language.BOTH -> "projects_generated/$projectName"
         }
     }
-}
-
-internal fun resolveGradle(cliGradle: String?, versionsFile: VersionsFile?): Gradle {
-    return cliGradle?.let(Gradle::fromValue)
-        ?: versionsFile?.gradle
-        ?: Gradle.latest()
 }
