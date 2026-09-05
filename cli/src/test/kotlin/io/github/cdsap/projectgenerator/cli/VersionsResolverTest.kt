@@ -2,6 +2,7 @@ package io.github.cdsap.projectgenerator.cli
 
 import io.github.cdsap.projectgenerator.model.Android
 import io.github.cdsap.projectgenerator.model.DependencyInjection
+import io.github.cdsap.projectgenerator.model.Gradle
 import io.github.cdsap.projectgenerator.model.Project
 import io.github.cdsap.projectgenerator.model.Versions
 import io.github.cdsap.projectgenerator.model.VersionsFile
@@ -85,5 +86,30 @@ class VersionsResolverTest {
         assertTrue(resolved.android.kotlinMultiplatformLibrary)
         assertEquals("", resolved.project.develocityUrl)
         assertEquals(DependencyInjection.METRO, resolved.di)
+    }
+
+    @Test
+    fun `gradle from versions file is used when flag is absent`() {
+        val configured = Gradle.supported()[1]
+        val resolved = VersionsResolver.resolveGradle(null, VersionsFile(gradle = configured))
+
+        assertEquals(configured, resolved)
+    }
+
+    @Test
+    fun `gradle flag overrides versions file`() {
+        val resolved = VersionsResolver.resolveGradle(
+            Gradle.latest().cliValue,
+            VersionsFile(gradle = Gradle.oldest())
+        )
+
+        assertEquals(Gradle.latest(), resolved)
+    }
+
+    @Test
+    fun `latest gradle is used when neither flag nor versions file provide one`() {
+        val resolved = VersionsResolver.resolveGradle(null, null)
+
+        assertEquals(Gradle.latest(), resolved)
     }
 }

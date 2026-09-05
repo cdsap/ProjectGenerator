@@ -10,7 +10,6 @@ import io.github.cdsap.projectgenerator.model.Language
 import io.github.cdsap.projectgenerator.model.Shape
 import io.github.cdsap.projectgenerator.model.TypeOfStringResources
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
-import io.github.cdsap.projectgenerator.model.VersionsFile
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -133,28 +132,6 @@ class GenerateProjectsCliTest {
 
         assertTrue(error.message?.contains("Unknown Gradle version: 9.9.9") == true)
         assertTrue(error.message?.contains(Gradle.supportedDisplayValues()) == true)
-    }
-
-    @Test
-    fun `gradle from versions file is used when flag is absent`() {
-        val configured = Gradle.supported()[1]
-        val resolved = resolveGradle(null, VersionsFile(gradle = configured))
-
-        assertEquals(configured, resolved)
-    }
-
-    @Test
-    fun `gradle flag overrides versions file`() {
-        val resolved = resolveGradle(Gradle.latest().cliValue, VersionsFile(gradle = Gradle.oldest()))
-
-        assertEquals(Gradle.latest(), resolved)
-    }
-
-    @Test
-    fun `latest gradle is used when neither flag nor versions file provide one`() {
-        val resolved = resolveGradle(null, null)
-
-        assertEquals(Gradle.latest(), resolved)
     }
 
     @Test
