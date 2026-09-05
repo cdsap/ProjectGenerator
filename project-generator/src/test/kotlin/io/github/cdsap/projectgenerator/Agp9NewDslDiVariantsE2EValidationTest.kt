@@ -14,6 +14,7 @@ import io.github.cdsap.projectgenerator.writer.GradleWrapper
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assumptions.assumeFalse
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
@@ -29,6 +30,10 @@ class Agp9NewDslDiVariantsE2EValidationTest {
     fun `agp9 android project without newDsl opt-out compiles and reuses configuration cache`(
         di: DependencyInjection
     ) {
+        assumeFalse(
+            di == DependencyInjection.METRO && Runtime.version().feature() < 21,
+            "Metro Gradle plugin requires JVM 21 to run"
+        )
         val projectName = "agp9_newdsl_${di.name.lowercase()}"
         ProjectGenerator(
             modules = 6,
