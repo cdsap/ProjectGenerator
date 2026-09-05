@@ -64,6 +64,7 @@ jobs:
           - 'io.github.cdsap.projectgenerator.RoomDiVariantsAssembleE2EValidationTest'
           - 'io.github.cdsap.projectgenerator.AndroidKotlinMultiplatformLibraryE2EValidationTest'
           - 'io.github.cdsap.projectgenerator.SupportedGradleVersionsE2ETest'
+          - 'io.github.cdsap.projectgenerator.Agp9NewDslDiVariantsE2EValidationTest'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:

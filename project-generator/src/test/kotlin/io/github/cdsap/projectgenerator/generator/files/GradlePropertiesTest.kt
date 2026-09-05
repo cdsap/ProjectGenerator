@@ -65,7 +65,7 @@ class GradlePropertiesTest {
     }
 
     @Test
-    fun `includes android newDsl override for hilt on agp9`() {
+    fun `does not include android newDsl override for hilt on agp9`() {
         val versions = Versions(
             android = Android(agp = "9.1.0"),
             di = DependencyInjection.HILT
@@ -73,19 +73,24 @@ class GradlePropertiesTest {
 
         val gradleProperties = GradleProperties().get(versions, Gradle("9.6.1"))
 
-        Assertions.assertTrue(gradleProperties.contains("android.newDsl=false"))
+        Assertions.assertFalse(gradleProperties.contains("android.newDsl"))
     }
 
     @Test
-    fun `does not include android newDsl override for hilt on agp8`() {
-        val versions = Versions(
-            android = Android(agp = "8.10.0"),
-            di = DependencyInjection.HILT
-        )
+    fun `does not include android newDsl override for any di on agp9`() {
+        DependencyInjection.entries.forEach { di ->
+            val versions = Versions(
+                android = Android(agp = "9.4.0"),
+                di = di
+            )
 
-        val gradleProperties = GradleProperties().get(versions, Gradle("9.6.1"))
+            val gradleProperties = GradleProperties().get(versions, Gradle("9.6.1"))
 
-        Assertions.assertFalse(gradleProperties.contains("android.newDsl=false"))
+            Assertions.assertFalse(
+                gradleProperties.contains("android.newDsl"),
+                "Unexpected android.newDsl property for $di"
+            )
+        }
     }
 
     @Test

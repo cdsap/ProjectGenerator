@@ -1,7 +1,5 @@
 package io.github.cdsap.projectgenerator.generator.rootproject
 
-import io.github.cdsap.projectgenerator.generator.extension.isAgp9
-import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Gradle
 import io.github.cdsap.projectgenerator.model.Processor
 import io.github.cdsap.projectgenerator.model.Versions
@@ -16,10 +14,6 @@ class GradleProperties {
             if (versions.kotlin.kotlinProcessor.processor == Processor.KSP) {
                 // Disable K2 for KSP 2.0
                 add("ksp.useKSP2=false")
-            }
-            if (versions.di == DependencyInjection.HILT && versions.android.agp.isAgp9()) {
-                // Hilt is not compatible with AGP9 new DSL
-                add("android.newDsl=false")
             }
             if (isGradle97(gradle)) {
                 // Isolated Projects + KSP IP-compatible task wiring (Gradle 9.7 only)
