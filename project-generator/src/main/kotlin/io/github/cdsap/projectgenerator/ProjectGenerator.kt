@@ -46,7 +46,7 @@ class ProjectGenerator(
             )
         )
 
-        val projectLanguageAttributes = getProjectLanguageAttributes()
+        val projectLanguageAttributes = ProjectLayout.languageAttributes(projectRootPath, language)
         ProjectWriter(
             nodes,
             projectLanguageAttributes,
@@ -62,22 +62,5 @@ class ProjectGenerator(
             GraphWriter(nodes, attributes.projectName).write()
         }
         println("Project created in ${projectLanguageAttributes.first().projectName}")
-    }
-
-    private fun getProjectLanguageAttributes(): List<LanguageAttributes> {
-        return when (language) {
-            Language.KTS -> listOf(
-                LanguageAttributes("gradle.kts", projectRootPath)
-            )
-
-            Language.GROOVY -> listOf(
-                LanguageAttributes("gradle", projectRootPath)
-            )
-
-            Language.BOTH -> listOf(
-                LanguageAttributes("gradle", "$projectRootPath/project_groovy"),
-                LanguageAttributes("gradle.kts", "$projectRootPath/project_kts")
-            )
-        }
     }
 }

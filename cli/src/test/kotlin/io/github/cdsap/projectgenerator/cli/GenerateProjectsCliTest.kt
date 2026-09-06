@@ -7,6 +7,7 @@ import io.github.cdsap.projectgenerator.model.ClassesPerModuleType
 import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Gradle
 import io.github.cdsap.projectgenerator.model.Language
+import io.github.cdsap.projectgenerator.model.ProjectLayout
 import io.github.cdsap.projectgenerator.model.Shape
 import io.github.cdsap.projectgenerator.model.TypeOfStringResources
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
@@ -136,21 +137,21 @@ class GenerateProjectsCliTest {
 
     @Test
     fun `default output path for kts nests project name and project_kts`() {
-        val resolved = resolveProjectRootPath(null, Language.KTS, "sample")
+        val resolved = ProjectLayout.defaultRootPath(null, Language.KTS, "sample")
 
         assertEquals("projects_generated/sample/project_kts", resolved)
     }
 
     @Test
     fun `output dir is used directly for single language projects`() {
-        val resolved = resolveProjectRootPath(".", Language.KTS, "sample")
+        val resolved = ProjectLayout.defaultRootPath(".", Language.KTS, "sample")
 
         assertEquals(".", resolved)
     }
 
     @Test
     fun `default output path for both languages nests project name only`() {
-        val resolved = resolveProjectRootPath(null, Language.BOTH, "sample")
+        val resolved = ProjectLayout.defaultRootPath(null, Language.BOTH, "sample")
 
         assertEquals("projects_generated/sample", resolved)
     }
