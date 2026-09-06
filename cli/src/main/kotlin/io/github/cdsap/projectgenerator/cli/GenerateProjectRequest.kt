@@ -5,6 +5,7 @@ import io.github.cdsap.projectgenerator.ProjectGenerator
 import io.github.cdsap.projectgenerator.model.ClassesPerModule
 import io.github.cdsap.projectgenerator.model.Gradle
 import io.github.cdsap.projectgenerator.model.Language
+import io.github.cdsap.projectgenerator.model.ProjectLayout
 import io.github.cdsap.projectgenerator.model.Shape
 import io.github.cdsap.projectgenerator.model.TypeOfStringResources
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
@@ -85,7 +86,7 @@ data class GenerateProjectRequest(
                 layers = layers,
                 generateUnitTest = generateUnitTest,
                 gradle = VersionsResolver.resolveGradle(cliGradle, versionsFile),
-                projectRootPath = resolveProjectRootPath(outputDir, language, resolvedProjectName),
+                projectRootPath = ProjectLayout.defaultRootPath(outputDir, language, resolvedProjectName),
                 develocity = resolveDevelocityEnabled(develocityFlag, versionsOverrides.develocityUrl),
                 projectName = resolvedProjectName
             )
@@ -122,16 +123,4 @@ internal fun resolveProjectName(
 
 internal fun resolveDevelocityEnabled(develocity: Boolean, develocityUrl: String?): Boolean {
     return develocity || develocityUrl != null
-}
-
-internal fun resolveProjectRootPath(outputDir: String?, language: Language, projectName: String): String {
-    return if (outputDir != null) {
-        outputDir
-    } else {
-        when (language) {
-            Language.KTS -> "projects_generated/$projectName/project_kts"
-            Language.GROOVY -> "projects_generated/$projectName/project_groovy"
-            Language.BOTH -> "projects_generated/$projectName"
-        }
-    }
 }
