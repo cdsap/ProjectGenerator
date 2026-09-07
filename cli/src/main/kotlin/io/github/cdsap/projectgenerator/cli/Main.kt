@@ -1,6 +1,7 @@
 package io.github.cdsap.projectgenerator.cli
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.UsageError
 import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.options.*
@@ -55,30 +56,34 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
     private val kotlinMultiplatformLibrary by option("--android-kotlin-multiplatform-library").flag(default = false)
 
     override fun run() {
-        GenerateProjectRequest.resolve(
-            modules = modules,
-            shape = Shape.valueOf(shape.uppercase()),
-            language = Language.valueOf(language.uppercase()),
-            typeOfProjectRequested = TypeProjectRequested.valueOf(type.uppercase()),
-            classesPerModule = ClassesPerModule(
-                ClassesPerModuleType.valueOf(classesModuleType.uppercase()),
-                classesModule
-            ),
-            typeOfStringResources = TypeOfStringResources.valueOf(typeOfStringResources.uppercase()),
-            layers = layers,
-            generateUnitTest = generateUnitTest,
-            cliGradle = gradle,
-            develocityFlag = develocity,
-            versionsFile = versionsFile?.let(VersionsParser::fromFile),
-            outputDir = outputDir,
-            projectName = projectName,
-            versionsOverrides = VersionsOverrides(
-                dependencyInjection = DependencyInjection.valueOf(di.uppercase()),
-                develocityUrl = develocityUrl,
-                roomDatabase = roomDatabase,
-                kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
-            )
-        ).toProjectGenerator().write()
+        try {
+            GenerateProjectRequest.resolve(
+                modules = modules,
+                shape = Shape.valueOf(shape.uppercase()),
+                language = Language.valueOf(language.uppercase()),
+                typeOfProjectRequested = TypeProjectRequested.valueOf(type.uppercase()),
+                classesPerModule = ClassesPerModule(
+                    ClassesPerModuleType.valueOf(classesModuleType.uppercase()),
+                    classesModule
+                ),
+                typeOfStringResources = TypeOfStringResources.valueOf(typeOfStringResources.uppercase()),
+                layers = layers,
+                generateUnitTest = generateUnitTest,
+                cliGradle = gradle,
+                develocityFlag = develocity,
+                versionsFile = versionsFile?.let(VersionsParser::fromFile),
+                outputDir = outputDir,
+                projectName = projectName,
+                versionsOverrides = VersionsOverrides(
+                    dependencyInjection = DependencyInjection.valueOf(di.uppercase()),
+                    develocityUrl = develocityUrl,
+                    roomDatabase = roomDatabase,
+                    kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
+                )
+            ).toProjectGenerator().write()
+        } catch (e: GenerateProjectRequestValidationException) {
+            throw UsageError(e.message ?: "Invalid generate-project request.")
+        }
     }
 }
 
