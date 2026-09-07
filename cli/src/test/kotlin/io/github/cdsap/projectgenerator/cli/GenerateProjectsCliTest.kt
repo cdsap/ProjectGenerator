@@ -51,7 +51,7 @@ class GenerateProjectsCliTest {
 
     @Test
     fun `resolve rejects room database for jvm type`() {
-        val error = assertThrows<UsageError> {
+        val error = assertThrows<GenerateProjectRequestValidationException> {
             GenerateProjectRequest.resolve(
                 modules = 6,
                 shape = Shape.RECTANGLE,
@@ -79,7 +79,7 @@ class GenerateProjectsCliTest {
 
     @Test
     fun `resolve rejects android kotlin multiplatform library for jvm type`() {
-        val error = assertThrows<UsageError> {
+        val error = assertThrows<GenerateProjectRequestValidationException> {
             GenerateProjectRequest.resolve(
                 modules = 6,
                 shape = Shape.RECTANGLE,
