@@ -37,14 +37,13 @@ class ProjectGenerator(
             classesPerModule
         ).generate()
 
-        NameMappings.configure(
-            ProjectNameMappingFactory.create(
-                layers = layers,
-                nodes = nodes,
-                layerNames = layerNames,
-                moduleNameParts = moduleNameParts
-            )
+        val nameMaps = ProjectNameMappingFactory.create(
+            layers = layers,
+            nodes = nodes,
+            layerNames = layerNames,
+            moduleNameParts = moduleNameParts
         )
+        NameMappings.configure(nameMaps)
 
         val projectLanguageAttributes = ProjectLayout.languageAttributes(projectRootPath, language)
         ProjectWriter(
@@ -59,7 +58,7 @@ class ProjectGenerator(
             projectName
         ).write()
         projectLanguageAttributes.forEach { attributes ->
-            GraphWriter(nodes, attributes.projectName).write()
+            GraphWriter(nodes, attributes.projectName, nameMaps).write()
         }
         println("Project created in ${projectLanguageAttributes.first().projectName}")
     }
