@@ -2,6 +2,7 @@ package io.github.cdsap.projectgenerator
 
 import io.github.cdsap.projectgenerator.model.ClassesPerModule
 import io.github.cdsap.projectgenerator.model.ClassesPerModuleType
+import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.Shape
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
 import org.junit.jupiter.api.Assertions.*
@@ -10,6 +11,18 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 
 class ProjectGraphGeneratorTest {
+
+    @Test
+    fun `generated graph is consumed as a read-only result`() {
+        val nodes: List<ProjectGraph> = ProjectGraphGenerator(
+            numberOfLayers = 1,
+            distribution = listOf(1),
+            typeOfProjectRequested = TypeProjectRequested.JVM,
+            classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 10)
+        ).generate()
+
+        assertEquals(listOf("module_0_1", "module_1_2"), nodes.map { it.id })
+    }
 
     @ParameterizedTest
     @EnumSource(Shape::class)
