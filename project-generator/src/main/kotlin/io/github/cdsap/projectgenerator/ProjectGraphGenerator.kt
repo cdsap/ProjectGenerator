@@ -13,7 +13,7 @@ class ProjectGraphGenerator(
     private val typeOfProjectRequested: TypeProjectRequested,
     private val classesPerModule: ClassesPerModule
 ) {
-    fun generate(): MutableList<ProjectGraph> {
+    fun generate(): List<ProjectGraph> {
         var generalCounter = 0
         var oldLayer = 0
         val nodes = mutableListOf<ProjectGraph>()
