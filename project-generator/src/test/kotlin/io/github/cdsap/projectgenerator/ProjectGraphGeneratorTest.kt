@@ -5,6 +5,7 @@ import io.github.cdsap.projectgenerator.model.ClassesPerModuleType
 import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.Shape
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
+import kotlin.random.Random
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -82,5 +83,36 @@ class ProjectGraphGeneratorTest {
         ).generate()
         assertTrue(nodes.filter { it.layer == 5 }.size == 1)
         assertTrue(nodes.filter { it.layer == 5 }[0].nodes.size == nodes.filter { it.layer == 4 }.size)
+    }
+
+    @Test
+    fun `same seed reproduces identical relationships and random class counts`() {
+        val numberOfLayers = 5
+        val distribution = listOf(3, 5, 2, 4, 6)
+        val classesPerModule = ClassesPerModule(ClassesPerModuleType.RANDOM, 20)
+        val seed = 42L
+
+        val first = ProjectGraphGenerator(
+            numberOfLayers = numberOfLayers,
+            distribution = distribution,
+            typeOfProjectRequested = TypeProjectRequested.JVM,
+            classesPerModule = classesPerModule,
+            random = Random(seed)
+        ).generate()
+        val second = ProjectGraphGenerator(
+            numberOfLayers = numberOfLayers,
+            distribution = distribution,
+            typeOfProjectRequested = TypeProjectRequested.JVM,
+            classesPerModule = classesPerModule,
+            random = Random(seed)
+        ).generate()
+
+        assertEquals(first.map { it.id }, second.map { it.id })
+        assertEquals(first.map { it.classes }, second.map { it.classes })
+        assertEquals(
+            first.map { node -> node.nodes.map { it.id } },
+            second.map { node -> node.nodes.map { it.id } }
+        )
+        assertTrue(first.any { it.classes != classesPerModule.classes })
     }
 }

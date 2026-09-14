@@ -11,7 +11,8 @@ class ProjectGraphGenerator(
     private val numberOfLayers: Int,
     private val distribution: List<Int>,
     private val typeOfProjectRequested: TypeProjectRequested,
-    private val classesPerModule: ClassesPerModule
+    private val classesPerModule: ClassesPerModule,
+    private val random: Random = Random.Default
 ) {
     fun generate(): List<ProjectGraph> {
         var generalCounter = 0
@@ -79,12 +80,12 @@ class ProjectGraphGenerator(
         nodesAlreadyUsed: MutableList<String>,
         oldLayer: Int
     ): String {
-        var node = nodesLayer.random().id
+        var node = nodesLayer.random(random).id
         if (nodesAlreadyUsed.isEmpty()) {
             nodesAlreadyUsed.add(node)
         } else {
             while (nodesAlreadyUsed.contains(node) && distribution[oldLayer] != 1) {
-                node = nodesLayer.random().id
+                node = nodesLayer.random(random).id
             }
             if (!nodesAlreadyUsed.contains(node)) {
                 nodesAlreadyUsed.add(node)
@@ -99,7 +100,7 @@ class ProjectGraphGenerator(
         if (classesPerModule.classes == MIN_CLASSES_PER_MODULE) {
             MIN_CLASSES_PER_MODULE
         } else {
-            Random.nextInt(MIN_CLASSES_PER_MODULE, classesPerModule.classes + 1)
+            random.nextInt(MIN_CLASSES_PER_MODULE, classesPerModule.classes + 1)
         }
     }
 
@@ -115,7 +116,7 @@ class ProjectGraphGenerator(
                 if (numberModulesUpperLayer <= 1) {
                     listOfModules.add(numberModulesUpperLayer)
                 } else {
-                    var next = Random.nextInt(1, numberModulesUpperLayer)
+                    var next = random.nextInt(1, numberModulesUpperLayer)
                     listOfModules.add(next)
                 }
             }
