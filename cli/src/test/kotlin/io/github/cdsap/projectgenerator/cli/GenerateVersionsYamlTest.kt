@@ -2,10 +2,17 @@ package io.github.cdsap.projectgenerator.cli
 
 import io.github.cdsap.projectgenerator.model.Gradle
 import io.github.cdsap.projectgenerator.model.Versions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
+import java.io.File
+import java.nio.file.Path
 
 class GenerateVersionsYamlTest {
+
+    @TempDir
+    lateinit var tempDir: Path
 
     @Test
     fun `render includes key defaults and plugin sections`() {
@@ -33,5 +40,16 @@ class GenerateVersionsYamlTest {
         assertTrue(yaml.contains("additionalBuildGradleRootPlugins:"))
         assertTrue(yaml.contains("id: ${rootPlugin.id}"))
         assertTrue(yaml.contains("version: ${rootPlugin.version}"))
+    }
+
+    @Test
+    fun `generate writes rendered yaml to explicit output file`() {
+        val outputFile = File(tempDir.toFile(), "versions.yaml")
+        val generator = GenerateVersionsYaml()
+
+        generator.generate(outputFile)
+
+        assertTrue(outputFile.exists())
+        assertEquals(generator.render(), outputFile.readText())
     }
 }

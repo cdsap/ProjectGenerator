@@ -9,6 +9,7 @@ import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.int
 import io.github.cdsap.projectgenerator.model.*
+import java.io.File
 
 fun main(args: Array<String>) {
     ProjectReportCli()
@@ -89,6 +90,6 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
 
 class GenerateYaml : CliktCommand(name = "generate-yaml-versions") {
     override fun run() {
-        GenerateVersionsYaml().generate()
+        GenerateVersionsYaml().generate(File("versions.yaml"))
     }
 }

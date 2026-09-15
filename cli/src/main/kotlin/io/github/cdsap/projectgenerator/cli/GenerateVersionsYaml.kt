@@ -6,10 +6,9 @@ import io.github.cdsap.projectgenerator.model.Versions
 import java.io.File
 
 class GenerateVersionsYaml {
-    fun generate() {
-        val file = File("versions.yaml")
-        file.writeText(render())
-        if (file.exists()) println("file versions.yaml created ")
+    fun generate(outputFile: File = File("versions.yaml")) {
+        outputFile.writeText(render())
+        if (outputFile.exists()) println("file ${outputFile.name} created ")
     }
 
     internal fun render(versions: Versions = Versions(), gradle: Gradle = Gradle.latest()): String {
