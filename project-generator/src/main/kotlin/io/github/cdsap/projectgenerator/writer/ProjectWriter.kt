@@ -1,12 +1,12 @@
 package io.github.cdsap.projectgenerator.writer
 
+import io.github.cdsap.projectgenerator.ProjectNameMaps
 import io.github.cdsap.projectgenerator.generator.rootproject.BuildGradle
 import io.github.cdsap.projectgenerator.generator.rootproject.GradleProperties
 import io.github.cdsap.projectgenerator.generator.rootproject.SettingsGradle
 import io.github.cdsap.projectgenerator.generator.extension.projectFile
 import io.github.cdsap.projectgenerator.generator.rootproject.Gitignore
 import io.github.cdsap.projectgenerator.generator.toml.AndroidToml
-import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
 import io.github.cdsap.projectgenerator.model.ProjectGraph
 import io.github.cdsap.projectgenerator.model.TypeOfStringResources
@@ -24,7 +24,8 @@ class ProjectWriter(
     private val generateUnitTest: Boolean,
     private val gradle: GradleWrapper,
     private val develocity: Boolean,
-    private val projectName: String
+    private val projectName: String,
+    private val nameMaps: ProjectNameMaps
 ) {
     fun write() {
         println("Creating Convention Plugin files")
@@ -95,8 +96,8 @@ class ProjectWriter(
         var settingsModules = ""
 
         nodes.forEach {
-            val layerName = NameMappings.layerName(it.layer)
-            val moduleName = NameMappings.moduleName(it.id)
+            val layerName = nameMaps.layerNames[it.layer] ?: "layer_${it.layer}"
+            val moduleName = nameMaps.moduleNames[it.id] ?: it.id
             settingsModules += "\ninclude (\":$layerName:$moduleName\")"
         }
         languages.forEach {

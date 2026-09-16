@@ -55,7 +55,8 @@ class ProjectGenerator(
             generateUnitTest,
             gradle,
             develocity,
-            projectName
+            projectName,
+            nameMaps
         ).write()
         projectLanguageAttributes.forEach { attributes ->
             GraphWriter(nodes, attributes.projectName, nameMaps).write()
