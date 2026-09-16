@@ -2,6 +2,7 @@ package io.github.cdsap.projectgenerator.generator.buildfiles
 
 import io.github.cdsap.projectgenerator.DefaultTestVersions.Companion.LATEST_GRADLE
 import io.github.cdsap.projectgenerator.NameMappings
+import io.github.cdsap.projectgenerator.ProjectNameMaps
 import io.github.cdsap.projectgenerator.writer.ProjectWriter
 import io.github.cdsap.projectgenerator.model.Gradle
 import io.github.cdsap.projectgenerator.model.Android
@@ -43,7 +44,8 @@ class BuildFilesGeneratorAndroidTest {
             false,
             GradleWrapper(LATEST_GRADLE),
             false,
-            ""
+            "",
+            ProjectNameMaps(emptyMap(), emptyMap())
         )
         projectWriter.write()
         val buildFile = File("${tempDir.path}/${NameMappings.layerName(1)}/module_1_1/build.gradle.kts")
@@ -76,7 +78,8 @@ class BuildFilesGeneratorAndroidTest {
             false,
             GradleWrapper(LATEST_GRADLE),
             false,
-            ""
+            "",
+            ProjectNameMaps(emptyMap(), emptyMap())
         )
         projectWriter.write()
         val buildFile = File("${tempDir.path}/${NameMappings.layerName(1)}/module_1_1/build.gradle.kts")
@@ -110,7 +113,8 @@ class BuildFilesGeneratorAndroidTest {
             true,
             GradleWrapper(LATEST_GRADLE),
             false,
-            ""
+            "",
+            ProjectNameMaps(emptyMap(), emptyMap())
         )
         projectWriter.write()
 

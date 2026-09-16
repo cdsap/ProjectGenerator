@@ -16,6 +16,8 @@ class ProjectWriterTest {
     @TempDir
     lateinit var tempDir: Path
 
+    private val emptyNameMaps = ProjectNameMaps(emptyMap(), emptyMap())
+
     @Test
     fun testWriteProject() {
         val nodes = listOf(
@@ -42,7 +44,8 @@ class ProjectWriterTest {
             false,
             GradleWrapper(OLDEST_SUPPORTED_GRADLE),
             true,
-            "awesomeapp"
+            "awesomeapp",
+            emptyNameMaps
         )
 
         projectWriter.write()
@@ -85,7 +88,8 @@ class ProjectWriterTest {
             false,
             GradleWrapper(LATEST_GRADLE),
             false,
-            "manual_room_none"
+            "manual_room_none",
+            emptyNameMaps
         )
 
         projectWriter.write()
@@ -116,7 +120,8 @@ class ProjectWriterTest {
             false,
             GradleWrapper(LATEST_GRADLE),
             false,
-            "kmp_android_lib_alias"
+            "kmp_android_lib_alias",
+            emptyNameMaps
         )
 
         projectWriter.write()
@@ -141,7 +146,8 @@ class ProjectWriterTest {
             false,
             GradleWrapper(LATEST_GRADLE),
             false,
-            "hilt_lean_graph"
+            "hilt_lean_graph",
+            emptyNameMaps
         )
 
         projectWriter.write()
@@ -155,10 +161,13 @@ class ProjectWriterTest {
 
     @Test
     fun `limits hilt android entry points to app launcher activity`() {
+        val nameMaps = ProjectNameMaps(
+            layerNames = mapOf(1 to "layer_1", 2 to "app"),
+            moduleNames = mapOf("module_1_1" to "sample-lib", "module_2_1" to "app")
+        )
         val previousLayerNames = NameMappings.layerNames
         val previousModuleNames = NameMappings.moduleNames
-        NameMappings.layerNames = mapOf(1 to "layer_1", 2 to "app")
-        NameMappings.moduleNames = mapOf("module_1_1" to "sample-lib", "module_2_1" to "app")
+        NameMappings.configure(nameMaps)
         try {
             val nodes = listOf(
                 ProjectGraph("module_1_1", 1, emptyList(), TypeProject.ANDROID_LIB, 12),
@@ -175,7 +184,8 @@ class ProjectWriterTest {
                 false,
                 GradleWrapper(LATEST_GRADLE),
                 false,
-                "hilt_entrypoints"
+                "hilt_entrypoints",
+                nameMaps
             )
 
             projectWriter.write()
@@ -199,6 +209,37 @@ class ProjectWriterTest {
     }
 
     @Test
+    fun `writes settings includes from ProjectNameMaps`() {
+        val nodes = listOf(
+            ProjectGraph("module_1_1", 1, emptyList(), TypeProject.ANDROID_LIB, 10),
+            ProjectGraph("module_2_1", 2, emptyList(), TypeProject.ANDROID_APP, 10)
+        )
+        val nameMaps = ProjectNameMaps(
+            layerNames = mapOf(1 to "layer_1", 2 to "app"),
+            moduleNames = mapOf("module_1_1" to "sample-lib", "module_2_1" to "app")
+        )
+        val language = LanguageAttributes("gradle.kts", "${tempDir}/project_settings_maps")
+        val projectWriter = ProjectWriter(
+            nodes,
+            listOf(language),
+            Versions(),
+            TypeProjectRequested.ANDROID,
+            TypeOfStringResources.NORMAL,
+            false,
+            GradleWrapper(LATEST_GRADLE),
+            false,
+            "settings_maps",
+            nameMaps
+        )
+
+        projectWriter.write()
+
+        val settingsContent = File("${language.projectName}/settings.gradle.kts").readText()
+        assertTrue(settingsContent.contains("include (\":layer_1:sample-lib\")"))
+        assertTrue(settingsContent.contains("include (\":app:app\")"))
+    }
+
+    @Test
     fun `does not include settings or build plugins when additionalSettingsPlugins and additionalBuildGradleRootPlugins are empty`() {
         val nodes = listOf(
             ProjectGraph("module_1_1", 1, emptyList(), TypeProject.ANDROID_APP, 10),
@@ -217,7 +258,8 @@ class ProjectWriterTest {
             false,
             GradleWrapper(LATEST_GRADLE),
             false,
-            "no_plugins_project"
+            "no_plugins_project",
+            emptyNameMaps
         )
 
         projectWriter.write()
@@ -253,7 +295,8 @@ class ProjectWriterTest {
             true,
             GradleWrapper(LATEST_GRADLE),
             false,
-            "kmp_android_main_layout"
+            "kmp_android_main_layout",
+            emptyNameMaps
         )
 
         projectWriter.write()

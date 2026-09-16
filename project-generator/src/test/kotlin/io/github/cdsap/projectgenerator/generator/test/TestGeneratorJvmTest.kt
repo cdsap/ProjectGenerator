@@ -2,6 +2,7 @@ package io.github.cdsap.projectgenerator.generator.test
 
 import io.github.cdsap.projectgenerator.DefaultTestVersions.Companion.LATEST_GRADLE
 import io.github.cdsap.projectgenerator.NameMappings
+import io.github.cdsap.projectgenerator.ProjectNameMaps
 import io.github.cdsap.projectgenerator.writer.ProjectWriter
 import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
@@ -32,7 +33,8 @@ class TestGeneratorJvmTest {
             true, // generateUnitTest
             GradleWrapper(LATEST_GRADLE),
             false,
-            ""
+            "",
+            ProjectNameMaps(emptyMap(), emptyMap())
         )
         projectWriter.write()
         val testFile = File(tempDir, "${NameMappings.layerName(1)}/module_1_1/src/test/kotlin/com/awesomeapp/module_1_1/Usecase1_1Test.kt")
