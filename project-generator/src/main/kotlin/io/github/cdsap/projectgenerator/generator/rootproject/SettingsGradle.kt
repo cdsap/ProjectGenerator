@@ -4,7 +4,12 @@ import io.github.cdsap.projectgenerator.model.Versions
 
 class SettingsGradle {
 
-    fun get(versions: Versions, develocity: Boolean, projectName: String): String {
+    fun get(
+        versions: Versions,
+        develocity: Boolean,
+        projectName: String,
+        modulePaths: List<String> = emptyList()
+    ): String {
         val pluginLines = buildList {
             if (develocity) {
                 add("""id("com.gradle.develocity") version "${versions.project.develocity}"""")
@@ -33,7 +38,7 @@ class SettingsGradle {
             ""
         }
 
-        return """
+        val header = """
             |pluginManagement {
             |    includeBuild("build-logic")
             |    repositories {
@@ -53,6 +58,11 @@ class SettingsGradle {
             |    }
             |}
         """.trimMargin()
+
+        val settingsModules = modulePaths.joinToString(separator = "") { path ->
+            "\ninclude (\":$path\")"
+        }
+        return "$header $settingsModules"
     }
 
     private fun develocityBlock(develocityUrl: String): String {
