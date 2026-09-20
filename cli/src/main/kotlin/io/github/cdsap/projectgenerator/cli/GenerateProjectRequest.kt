@@ -4,7 +4,6 @@ import io.github.cdsap.projectgenerator.ProjectGenerator
 import io.github.cdsap.projectgenerator.model.ClassesPerModule
 import io.github.cdsap.projectgenerator.model.Gradle
 import io.github.cdsap.projectgenerator.model.Language
-import io.github.cdsap.projectgenerator.model.ProjectLayout
 import io.github.cdsap.projectgenerator.model.Shape
 import io.github.cdsap.projectgenerator.model.TypeOfStringResources
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
@@ -85,7 +84,11 @@ data class GenerateProjectRequest(
                 layers = layers,
                 generateUnitTest = generateUnitTest,
                 gradle = VersionsResolver.resolveGradle(cliGradle, versionsFile),
-                projectRootPath = ProjectLayout.defaultRootPath(outputDir, language, resolvedProjectName),
+                projectRootPath = ProjectOutputPathResolver.defaultRootPath(
+                    outputDir,
+                    language,
+                    resolvedProjectName
+                ),
                 develocity = resolveDevelocityEnabled(develocityFlag, versionsOverrides.develocityUrl),
                 projectName = resolvedProjectName
             )

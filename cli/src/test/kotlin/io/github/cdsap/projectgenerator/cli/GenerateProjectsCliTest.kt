@@ -7,7 +7,6 @@ import io.github.cdsap.projectgenerator.model.ClassesPerModuleType
 import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.Gradle
 import io.github.cdsap.projectgenerator.model.Language
-import io.github.cdsap.projectgenerator.model.ProjectLayout
 import io.github.cdsap.projectgenerator.model.Shape
 import io.github.cdsap.projectgenerator.model.TypeOfStringResources
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
@@ -137,23 +136,44 @@ class GenerateProjectsCliTest {
 
     @Test
     fun `default output path for kts nests project name and project_kts`() {
-        val resolved = ProjectLayout.defaultRootPath(null, Language.KTS, "sample")
+        val resolved = ProjectOutputPathResolver.defaultRootPath(null, Language.KTS, "sample")
 
         assertEquals("projects_generated/sample/project_kts", resolved)
     }
 
     @Test
-    fun `output dir is used directly for single language projects`() {
-        val resolved = ProjectLayout.defaultRootPath(".", Language.KTS, "sample")
+    fun `default output path for groovy nests project name and project_groovy`() {
+        val resolved = ProjectOutputPathResolver.defaultRootPath(null, Language.GROOVY, "sample")
+
+        assertEquals("projects_generated/sample/project_groovy", resolved)
+    }
+
+    @Test
+    fun `default output path for both languages nests project name only`() {
+        val resolved = ProjectOutputPathResolver.defaultRootPath(null, Language.BOTH, "sample")
+
+        assertEquals("projects_generated/sample", resolved)
+    }
+
+    @Test
+    fun `output dir is used directly for kts`() {
+        val resolved = ProjectOutputPathResolver.defaultRootPath(".", Language.KTS, "sample")
 
         assertEquals(".", resolved)
     }
 
     @Test
-    fun `default output path for both languages nests project name only`() {
-        val resolved = ProjectLayout.defaultRootPath(null, Language.BOTH, "sample")
+    fun `output dir is used directly for groovy`() {
+        val resolved = ProjectOutputPathResolver.defaultRootPath("/tmp/out", Language.GROOVY, "sample")
 
-        assertEquals("projects_generated/sample", resolved)
+        assertEquals("/tmp/out", resolved)
+    }
+
+    @Test
+    fun `output dir is used directly for both languages`() {
+        val resolved = ProjectOutputPathResolver.defaultRootPath("/tmp/out", Language.BOTH, "sample")
+
+        assertEquals("/tmp/out", resolved)
     }
 
     @Test
@@ -215,5 +235,54 @@ class GenerateProjectsCliTest {
 
         assertEquals("jvmTriangle12modules", request.projectName)
         assertEquals("projects_generated/jvmTriangle12modules/project_kts", request.projectRootPath)
+    }
+
+    @Test
+    fun `resolve nests groovy default root path under project_groovy`() {
+        val request = resolveRequest(language = Language.GROOVY, outputDir = null, projectName = "sample")
+
+        assertEquals("projects_generated/sample/project_groovy", request.projectRootPath)
+    }
+
+    @Test
+    fun `resolve nests both-languages default root path under project name only`() {
+        val request = resolveRequest(language = Language.BOTH, outputDir = null, projectName = "sample")
+
+        assertEquals("projects_generated/sample", request.projectRootPath)
+    }
+
+    @Test
+    fun `resolve uses explicit output dir for any language`() {
+        val request = resolveRequest(language = Language.BOTH, outputDir = "/tmp/out", projectName = "sample")
+
+        assertEquals("/tmp/out", request.projectRootPath)
+    }
+
+    private fun resolveRequest(
+        language: Language,
+        outputDir: String?,
+        projectName: String?
+    ): GenerateProjectRequest {
+        return GenerateProjectRequest.resolve(
+            modules = 6,
+            shape = Shape.RECTANGLE,
+            language = language,
+            typeOfProjectRequested = TypeProjectRequested.JVM,
+            classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 10),
+            typeOfStringResources = TypeOfStringResources.NORMAL,
+            layers = 5,
+            generateUnitTest = false,
+            cliGradle = null,
+            develocityFlag = false,
+            versionsFile = null,
+            outputDir = outputDir,
+            projectName = projectName,
+            versionsOverrides = VersionsOverrides(
+                dependencyInjection = DependencyInjection.HILT,
+                develocityUrl = null,
+                roomDatabase = false,
+                kotlinMultiplatformLibrary = false
+            )
+        )
     }
 }
