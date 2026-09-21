@@ -10,6 +10,7 @@ import io.github.cdsap.projectgenerator.model.Language
 import io.github.cdsap.projectgenerator.model.Shape
 import io.github.cdsap.projectgenerator.model.TypeOfStringResources
 import io.github.cdsap.projectgenerator.model.TypeProjectRequested
+import io.github.cdsap.projectgenerator.model.VersionsFile
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -52,24 +53,14 @@ class GenerateProjectsCliTest {
     fun `resolve rejects room database for jvm type`() {
         val error = assertThrows<GenerateProjectRequestValidationException> {
             GenerateProjectRequest.resolve(
-                modules = 6,
-                shape = Shape.RECTANGLE,
-                language = Language.KTS,
-                typeOfProjectRequested = TypeProjectRequested.JVM,
-                classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 10),
-                typeOfStringResources = TypeOfStringResources.NORMAL,
-                layers = 5,
-                generateUnitTest = false,
-                cliGradle = null,
-                develocityFlag = false,
-                versionsFile = null,
-                outputDir = null,
-                projectName = null,
-                versionsOverrides = VersionsOverrides(
-                    dependencyInjection = DependencyInjection.HILT,
-                    develocityUrl = null,
-                    roomDatabase = true,
-                    kotlinMultiplatformLibrary = false
+                options(
+                    typeOfProjectRequested = TypeProjectRequested.JVM,
+                    versionsOverrides = VersionsOverrides(
+                        dependencyInjection = DependencyInjection.HILT,
+                        develocityUrl = null,
+                        roomDatabase = true,
+                        kotlinMultiplatformLibrary = false
+                    )
                 )
             )
         }
@@ -80,24 +71,14 @@ class GenerateProjectsCliTest {
     fun `resolve rejects android kotlin multiplatform library for jvm type`() {
         val error = assertThrows<GenerateProjectRequestValidationException> {
             GenerateProjectRequest.resolve(
-                modules = 6,
-                shape = Shape.RECTANGLE,
-                language = Language.KTS,
-                typeOfProjectRequested = TypeProjectRequested.JVM,
-                classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 10),
-                typeOfStringResources = TypeOfStringResources.NORMAL,
-                layers = 5,
-                generateUnitTest = false,
-                cliGradle = null,
-                develocityFlag = false,
-                versionsFile = null,
-                outputDir = null,
-                projectName = null,
-                versionsOverrides = VersionsOverrides(
-                    dependencyInjection = DependencyInjection.HILT,
-                    develocityUrl = null,
-                    roomDatabase = false,
-                    kotlinMultiplatformLibrary = true
+                options(
+                    typeOfProjectRequested = TypeProjectRequested.JVM,
+                    versionsOverrides = VersionsOverrides(
+                        dependencyInjection = DependencyInjection.HILT,
+                        develocityUrl = null,
+                        roomDatabase = false,
+                        kotlinMultiplatformLibrary = true
+                    )
                 )
             )
         }
@@ -179,24 +160,15 @@ class GenerateProjectsCliTest {
     @Test
     fun `develocity url enables develocity when develocity flag is absent`() {
         val request = GenerateProjectRequest.resolve(
-            modules = 6,
-            shape = Shape.RECTANGLE,
-            language = Language.KTS,
-            typeOfProjectRequested = TypeProjectRequested.ANDROID,
-            classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 10),
-            typeOfStringResources = TypeOfStringResources.NORMAL,
-            layers = 5,
-            generateUnitTest = false,
-            cliGradle = null,
-            develocityFlag = false,
-            versionsFile = null,
-            outputDir = null,
-            projectName = "named",
-            versionsOverrides = VersionsOverrides(
-                dependencyInjection = DependencyInjection.HILT,
-                develocityUrl = "https://develocity.example",
-                roomDatabase = false,
-                kotlinMultiplatformLibrary = false
+            options(
+                typeOfProjectRequested = TypeProjectRequested.ANDROID,
+                projectName = "named",
+                versionsOverrides = VersionsOverrides(
+                    dependencyInjection = DependencyInjection.HILT,
+                    develocityUrl = "https://develocity.example",
+                    roomDatabase = false,
+                    kotlinMultiplatformLibrary = false
+                )
             )
         )
 
@@ -212,24 +184,11 @@ class GenerateProjectsCliTest {
     @Test
     fun `resolve builds default project name and nested root path`() {
         val request = GenerateProjectRequest.resolve(
-            modules = 12,
-            shape = Shape.TRIANGLE,
-            language = Language.KTS,
-            typeOfProjectRequested = TypeProjectRequested.JVM,
-            classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 10),
-            typeOfStringResources = TypeOfStringResources.NORMAL,
-            layers = 5,
-            generateUnitTest = false,
-            cliGradle = null,
-            develocityFlag = false,
-            versionsFile = null,
-            outputDir = null,
-            projectName = null,
-            versionsOverrides = VersionsOverrides(
-                dependencyInjection = DependencyInjection.HILT,
-                develocityUrl = null,
-                roomDatabase = false,
-                kotlinMultiplatformLibrary = false
+            options(
+                modules = 12,
+                shape = Shape.TRIANGLE,
+                typeOfProjectRequested = TypeProjectRequested.JVM,
+                projectName = null
             )
         )
 
@@ -264,25 +223,46 @@ class GenerateProjectsCliTest {
         projectName: String?
     ): GenerateProjectRequest {
         return GenerateProjectRequest.resolve(
-            modules = 6,
-            shape = Shape.RECTANGLE,
+            options(language = language, outputDir = outputDir, projectName = projectName)
+        )
+    }
+
+    private fun options(
+        modules: Int = 6,
+        shape: Shape = Shape.RECTANGLE,
+        language: Language = Language.KTS,
+        typeOfProjectRequested: TypeProjectRequested = TypeProjectRequested.JVM,
+        classesPerModule: ClassesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 10),
+        typeOfStringResources: TypeOfStringResources = TypeOfStringResources.NORMAL,
+        layers: Int = 5,
+        generateUnitTest: Boolean = false,
+        cliGradle: String? = null,
+        develocityFlag: Boolean = false,
+        versionsFile: VersionsFile? = null,
+        outputDir: String? = null,
+        projectName: String? = null,
+        versionsOverrides: VersionsOverrides = VersionsOverrides(
+            dependencyInjection = DependencyInjection.HILT,
+            develocityUrl = null,
+            roomDatabase = false,
+            kotlinMultiplatformLibrary = false
+        )
+    ): GenerateProjectOptions {
+        return GenerateProjectOptions(
+            modules = modules,
+            shape = shape,
             language = language,
-            typeOfProjectRequested = TypeProjectRequested.JVM,
-            classesPerModule = ClassesPerModule(ClassesPerModuleType.FIXED, 10),
-            typeOfStringResources = TypeOfStringResources.NORMAL,
-            layers = 5,
-            generateUnitTest = false,
-            cliGradle = null,
-            develocityFlag = false,
-            versionsFile = null,
+            typeOfProjectRequested = typeOfProjectRequested,
+            classesPerModule = classesPerModule,
+            typeOfStringResources = typeOfStringResources,
+            layers = layers,
+            generateUnitTest = generateUnitTest,
+            cliGradle = cliGradle,
+            develocityFlag = develocityFlag,
+            versionsFile = versionsFile,
             outputDir = outputDir,
             projectName = projectName,
-            versionsOverrides = VersionsOverrides(
-                dependencyInjection = DependencyInjection.HILT,
-                develocityUrl = null,
-                roomDatabase = false,
-                kotlinMultiplatformLibrary = false
-            )
+            versionsOverrides = versionsOverrides
         )
     }
 }

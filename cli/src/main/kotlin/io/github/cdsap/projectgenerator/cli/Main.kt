@@ -59,27 +59,29 @@ class GenerateProjects : CliktCommand(name = "generate-project") {
     override fun run() {
         try {
             GenerateProjectRequest.resolve(
-                modules = modules,
-                shape = Shape.valueOf(shape.uppercase()),
-                language = Language.valueOf(language.uppercase()),
-                typeOfProjectRequested = TypeProjectRequested.valueOf(type.uppercase()),
-                classesPerModule = ClassesPerModule(
-                    ClassesPerModuleType.valueOf(classesModuleType.uppercase()),
-                    classesModule
-                ),
-                typeOfStringResources = TypeOfStringResources.valueOf(typeOfStringResources.uppercase()),
-                layers = layers,
-                generateUnitTest = generateUnitTest,
-                cliGradle = gradle,
-                develocityFlag = develocity,
-                versionsFile = versionsFile?.let(VersionsParser::fromFile),
-                outputDir = outputDir,
-                projectName = projectName,
-                versionsOverrides = VersionsOverrides(
-                    dependencyInjection = DependencyInjection.valueOf(di.uppercase()),
-                    develocityUrl = develocityUrl,
-                    roomDatabase = roomDatabase,
-                    kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
+                GenerateProjectOptions(
+                    modules = modules,
+                    shape = Shape.valueOf(shape.uppercase()),
+                    language = Language.valueOf(language.uppercase()),
+                    typeOfProjectRequested = TypeProjectRequested.valueOf(type.uppercase()),
+                    classesPerModule = ClassesPerModule(
+                        ClassesPerModuleType.valueOf(classesModuleType.uppercase()),
+                        classesModule
+                    ),
+                    typeOfStringResources = TypeOfStringResources.valueOf(typeOfStringResources.uppercase()),
+                    layers = layers,
+                    generateUnitTest = generateUnitTest,
+                    cliGradle = gradle,
+                    develocityFlag = develocity,
+                    versionsFile = versionsFile?.let(VersionsParser::fromFile),
+                    outputDir = outputDir,
+                    projectName = projectName,
+                    versionsOverrides = VersionsOverrides(
+                        dependencyInjection = DependencyInjection.valueOf(di.uppercase()),
+                        develocityUrl = develocityUrl,
+                        roomDatabase = roomDatabase,
+                        kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
+                    )
                 )
             ).toProjectGenerator().write()
         } catch (e: GenerateProjectRequestValidationException) {

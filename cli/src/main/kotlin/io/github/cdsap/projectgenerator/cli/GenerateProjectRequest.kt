@@ -11,6 +11,23 @@ import io.github.cdsap.projectgenerator.model.Versions
 import io.github.cdsap.projectgenerator.model.VersionsFile
 import io.github.cdsap.projectgenerator.writer.GradleWrapper
 
+data class GenerateProjectOptions(
+    val modules: Int,
+    val shape: Shape,
+    val language: Language,
+    val typeOfProjectRequested: TypeProjectRequested,
+    val classesPerModule: ClassesPerModule,
+    val typeOfStringResources: TypeOfStringResources,
+    val layers: Int,
+    val generateUnitTest: Boolean,
+    val cliGradle: String?,
+    val develocityFlag: Boolean,
+    val versionsFile: VersionsFile?,
+    val outputDir: String?,
+    val projectName: String?,
+    val versionsOverrides: VersionsOverrides
+)
+
 data class GenerateProjectRequest(
     val modules: Int,
     val shape: Shape,
@@ -43,53 +60,41 @@ data class GenerateProjectRequest(
     )
 
     companion object {
-        fun resolve(
-            modules: Int,
-            shape: Shape,
-            language: Language,
-            typeOfProjectRequested: TypeProjectRequested,
-            classesPerModule: ClassesPerModule,
-            typeOfStringResources: TypeOfStringResources,
-            layers: Int,
-            generateUnitTest: Boolean,
-            cliGradle: String?,
-            develocityFlag: Boolean,
-            versionsFile: VersionsFile?,
-            outputDir: String?,
-            projectName: String?,
-            versionsOverrides: VersionsOverrides
-        ): GenerateProjectRequest {
+        fun resolve(options: GenerateProjectOptions): GenerateProjectRequest {
             validateAndroidOnlyFeatures(
-                typeOfProjectRequested = typeOfProjectRequested,
-                roomDatabase = versionsOverrides.roomDatabase,
-                kotlinMultiplatformLibrary = versionsOverrides.kotlinMultiplatformLibrary
+                typeOfProjectRequested = options.typeOfProjectRequested,
+                roomDatabase = options.versionsOverrides.roomDatabase,
+                kotlinMultiplatformLibrary = options.versionsOverrides.kotlinMultiplatformLibrary
             )
             val resolvedProjectName = resolveProjectName(
-                projectName,
-                typeOfProjectRequested,
-                shape,
-                modules
+                options.projectName,
+                options.typeOfProjectRequested,
+                options.shape,
+                options.modules
             )
             return GenerateProjectRequest(
-                modules = modules,
-                shape = shape,
-                language = language,
-                typeOfProjectRequested = typeOfProjectRequested,
-                classesPerModule = classesPerModule,
+                modules = options.modules,
+                shape = options.shape,
+                language = options.language,
+                typeOfProjectRequested = options.typeOfProjectRequested,
+                classesPerModule = options.classesPerModule,
                 versions = VersionsResolver.resolve(
-                    fileVersions = versionsFile,
-                    overrides = versionsOverrides
+                    fileVersions = options.versionsFile,
+                    overrides = options.versionsOverrides
                 ),
-                typeOfStringResources = typeOfStringResources,
-                layers = layers,
-                generateUnitTest = generateUnitTest,
-                gradle = VersionsResolver.resolveGradle(cliGradle, versionsFile),
+                typeOfStringResources = options.typeOfStringResources,
+                layers = options.layers,
+                generateUnitTest = options.generateUnitTest,
+                gradle = VersionsResolver.resolveGradle(options.cliGradle, options.versionsFile),
                 projectRootPath = ProjectOutputPathResolver.defaultRootPath(
-                    outputDir,
-                    language,
+                    options.outputDir,
+                    options.language,
                     resolvedProjectName
                 ),
-                develocity = resolveDevelocityEnabled(develocityFlag, versionsOverrides.develocityUrl),
+                develocity = resolveDevelocityEnabled(
+                    options.develocityFlag,
+                    options.versionsOverrides.develocityUrl
+                ),
                 projectName = resolvedProjectName
             )
         }
