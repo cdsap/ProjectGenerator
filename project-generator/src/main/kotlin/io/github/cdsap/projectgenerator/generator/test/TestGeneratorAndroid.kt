@@ -8,12 +8,14 @@ import io.github.cdsap.projectgenerator.model.ClassDependencyAndroid
 import io.github.cdsap.projectgenerator.model.ClassTypeAndroid
 import io.github.cdsap.projectgenerator.model.ModuleClassDefinitionAndroid
 import io.github.cdsap.projectgenerator.NameMappings
+import io.github.cdsap.projectgenerator.ProjectNameMaps
 import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
 
 
 class TestGeneratorAndroid(
-    private val kotlinMultiplatformLibrary: Boolean = false
+    private val kotlinMultiplatformLibrary: Boolean = false,
+    private val nameMaps: ProjectNameMaps
 ) : TestGenerator<ModuleClassDefinitionAndroid, GenerateDictionaryAndroid> {
 
 
@@ -25,7 +27,8 @@ class TestGeneratorAndroid(
         val testDir = GeneratedModuleLayout.of(
             projectName,
             moduleDefinition,
-            kotlinMultiplatformLibrary
+            kotlinMultiplatformLibrary,
+            nameMaps
         ).testKotlinPackageDir()
         testDir.mkdirs()
 

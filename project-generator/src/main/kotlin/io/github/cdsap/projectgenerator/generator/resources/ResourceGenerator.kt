@@ -9,6 +9,7 @@ import io.github.cdsap.projectgenerator.generator.android.Manifest
 import io.github.cdsap.projectgenerator.generator.android.ValuesStrings
 import io.github.cdsap.projectgenerator.generator.ResourceGeneratorA
 import io.github.cdsap.projectgenerator.NameMappings
+import io.github.cdsap.projectgenerator.ProjectNameMaps
 import io.github.cdsap.projectgenerator.generator.classes.GenerateDictionaryAndroid
 import io.github.cdsap.projectgenerator.model.DependencyInjection
 import io.github.cdsap.projectgenerator.model.LanguageAttributes
@@ -21,7 +22,8 @@ import java.util.concurrent.CopyOnWriteArrayList
 class ResourceGenerator(
     private val di: DependencyInjection,
     private val roomDatabase: Boolean = false,
-    private val kotlinMultiplatformLibrary: Boolean = false
+    private val kotlinMultiplatformLibrary: Boolean = false,
+    private val nameMaps: ProjectNameMaps
 ) : ResourceGeneratorA<GenerateDictionaryAndroid> {
 
     override fun generate(
@@ -30,7 +32,7 @@ class ResourceGenerator(
         typeOfStringResources: TypeOfStringResources,
         classesDictionary: MutableMap<String, CopyOnWriteArrayList<GenerateDictionaryAndroid>>
     ) {
-        val layout = GeneratedModuleLayout.of(lang.projectName, node, kotlinMultiplatformLibrary)
+        val layout = GeneratedModuleLayout.of(lang.projectName, node, kotlinMultiplatformLibrary, nameMaps)
         layout.resourcesLayoutDir().mkdirs()
         layout.resourcesValuesDir().mkdirs()
         ClassTheme(kotlinMultiplatformLibrary).createThemeFile(node, lang)
@@ -72,7 +74,7 @@ class ResourceGenerator(
         lang: LanguageAttributes,
         node: ProjectGraph
     ): Triple<File, File, File> {
-        val layout = GeneratedModuleLayout.of(lang.projectName, node, kotlinMultiplatformLibrary)
+        val layout = GeneratedModuleLayout.of(lang.projectName, node, kotlinMultiplatformLibrary, nameMaps)
         return Triple(layout.resourcesLayoutDir(), layout.resourcesValuesDir(), layout.manifestDir())
     }
 

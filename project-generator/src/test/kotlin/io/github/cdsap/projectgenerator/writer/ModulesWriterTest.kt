@@ -1,6 +1,6 @@
 package io.github.cdsap.projectgenerator.writer
 
-import io.github.cdsap.projectgenerator.NameMappings
+import io.github.cdsap.projectgenerator.ProjectNameMaps
 import io.github.cdsap.projectgenerator.generator.BuildFilesGenerator
 import io.github.cdsap.projectgenerator.generator.ClassGenerator
 import io.github.cdsap.projectgenerator.generator.ModuleClassPlanner
@@ -20,6 +20,8 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicInteger
 
 class ModulesWriterTest {
+
+    private val emptyNameMaps = ProjectNameMaps(emptyMap(), emptyMap())
 
     @TempDir
     lateinit var tempDir: Path
@@ -42,7 +44,8 @@ class ModulesWriterTest {
             generateUnitTest = false,
             buildFilesGenerator = NoOpBuildFilesGenerator(),
             nodes = modules,
-            languages = languages
+            languages = languages,
+            nameMaps = emptyNameMaps
         ).write()
 
         assertEquals(modules.size, planner.planCalls.get())
@@ -72,21 +75,47 @@ class ModulesWriterTest {
             buildFilesGenerator = NoOpBuildFilesGenerator(),
             nodes = listOf(module),
             languages = languages,
+            nameMaps = emptyNameMaps,
             sourceSetLayout = layout
         ).write()
 
         assertEquals(listOf(module), layout.mainKotlinCalls)
         assertEquals(listOf(module), layout.testKotlinCalls)
 
-        val layerDir = NameMappings.layerName(module.layer)
-        val moduleDir = NameMappings.moduleName(module.id)
-        val packageDir = NameMappings.modulePackageName(module.id)
+        val layerDir = emptyNameMaps.layerNames[module.layer] ?: "layer_${module.layer}"
+        val moduleDir = emptyNameMaps.moduleNames[module.id] ?: module.id
+        val packageDir = moduleDir.replace("-", "")
         assertTrue(
             File("$projectRoot/$layerDir/$moduleDir/src/main/kotlin/com/awesomeapp/$packageDir").isDirectory
         )
         assertTrue(
             File("$projectRoot/$layerDir/$moduleDir/src/test/kotlin/com/awesomeapp/$packageDir").isDirectory
         )
+    }
+
+    @Test
+    fun `createModuleStructure uses ProjectNameMaps for directory layout`() = runBlocking {
+        val module = ProjectGraph("module_1_1", 1, emptyList(), TypeProject.LIB, 1)
+        val projectRoot = tempDir.resolve("named_project").toString()
+        val languages = listOf(LanguageAttributes("gradle.kts", projectRoot))
+        val nameMaps = ProjectNameMaps(
+            layerNames = mapOf(1 to "platform"),
+            moduleNames = mapOf("module_1_1" to "sample-lib")
+        )
+
+        TestModulesWrite(
+            classGenerator = RecordingClassGenerator(),
+            classPlanner = CountingPlanner(),
+            testGenerator = NoOpTestGenerator(),
+            generateUnitTest = true,
+            buildFilesGenerator = NoOpBuildFilesGenerator(),
+            nodes = listOf(module),
+            languages = languages,
+            nameMaps = nameMaps
+        ).write()
+
+        assertTrue(File("$projectRoot/platform/sample-lib/src/main/kotlin/com/awesomeapp/samplelib").isDirectory)
+        assertTrue(File("$projectRoot/platform/sample-lib/src/test/kotlin/com/awesomeapp/samplelib").isDirectory)
     }
 
     private class ModulePlan(val moduleId: String)
@@ -160,6 +189,7 @@ class ModulesWriterTest {
         buildFilesGenerator: BuildFilesGenerator,
         nodes: List<ProjectGraph>,
         languages: List<LanguageAttributes>,
+        nameMaps: ProjectNameMaps,
         sourceSetLayout: ModuleSourceSetLayout = JvmModuleSourceSetLayout
     ) : ModulesWrite<ModulePlan, String>(
         classGenerator = classGenerator,
@@ -171,6 +201,7 @@ class ModulesWriterTest {
         resources = null,
         nodes = nodes,
         languages = languages,
+        nameMaps = nameMaps,
         sourceSetLayout = sourceSetLayout
     )
 }

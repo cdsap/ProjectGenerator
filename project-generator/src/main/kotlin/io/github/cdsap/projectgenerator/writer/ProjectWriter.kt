@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator.writer
 
+import io.github.cdsap.projectgenerator.NameMappings
 import io.github.cdsap.projectgenerator.ProjectNameMaps
 import io.github.cdsap.projectgenerator.generator.rootproject.BuildGradle
 import io.github.cdsap.projectgenerator.generator.rootproject.GradleProperties
@@ -28,6 +29,7 @@ class ProjectWriter(
     private val nameMaps: ProjectNameMaps
 ) {
     fun write() {
+        NameMappings.configure(nameMaps)
         println("Creating Convention Plugin files")
         ConventionPluginWriter(languages, versions, typeOfProjectRequested).write()
         println("Creating Modules files")
@@ -39,10 +41,17 @@ class ProjectWriter(
                 typeOfStringResources,
                 generateUnitTest,
                 versions,
-                versions.di
+                versions.di,
+                nameMaps
             ).write()
 
-            TypeProjectRequested.JVM -> JvmModulesWriter(nodes, languages, generateUnitTest, versions).write()
+            TypeProjectRequested.JVM -> JvmModulesWriter(
+                nodes,
+                languages,
+                generateUnitTest,
+                versions,
+                nameMaps
+            ).write()
         }
         }
 

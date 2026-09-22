@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator.writer
 
+import io.github.cdsap.projectgenerator.ProjectNameMaps
 import io.github.cdsap.projectgenerator.generator.BuildFilesGenerator
 import io.github.cdsap.projectgenerator.generator.ClassGenerator
 import io.github.cdsap.projectgenerator.generator.GeneratedModuleLayout
@@ -26,6 +27,7 @@ abstract class ModulesWrite<MODULE_DEF, DICT>(
     private val resources: TypeOfStringResources? = null,
     private val nodes: List<ProjectGraph>,
     private val languages: List<LanguageAttributes>,
+    private val nameMaps: ProjectNameMaps,
     private val sourceSetLayout: ModuleSourceSetLayout = JvmModuleSourceSetLayout
 ) {
     suspend fun write() = coroutineScope {
@@ -72,7 +74,8 @@ abstract class ModulesWrite<MODULE_DEF, DICT>(
             projectName = lang.projectName,
             node = node,
             mainKotlinSourceDir = sourceSetLayout.mainKotlinDir(node),
-            testKotlinSourceDir = sourceSetLayout.testKotlinDir(node)
+            testKotlinSourceDir = sourceSetLayout.testKotlinDir(node),
+            nameMaps = nameMaps
         )
         layout.mainKotlinPackageDir().mkdirs()
 
