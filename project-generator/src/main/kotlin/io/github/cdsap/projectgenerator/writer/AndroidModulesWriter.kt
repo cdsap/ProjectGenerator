@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator.writer
 
+import io.github.cdsap.projectgenerator.ProjectNameMaps
 import io.github.cdsap.projectgenerator.generator.buildfiles.BuildFilesGeneratorAndroid
 import io.github.cdsap.projectgenerator.generator.classes.ClassGeneratorAndroid
 import io.github.cdsap.projectgenerator.generator.classes.ClassGeneratorAndroidLegacy
@@ -17,24 +18,31 @@ class AndroidModulesWriter(
     typeOfStringResources: TypeOfStringResources,
     generateUnitTest: Boolean,
     versions: Versions,
-    di: DependencyInjection
+    di: DependencyInjection,
+    nameMaps: ProjectNameMaps
 ) : ModulesWrite<ModuleClassDefinitionAndroid, GenerateDictionaryAndroid>(
     classGenerator = if (versions.android.roomDatabase) {
-        ClassGeneratorAndroid(di, versions.android.kotlinMultiplatformLibrary)
+        ClassGeneratorAndroid(di, versions.android.kotlinMultiplatformLibrary, nameMaps)
     } else {
         ClassGeneratorAndroidLegacy(di, versions.android.kotlinMultiplatformLibrary)
     },
     classPlanner = if (versions.android.roomDatabase) ModuleClassPlannerAndroid() else ModuleClassPlannerAndroidLegacy(),
     testGenerator = if (versions.android.roomDatabase) {
-        TestGeneratorAndroid(versions.android.kotlinMultiplatformLibrary)
+        TestGeneratorAndroid(versions.android.kotlinMultiplatformLibrary, nameMaps)
     } else {
         TestGeneratorAndroidLegacy(versions.android.kotlinMultiplatformLibrary)
     },
-    resourceGeneratorA = ResourceGenerator(di, versions.android.roomDatabase, versions.android.kotlinMultiplatformLibrary),
+    resourceGeneratorA = ResourceGenerator(
+        di,
+        versions.android.roomDatabase,
+        versions.android.kotlinMultiplatformLibrary,
+        nameMaps
+    ),
     generateUnitTest = generateUnitTest,
     buildFilesGenerator = BuildFilesGeneratorAndroid(versions, di),
     resources = typeOfStringResources,
     nodes = nodes,
     languages = languages,
+    nameMaps = nameMaps,
     sourceSetLayout = AndroidModuleSourceSetLayout(versions.android.kotlinMultiplatformLibrary)
 )

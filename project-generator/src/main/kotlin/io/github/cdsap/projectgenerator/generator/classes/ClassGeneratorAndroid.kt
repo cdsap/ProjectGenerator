@@ -4,6 +4,7 @@ import io.github.cdsap.projectgenerator.generator.GeneratedModuleLayout
 import io.github.cdsap.projectgenerator.generator.android.AndroidSourceSetLayout
 import io.github.cdsap.projectgenerator.model.*
 import io.github.cdsap.projectgenerator.NameMappings
+import io.github.cdsap.projectgenerator.ProjectNameMaps
 import io.github.cdsap.projectgenerator.generator.ClassGenerator
 import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
@@ -21,7 +22,8 @@ data class GenerateDictionaryAndroid(
 
 class ClassGeneratorAndroid(
     private val di: DependencyInjection,
-    private val kotlinMultiplatformLibrary: Boolean = false
+    private val kotlinMultiplatformLibrary: Boolean = false,
+    private val nameMaps: ProjectNameMaps
 ) :
     ClassGenerator<ModuleClassDefinitionAndroid, GenerateDictionaryAndroid> {
 
@@ -753,7 +755,8 @@ class ClassGeneratorAndroid(
         val directory = GeneratedModuleLayout.of(
             projectName,
             moduleDefinition,
-            kotlinMultiplatformLibrary
+            kotlinMultiplatformLibrary,
+            nameMaps
         ).mainKotlinPackageDir()
         directory.mkdirs()
 

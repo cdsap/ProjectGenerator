@@ -1,6 +1,6 @@
 package io.github.cdsap.projectgenerator.generator
 
-import io.github.cdsap.projectgenerator.NameMappings
+import io.github.cdsap.projectgenerator.ProjectNameMaps
 import io.github.cdsap.projectgenerator.generator.android.AndroidSourceSetLayout
 import io.github.cdsap.projectgenerator.model.ModuleClassDefinitionAndroid
 import io.github.cdsap.projectgenerator.model.ProjectGraph
@@ -9,17 +9,14 @@ import java.io.File
 
 class GeneratedModuleLayout private constructor(
     private val projectName: String,
-    private val layer: Int,
-    private val moduleId: String,
+    private val layerDir: String,
+    private val moduleDir: String,
+    private val packageDir: String,
     private val mainKotlinSourceDir: String,
     private val testKotlinSourceDir: String,
     private val resourcesSourceDir: String,
     private val manifestSourceDir: String
 ) {
-    private val layerDir: String = NameMappings.layerName(layer)
-    private val moduleDir: String = NameMappings.moduleName(moduleId)
-    private val packageDir: String = NameMappings.modulePackageName(moduleId)
-
     fun mainKotlinPackageDir(): File =
         File("$projectName/$layerDir/$moduleDir/$mainKotlinSourceDir/com/awesomeapp/$packageDir/")
 
@@ -39,27 +36,31 @@ class GeneratedModuleLayout private constructor(
         fun of(
             projectName: String,
             node: ProjectGraph,
-            kotlinMultiplatformLibrary: Boolean
+            kotlinMultiplatformLibrary: Boolean,
+            nameMaps: ProjectNameMaps
         ): GeneratedModuleLayout =
             of(
                 projectName = projectName,
                 layer = node.layer,
                 moduleId = node.id,
                 type = node.type,
-                kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
+                kotlinMultiplatformLibrary = kotlinMultiplatformLibrary,
+                nameMaps = nameMaps
             )
 
         fun of(
             projectName: String,
             moduleDefinition: ModuleClassDefinitionAndroid,
-            kotlinMultiplatformLibrary: Boolean
+            kotlinMultiplatformLibrary: Boolean,
+            nameMaps: ProjectNameMaps
         ): GeneratedModuleLayout =
             of(
                 projectName = projectName,
                 layer = moduleDefinition.layer,
                 moduleId = moduleDefinition.moduleId,
                 type = moduleDefinition.projectType ?: TypeProject.ANDROID_LIB,
-                kotlinMultiplatformLibrary = kotlinMultiplatformLibrary
+                kotlinMultiplatformLibrary = kotlinMultiplatformLibrary,
+                nameMaps = nameMaps
             )
 
         fun of(
@@ -67,12 +68,14 @@ class GeneratedModuleLayout private constructor(
             node: ProjectGraph,
             mainKotlinSourceDir: String,
             testKotlinSourceDir: String,
+            nameMaps: ProjectNameMaps,
             kotlinMultiplatformLibrary: Boolean = false
         ): GeneratedModuleLayout =
             GeneratedModuleLayout(
                 projectName = projectName,
-                layer = node.layer,
-                moduleId = node.id,
+                layerDir = layerDir(nameMaps, node.layer),
+                moduleDir = moduleDir(nameMaps, node.id),
+                packageDir = packageDir(nameMaps, node.id),
                 mainKotlinSourceDir = mainKotlinSourceDir,
                 testKotlinSourceDir = testKotlinSourceDir,
                 resourcesSourceDir = AndroidSourceSetLayout.resourcesSourceDir(
@@ -90,12 +93,14 @@ class GeneratedModuleLayout private constructor(
             layer: Int,
             moduleId: String,
             type: TypeProject,
-            kotlinMultiplatformLibrary: Boolean
+            kotlinMultiplatformLibrary: Boolean,
+            nameMaps: ProjectNameMaps
         ): GeneratedModuleLayout =
             GeneratedModuleLayout(
                 projectName = projectName,
-                layer = layer,
-                moduleId = moduleId,
+                layerDir = layerDir(nameMaps, layer),
+                moduleDir = moduleDir(nameMaps, moduleId),
+                packageDir = packageDir(nameMaps, moduleId),
                 mainKotlinSourceDir = AndroidSourceSetLayout.kotlinMainSourceDir(
                     type,
                     kotlinMultiplatformLibrary
@@ -113,5 +118,14 @@ class GeneratedModuleLayout private constructor(
                     kotlinMultiplatformLibrary
                 )
             )
+
+        private fun layerDir(nameMaps: ProjectNameMaps, layer: Int): String =
+            nameMaps.layerNames[layer] ?: "layer_$layer"
+
+        private fun moduleDir(nameMaps: ProjectNameMaps, moduleId: String): String =
+            nameMaps.moduleNames[moduleId] ?: moduleId
+
+        private fun packageDir(nameMaps: ProjectNameMaps, moduleId: String): String =
+            moduleDir(nameMaps, moduleId).replace("-", "")
     }
 }

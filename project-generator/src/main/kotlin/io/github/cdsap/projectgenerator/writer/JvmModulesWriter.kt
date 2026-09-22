@@ -1,5 +1,6 @@
 package io.github.cdsap.projectgenerator.writer
 
+import io.github.cdsap.projectgenerator.ProjectNameMaps
 import io.github.cdsap.projectgenerator.generator.buildfiles.BuildFilesGeneratorJvm
 import io.github.cdsap.projectgenerator.generator.planner.ModuleClassPlannerJvm
 import io.github.cdsap.projectgenerator.generator.classes.ClassGeneratorJvm
@@ -15,7 +16,8 @@ class JvmModulesWriter(
     nodes: List<ProjectGraph>,
     languages: List<LanguageAttributes>,
     generateUnitTest: Boolean,
-    versions: Versions
+    versions: Versions,
+    nameMaps: ProjectNameMaps
 ) : ModulesWrite<ModuleClassDefinitionJvm, GenerateDictionaryJvm>(
     classGenerator = ClassGeneratorJvm(),
     classPlanner = ModuleClassPlannerJvm(),
@@ -24,5 +26,6 @@ class JvmModulesWriter(
     buildFilesGenerator = BuildFilesGeneratorJvm(),
     nodes = nodes,
     languages = languages,
+    nameMaps = nameMaps,
     sourceSetLayout = JvmModuleSourceSetLayout
 )
