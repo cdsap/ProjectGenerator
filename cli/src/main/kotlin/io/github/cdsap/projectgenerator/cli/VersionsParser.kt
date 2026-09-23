@@ -26,12 +26,17 @@ object VersionsParser {
     }
 
     /**
-     * Parses a YAML file into [VersionsFile].
+     * Reads a YAML file and parses it into [VersionsFile].
+     */
+    fun fromFile(file: File): VersionsFile = parse(file.readText())
+
+    /**
+     * Parses YAML content into [VersionsFile].
      * [VersionsFile] keeps plugin list fields nullable so omitted YAML keys can resolve to empty lists
      * instead of inheriting the runtime defaults from [io.github.cdsap.projectgenerator.model.Versions].
      */
-    fun fromFile(file: File): VersionsFile {
-        val tree = mapper.readTree(file)
+    fun parse(yaml: String): VersionsFile {
+        val tree = mapper.readTree(yaml)
         normalizeGradleVersion(tree)
         normalizeProjectDefaults(tree)
         val payload = mapper.treeToValue(tree, VersionsFilePayload::class.java)
