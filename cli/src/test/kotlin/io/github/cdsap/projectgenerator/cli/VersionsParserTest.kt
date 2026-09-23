@@ -21,9 +21,8 @@ class VersionsParserTest {
         val versions = Versions()
         val gradle = Gradle.latest()
         val yaml = GenerateVersionsYaml().render(versions, gradle)
-        val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
 
-        val versionsFile = VersionsParser.fromFile(file)
+        val versionsFile = VersionsParser.parse(yaml)
         val parsed = versionsFile.resolve()
 
         assertEquals(gradle, versionsFile.gradle)
@@ -43,6 +42,19 @@ class VersionsParserTest {
     }
 
     @Test
+    fun `fromFile delegates to parse with file contents`() {
+        val yaml = """
+            project:
+              jdk: "17"
+            kotlin:
+              kgp: "2.0.0"
+        """.trimIndent()
+        val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
+
+        assertEquals(VersionsParser.parse(yaml), VersionsParser.fromFile(file))
+    }
+
+    @Test
     fun `parses YAML without additionalSettingsPlugins and additionalBuildGradleRootPlugins as empty lists`() {
         val yaml = """
             project:
@@ -51,8 +63,7 @@ class VersionsParserTest {
               kgp: "2.0.0"
         """.trimIndent()
 
-        val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
-        val versions = VersionsParser.fromFile(file).resolve()
+        val versions = VersionsParser.parse(yaml).resolve()
 
         assertTrue(versions.additionalSettingsPlugins.isEmpty())
         assertTrue(versions.additionalBuildGradleRootPlugins.isEmpty())
@@ -75,8 +86,7 @@ class VersionsParserTest {
                 apply: true
         """.trimIndent()
 
-        val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
-        val versions = VersionsParser.fromFile(file).resolve()
+        val versions = VersionsParser.parse(yaml).resolve()
 
         assertEquals(1, versions.additionalSettingsPlugins.size)
         assertEquals(AdditionalPlugin("com.fueledbycaffeine.spotlight", "1.4.1", true), versions.additionalSettingsPlugins.first())
@@ -94,8 +104,7 @@ class VersionsParserTest {
             additionalBuildGradleRootPlugins: []
         """.trimIndent()
 
-        val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
-        val versions = VersionsParser.fromFile(file).resolve()
+        val versions = VersionsParser.parse(yaml).resolve()
 
         assertTrue(versions.additionalSettingsPlugins.isEmpty())
         assertTrue(versions.additionalBuildGradleRootPlugins.isEmpty())
@@ -111,8 +120,7 @@ class VersionsParserTest {
                 version: 1.4.1
         """.trimIndent()
 
-        val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
-        val versions = VersionsParser.fromFile(file).resolve()
+        val versions = VersionsParser.parse(yaml).resolve()
 
         assertEquals(1, versions.additionalSettingsPlugins.size)
         assertTrue(versions.additionalBuildGradleRootPlugins.isEmpty())
@@ -128,8 +136,7 @@ class VersionsParserTest {
                 version: 2.19.0
         """.trimIndent()
 
-        val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
-        val versions = VersionsParser.fromFile(file).resolve()
+        val versions = VersionsParser.parse(yaml).resolve()
 
         assertTrue(versions.additionalSettingsPlugins.isEmpty())
         assertEquals(1, versions.additionalBuildGradleRootPlugins.size)
@@ -145,8 +152,7 @@ class VersionsParserTest {
             additionalBuildGradleRootPlugins:
         """.trimIndent()
 
-        val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
-        val versions = VersionsParser.fromFile(file).resolve()
+        val versions = VersionsParser.parse(yaml).resolve()
 
         assertTrue(versions.additionalSettingsPlugins.isEmpty())
         assertTrue(versions.additionalBuildGradleRootPlugins.isEmpty())
@@ -165,8 +171,7 @@ class VersionsParserTest {
               coroutines: "1.10.2"
         """.trimIndent()
 
-        val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
-        val versions = VersionsParser.fromFile(file).resolve()
+        val versions = VersionsParser.parse(yaml).resolve()
 
         assertEquals("4.1", versions.project.develocity)
         assertEquals("", versions.project.develocityUrl)
@@ -179,8 +184,7 @@ class VersionsParserTest {
             gradle: ${Gradle.supported()[1].version}
         """.trimIndent()
 
-        val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
-        val versionsFile = VersionsParser.fromFile(file)
+        val versionsFile = VersionsParser.parse(yaml)
 
         assertEquals(Gradle.supported()[1], versionsFile.gradle)
     }
@@ -191,8 +195,7 @@ class VersionsParserTest {
             gradle: ${Gradle.supported()[1].legacyEnumName}
         """.trimIndent()
 
-        val file = File(tempDir.toFile(), "versions.yaml").apply { writeText(yaml) }
-        val versionsFile = VersionsParser.fromFile(file)
+        val versionsFile = VersionsParser.parse(yaml)
 
         assertEquals(Gradle.supported()[1], versionsFile.gradle)
     }
