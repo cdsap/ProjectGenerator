@@ -73,7 +73,7 @@ data class Android(
     val fragment: String = "1.9.1",
     val activity: String = "1.13.0",
     val constraintlayout: String = "2.2.2",
-    val work: String = "2.11.2",
+    val work: String = "2.12.0",
     val room: String = "2.8.5",
     val roomDatabase: Boolean = false,
     val kotlinMultiplatformLibrary: Boolean = false,
