@@ -201,9 +201,9 @@ If enabled, each module will generate n unit tests, where n is the argument `cla
 ## Gradle
 Gradle used, versions supported:
 * Gradle 9.x
+  * 9.8.0
   * 9.7.1
   * 9.6.1
-  * 9.5.1
 * Gradle 8.x
   * 8.14.5
   * 8.13
@@ -219,7 +219,7 @@ Gradle used, versions supported:
 ## Versions
 Example output versions.yaml:
 ```yaml
-gradle: 9.7.1
+gradle: 9.8.0
 project:
     develocity: 4.1
     jdk: 23
