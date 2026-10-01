@@ -1,5 +1,5 @@
 # Use Node.js base image
-FROM node:22-slim
+FROM node:24-slim
 
 # Install Java and other dependencies
 RUN apt-get update && apt-get install -y \
