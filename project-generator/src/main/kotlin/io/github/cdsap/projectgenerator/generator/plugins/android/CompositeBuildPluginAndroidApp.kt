@@ -55,6 +55,7 @@ class CompositeBuildPluginAndroidApp {
         |                    sourceCompatibility = JavaVersion.VERSION_${versions.project.jdk}
         |                    targetCompatibility = JavaVersion.VERSION_${versions.project.jdk}
         |                }
+${lintToolchainDsl(versions)}
         |            }
         |            target.extensions.getByType(JavaPluginExtension::class.java).apply {
         |                toolchain.languageVersion.set(org.gradle.jvm.toolchain.JavaLanguageVersion.of(${versions.project.jdk}))
