@@ -15,6 +15,7 @@ class CompositeBuildPluginAndroidLib {
         |import org.gradle.api.plugins.JavaPluginExtension
         |import org.gradle.kotlin.dsl.configure
         |import org.gradle.kotlin.dsl.dependencies
+${lintToolchainImport(versions)}
         |
         |class CompositeBuildPluginAndroidLib : Plugin<Project> {
         |    override fun apply(target: Project) {
@@ -44,6 +45,7 @@ class CompositeBuildPluginAndroidLib {
         |                    sourceCompatibility = JavaVersion.VERSION_${versions.project.jdk}
         |                    targetCompatibility = JavaVersion.VERSION_${versions.project.jdk}
         |                }
+${lintToolchainDsl(versions)}
         |                buildFeatures {
         |                    compose = true
         |                }
