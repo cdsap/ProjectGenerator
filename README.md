@@ -201,9 +201,9 @@ If enabled, each module will generate n unit tests, where n is the argument `cla
 ## Gradle
 Gradle used, versions supported:
 * Gradle 9.x
+  * 9.9.0
   * 9.8.2
   * 9.7.1
-  * 9.6.1
 * Gradle 8.x
   * 8.14.6
   * 8.13
