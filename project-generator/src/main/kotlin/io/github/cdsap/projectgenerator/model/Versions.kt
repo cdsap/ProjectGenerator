@@ -50,7 +50,7 @@ data class Testing(
     val junit4: String = "4.13.2",
     val junit5: String = "6.1.3",
     val truth: String = "1.4.5",
-    val mockk: String = "1.14.11",
+    val mockk: String = "1.14.12",
     val coreTesting: String = "2.2.0",
     val junitExt: String = "1.3.0",
 )
