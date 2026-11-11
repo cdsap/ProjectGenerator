@@ -9,10 +9,20 @@ If you need to create small or medium projects (<300 modules), you can use the w
 # Usage
 ## CLI
 ### Install
+
+#### Homebrew
+```bash
+brew tap cdsap/tap
+brew trust cdsap/tap   # required on Homebrew 7+
+brew install project-generator
+```
+
+#### Manual download
 ```
 curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.6.12/projectGenerator  --output projectGenerator
-chmod 0757 projectGenerator
+chmod 0755 projectGenerator
 ```
+Requires a JDK on `PATH` (Java 23+).
 
 
 ### Modes
