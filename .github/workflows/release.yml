@@ -55,7 +55,7 @@ jobs:
           asset_name: projectGenerator
           asset_content_type: application/octet-stream
       - name: Upload binary for Homebrew tap
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: projectGenerator-binary
           path: ./cli/projectGenerator
@@ -88,7 +88,7 @@ jobs:
 
       - name: Download release binary
         if: steps.tap-key.outputs.available == 'true'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: projectGenerator-binary
           path: release-binary
