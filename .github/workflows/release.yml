@@ -6,6 +6,8 @@ name: Release
 concurrency:
   group: 'build-${{ github.ref }}'
   cancel-in-progress: true
+permissions:
+  contents: write
 jobs:
   build:
     strategy:
@@ -15,7 +17,7 @@ jobs:
     name: Upload Release Asset
     runs-on: ubuntu-latest
     outputs:
-      release_id: ${{ steps.create_release.outputs.id }}
+      version: ${{ steps.version.outputs.value }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -27,6 +29,11 @@ jobs:
       - name: Build project
         run: |
           ./gradlew cli:fatBinary
+      - name: Read version from tag
+        id: version
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          echo "value=${tag#v}" >> "$GITHUB_OUTPUT"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -47,4 +54,79 @@ jobs:
           asset_path: ./cli/projectGenerator
           asset_name: projectGenerator
           asset_content_type: application/octet-stream
+      - name: Upload binary for Homebrew tap
+        uses: actions/upload-artifact@v4
+        with:
+          name: projectGenerator-binary
+          path: ./cli/projectGenerator
+          if-no-files-found: error
+          retention-days: 7
 
+  update-homebrew-tap:
+    name: Update Homebrew tap formula
+    needs: build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check for Homebrew tap deploy key
+        id: tap-key
+        env:
+          HOMEBREW_TAP_SSH_KEY: ${{ secrets.HOMEBREW_TAP_SSH_KEY }}
+        run: |
+          if [[ -z "${HOMEBREW_TAP_SSH_KEY}" ]]; then
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "HOMEBREW_TAP_SSH_KEY not configured; skipping Homebrew tap update"
+            echo "### Homebrew tap" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Skipped (add repository secret HOMEBREW_TAP_SSH_KEY: write deploy key for cdsap/homebrew-tap)" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Download release binary
+        if: steps.tap-key.outputs.available == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: projectGenerator-binary
+          path: release-binary
+
+      - name: Checkout homebrew-tap
+        if: steps.tap-key.outputs.available == 'true'
+        uses: actions/checkout@v7
+        with:
+          repository: cdsap/homebrew-tap
+          ssh-key: ${{ secrets.HOMEBREW_TAP_SSH_KEY }}
+          path: homebrew-tap
+
+      - name: Bump project-generator formula
+        if: steps.tap-key.outputs.available == 'true'
+        run: |
+          set -euo pipefail
+          version="${{ needs.build.outputs.version }}"
+          chmod +x scripts/update-homebrew-formula.sh
+          scripts/update-homebrew-formula.sh \
+            "$version" \
+            homebrew-tap \
+            release-binary/projectGenerator
+
+      - name: Commit and push formula bump
+        if: steps.tap-key.outputs.available == 'true'
+        working-directory: homebrew-tap
+        env:
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- Formula/project-generator.rb; then
+            echo "Homebrew formula already up to date for v${VERSION}"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/project-generator.rb
+          git commit -m "project-generator ${VERSION}"
+          git push
+          echo "### Homebrew tap" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Updated cdsap/homebrew-tap to project-generator ${VERSION}" >> "$GITHUB_STEP_SUMMARY"
