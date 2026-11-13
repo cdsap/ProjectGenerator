@@ -2213,10 +2213,11 @@ class ValuesStrings {
             """    <string name="string_${moduleName}_$i">String $i for module $moduleName</string>"""
         }
 
-        return """<?xml version="1.0" encoding="utf-8"?>
-            <resources>
-            $strings
-            </resources>
-        """.trimIndent()
+        return buildString {
+            appendLine("""<?xml version="1.0" encoding="utf-8"?>""")
+            appendLine("<resources>")
+            appendLine(strings)
+            append("</resources>")
+        }
     }
 }
