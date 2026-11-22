@@ -24,6 +24,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '${{ matrix.java }}'
+          cache: gradle
       - name: Build Process Watcher
         uses: cdsap/build-process-watcher@v0.7.0
         with:
@@ -60,6 +61,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '${{ matrix.java }}'
+          cache: gradle
       - name: Build Process Watcher
         uses: cdsap/build-process-watcher@v0.7.0
         with:
@@ -91,6 +93,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '${{ matrix.java }}'
+          cache: gradle
           
       - name: Build CLI and generate projects
         run: >
