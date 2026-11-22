@@ -30,7 +30,11 @@ ${lintToolchainImport(versions)}
         |
         |            extensions.configure<com.android.build.api.dsl.LibraryExtension> {
         |                namespace = "com.awesomeapp." + target.name.replace(":", "_").replace("-", "")
-        |                compileSdk = 37
+        |                compileSdk {
+        |                    version = release(37) {
+        |                        minorApiLevel = 1
+        |                    }
+        |                }
         |                defaultConfig {
         |                    minSdk = 24
         |                    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
