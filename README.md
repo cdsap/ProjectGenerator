@@ -19,7 +19,7 @@ brew install project-generator
 
 #### Manual download
 ```
-curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.7.0/projectGenerator  --output projectGenerator
+curl -L https://github.com/cdsap/ProjectGenerator/releases/download/v0.7.1/projectGenerator  --output projectGenerator
 chmod 0755 projectGenerator
 ```
 Requires a JDK on `PATH` (Java 23+).
@@ -94,7 +94,7 @@ ProjectGenerator(
 ```
 ### Dependency
 ```
-  implementation("io.github.cdsap:projectgenerator:0.7.0")
+  implementation("io.github.cdsap:projectgenerator:0.7.1")
 ```
 
 # Options
